@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<agent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="config.xsd">
+  <internalConfig>
+    <proactiveLocation>/home/vasile/workspacePA/PA_new/trunk</proactiveLocation>
+    <java_home>/home/vasile/.gentoo/java-config-2/current-user-vm</java_home>
+    <jvm_params></jvm_params>
+  </internalConfig>
+
+  <events >
+  
+    <event xsi:type="CalendarEvent" >
+	    <startDay>30</startDay>
+	    <startHour>2</startHour>
+	    <startMinute>10</startMinute>
+	    <startSecond>40</startSecond>
+	    <durationDays>2</durationDays>
+	    <durationHours>2</durationHours>
+	    <durationMinutes>1</durationMinutes>
+	    <durationSeconds>1</durationSeconds>
+    </event>
+
+    <event xsi:type="IdlenessEvent" > 
+    	<beginSecs>10</beginSecs>
+    	<endSecs>50</endSecs>
+    	<beginThreshold>50</beginThreshold>
+    	<endThreshold>60</endThreshold>
+    </event>
+  </events>
+
+	  
+  <actions >
+  	<action initialRestartDelay="20" xsi:type="AdvertAction" >
+  		<nodeName>advertaction_node</nodeName>
+  	</action> 
+  	<action initialRestartDelay="100" xsi:type="P2PAction" protocol="RMI" >
+  		<contact></contact>
+  	</action>
+  	
+  	<action initialRestartDelay="5" xsi:type="RMAction" url="node3" >
+  	 <nodeName>rmaaction_node</nodeName>
+  	</action>
+  	
+  </actions>
+
+
+</agent>
