@@ -12,6 +12,7 @@ class Event {
 public:
 	Event();
 	virtual ~Event();
+	void operator()();
 };
 
 #endif /* EVENT_H_ */

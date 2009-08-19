@@ -23,16 +23,12 @@ using namespace std;
 #include <sys/ipc.h>
 #include <sys/shm.h>
 
-#include <boost/interprocess/managed_shared_memory.hpp>
-
-
+#include <dbus-1.0/dbus/dbus.h>
 
 #endif
 
 #ifndef CONTROLLER_H_
 #define CONTROLLER_H_
-const int TICK_DEFAULT=1000;
-#define SHARED_SEGMENT_NAME 	"Shared_Memory_Segment"
 #define PIDS_TICKS  			"pids_ticks"
 #define PIDS_NODES  			"pids_nodes"
 #define PIDS_WATCHERS  			"pids_watchers"
@@ -41,72 +37,43 @@ const int TICK_DEFAULT=1000;
 //uses as a constant identifier the pid of the first
 //node to be restarted
 #define FIRST_PROCESS_WATCHER_PID		"old_pid_new_pid"
+#include "log4cxx/logger.h"
+#include "log4cxx/basicconfigurator.h"
+#include "log4cxx/helpers/exception.h"
+
+using namespace log4cxx;
+using namespace log4cxx::helpers;
 
 
-//boost
-#include <boost/interprocess/shared_memory_object.hpp>
-#include <boost/interprocess/mapped_region.hpp>
-#include <boost/interprocess/managed_shared_memory.hpp>
-#include <boost/interprocess/containers/map.hpp>
-#include <boost/interprocess/allocators/allocator.hpp>
-#include <functional>
-#include <utility>
-//#include <algorithm>
-using namespace boost::interprocess;
-
-/*****************  DEFINING BOOST TYPES FOR SHARED MEMORY **************/
-//Note that map<Key, MappedType>'s value_type is std::pair<const Key, MappedType>,
-//so the allocator must allocate that pair.
-typedef int  KeyType;
-typedef int  MappedType;
-typedef std::pair<const int, int> ValueType;
-
-//Alias an STL compatible allocator of for the map.
-//This allocator will allow to place containers
-//in managed shared memory segments
-typedef boost::interprocess::allocator<ValueType,
-		boost::interprocess::managed_shared_memory::segment_manager>
-		ShmemAllocator;
-//Alias a map of ints that uses the previous STL-like allocator.
-//Note that the third parameter argument is the ordering function
-//of the map, just like with std::map, used to compare the keys.
-typedef boost::interprocess::map<KeyType, MappedType, std::less<KeyType>, ShmemAllocator> SharedMap;
-
-
-typedef boost::interprocess::string  KeyTypeNodes;
-typedef std::pair<const boost::interprocess::string, int> ValueTypeNodes;
-
-//Alias an STL compatible allocator of for the map.
-//This allocator will allow to place containers
-//in managed shared memory segments
-typedef boost::interprocess::allocator<ValueTypeNodes,
-		boost::interprocess::managed_shared_memory::segment_manager>
-		ShmemAllocatorNodes;
-//Alias a map of ints that uses the previous STL-like allocator.
-//Note that the third parameter argument is the ordering function
-//of the map, just like with std::map, used to compare the keys.
-typedef boost::interprocess::map<KeyTypeNodes, MappedType, std::less<KeyTypeNodes>,
-	ShmemAllocatorNodes> SharedMapNodes;
-
-/*******************  END BOOST TYPES FOR SHARED MEMORY ****************/
 
 
 class Controller {
 private:
-	char* default_shell;
-	char* default_node_exec;
-//	static managed_shared_memory segment;
-// uses the OLD_PIDS_NEW_PIDS shared map to
-// reassociate when the Node is restarted
-//uses as a constant identifier the pid of the first
-//node to be started, on sub
-//    SharedMap <int1,int2>   int1 the first pid for the node
-//							   int2  the current pid of the node
+	log4cxx::LoggerPtr logger;
+	string default_shell;
+	string default_node_exec;
+	//	static managed_shared_memory segment;
+	// uses the OLD_PIDS_NEW_PIDS shared map to
+	// reassociate when the Node is restarted
+	//uses as a constant identifier the pid of the first
+	//node to be started, on sub
+	//    SharedMap <int1,int2>   int1 the first pid for the node
+	//							   int2  the current pid of the node
 	//int the first pid of the node
 	//char* the name of the node
-	std::map <std::string,int> nodes_pids;
+	std::map<std::string, int> nodes_pids;
+	std::map<int, int> pids_ticks;
+
+	DBusConnection *dbus_connection;
+
+	//DBUS methods
+	DBusConnection* ConnectToDBUS(string name);
+	void ListenSignals(DBusConnection *dbus_connection);
+	void ProcessSignal(DBusMessage *message);
+
 
 public:
+	void SendSignal(const string signal, string node_name);
 	Controller();
 	virtual ~Controller();
 	/**
@@ -126,7 +93,7 @@ public:
 	 * Returns the pid of the shell process which starts the Node
 	 * on successful execution.
 	 */
-	int StartNode(char* shell, char* node_executable, char* node_name);
+	int StartNode(string shell, string node_executable, string node_name);
 	/**
 	 * Starts a JVM with the default node starter and shell.
 	 * node_name - the name of the node to be started
@@ -139,7 +106,7 @@ public:
 	 * Returns the pid of the shell process which starts the Node
 	 * on successful execution.
 	 */
-	int StartNode(char* node_name);
+	int StartNode(string node_name);
 	/**
 	 * Starts a watcher for the process with the give pid. The
 	 * watcher keeps the process alive by checking it every
@@ -162,8 +129,9 @@ public:
 	 *		for more information.
 	 * pid - the pid of the process to watch
 	 */
-	void StartWatcher(char* shell, char* node_executable,
-			char* node_name, int pid);
+	void StartWatcher(string shell, string node_executable, string node_name,
+			int pid);
+	void StartWatcher(string node_name, int pid);
 	/**
 	 * Stops the watcher assigned to the corresponding pid.
 	 * pid - the pid of the process being watched
@@ -179,7 +147,7 @@ public:
 	 * Returns false if no watcher has been found for the Node name.
 	 *
 	 */
-	bool StopWatcher(char* node_name);
+	bool StopWatcher(string node_name);
 
 	/**
 	 * Stops the watcher and the Node assigned to the corresponding pid.
@@ -197,7 +165,7 @@ public:
 	 *		i.e. ibis://localdomain.localhost/node
 	 *		i.e. node1
 	 */
-	void StopNode(char* node_name);
+	void StopNode(string node_name);
 
 	/**
 	 * Resets the time between checks to their default
@@ -233,7 +201,7 @@ public:
 	 *		i.e. node1
 	 * tick - the time between checks in milliseconds
 	 */
-	void SetTick(char* node_name, int tick);
+	void SetTick(string node_name, int tick);
 
 	/**
 	 * Gets the time between checks (ticks) for a
@@ -245,7 +213,7 @@ public:
 	 *		i.e. node1
 	 * Returns the tick time in milliseconds.
 	 */
-	int GetTick(char* node_name);
+	int GetTick(string node_name);
 
 	/**
 	 * Sets the default shell path used for running
@@ -254,7 +222,7 @@ public:
 	 * shell - the shell with the full path i.e /usr/bin/bash
 	 */
 
-	void SetDefaultShell(char* shell);
+	void SetDefaultShell(string shell);
 	/**
 	 * Gets the default shell path used for running
 	 * the scripts which start the Nodes.
@@ -262,7 +230,7 @@ public:
 	 * Returns the shell executable path
 	 */
 
-	char* GetDefaultShell();
+	string GetDefaultShell();
 
 	/**
 	 * Sets the default Node starter script  path used for
@@ -272,7 +240,7 @@ public:
 	 * 	the full path i.e PROACTIVE_FOLDER/bin/startNode.sh
 	 */
 
-	void SetDefaultNodeStarter(char* node_executable);
+	void SetDefaultNodeStarter(string node_executable);
 
 	/**
 	 * Gets the default Node starter script  path used for
@@ -280,18 +248,15 @@ public:
 	 *
 	 * Returns the starNode script path
 	 */
-	char* GetDefaultNodeStarter();
-
+	string GetDefaultNodeStarter();
 
 	void SetWatcherPid(int process_pid, int watcher_pid);
 
 	int GetWatcherPid(int process_pid);
 
-
 	void AssociateNodesPids(int pid, std::string node);
-	static void CreateMemorySegment();
-	//TODO segfaults for some reason
-	SharedMap* GetMemorySegment();
+
+	LoggerPtr getLogger();
 };
 
 #endif /* CONTROLLER_H_ */

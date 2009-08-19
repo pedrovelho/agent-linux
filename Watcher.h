@@ -7,38 +7,44 @@
 
 #ifndef GENERICS
 #define GENERICS
-using namespace std;
-#include <signal.h>
-#include <spawn.h>
-#include <iostream>
-#include <string>
-#include <sstream>
-#include <sys/stat.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <unistd.h>
-#include <sys/types.h>
-#include <vector>
 
 #endif
 
 #ifndef WATCHER_H_
 #define WATCHER_H_
+#include <iostream>
+#include <signal.h>
+//run  ccgnu2-config --help  for libraries and includes
+#include <cc++/thread.h>
+using namespace ost;
 
-class Watcher {
+#include "log4cxx/logger.h"
+#include "log4cxx/basicconfigurator.h"
+#include "log4cxx/helpers/exception.h"
+using namespace log4cxx;
+using namespace log4cxx::helpers;
+using namespace std;
+
+//#include "Controller.h"
+class Watcher: public Thread {
 private:
+	log4cxx::LoggerPtr logger;
 	int pid;
+	string node;
 	int tick;
 	bool stop;
+//	Controller *controller;
 public:
-	Watcher();
+	Watcher() {};
+	Watcher(string node_name, int jvm_pid, int tick);
 	int GetTick();
 	int GetPid();
-	void SetTick();
+	//	void SetTick();
 	void SetPid();
-	void Start(char* shell, char* node_executable,
-			char* node_name, int jvm_pid);
+	void Start();
 	virtual ~Watcher();
+	void run();
+
 };
 
 #endif /* WATCHER_H_ */

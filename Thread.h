@@ -1,25 +1,3 @@
-/*
- * Thread.h
- *
- *  Created on: Mar 24, 2009
- *      Author: vasile
- */
-
-#ifndef THREAD_H_
-using namespace std;
-#include <signal.h>
-#include <spawn.h>
-#include <iostream>
-#include <string>
-#include <sstream>
-#include <sys/stat.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <unistd.h>
-#include <sys/types.h>
-#include <vector>
-#define THREAD_H_
-
 class Thread
 {
    public:
@@ -38,4 +16,34 @@ class Thread
 
 };
 
-#endif /* THREAD_H_ */
+Thread::Thread() {}
+
+int Thread::Start(void * arg)
+{
+   Arg(arg); // store user data
+   int code = thread_create(Thread::EntryPoint, this, & ThreadId_);
+   return code;
+}
+
+int Thread::Run(void * arg)
+{
+   Setup();
+   Execute( arg );
+}
+
+/*static */
+void * Thread::EntryPoint(void * pthis)
+{
+   Thread * pt = (Thread*)pthis;
+   pthis->Run( Arg() );
+}
+
+virtual void Thread::Setup()
+{
+        // Do any setup here
+}
+
+virtual void Thread::Execute(void* arg)
+{
+        // Your code goes here
+}

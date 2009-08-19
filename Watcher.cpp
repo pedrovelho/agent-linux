@@ -6,48 +6,43 @@
  */
 
 #include "Watcher.h"
-Watcher::Watcher() {
+#include <strings.h>
+
+Watcher::Watcher(string node_name, int jvm_pid, int tick) {
+	//initialize logger
+	//TODO  move outside the constructor
+	logger = log4cxx::Logger::getLogger("Watcher " + node_name);
+	BasicConfigurator::configure();
+	logger->setLevel(log4cxx::Level::getDebug());
+	pid = jvm_pid;
+	node = node_name;
+	this->tick=tick;
 }
-
-void Watcher::Start(char* shell, char* node_executable,
-		char* node_name, int jvm_pid){
-		int watcher_pid = fork();
-		bool stop = false;
-		cout << "Watcher forked with pid :" << watcher_pid << endl;
-			//run in the child process
-			if (watcher_pid == 0 ){
-				umask(0);
-				cout << "Checking "<< jvm_pid << " with an interval of "
-					<< GetTick(jvm_pid) << endl;
-				while (!stop){
-					//usleep takes microseconds, we use milliseconds
-					cout << "Checking "<< jvm_pid << " with an interval of "
-								<< GetTick(jvm_pid) << endl;
-					usleep(GetTick(jvm_pid)*1000);
-					// if a signal cannot be sent - return is -1
-					// start the jvm again
-					if (kill(jvm_pid, 0) == -1 ) {
-						cout << "Node " <<  jvm_pid  << "has been killed" << endl;
-						cout << "Signaling the controller and stopping thread..." << endl;
-						stop = true;
-						//restarting JVM
-						StartWatcher(shell, node_executable ,node_name,
-								StartNode(shell, node_executable, node_name));
-						exit(0);
-					}
-				}
-			}
-			else{ cout << "In else" <<endl;}
-			//associate node name with watcher pid
-			//this will also run when the node dies and is restarted,
-			//however it is not an issue as the node name should not change
-			//between restarts
-
-			//sets watcher pid in the parent process
-			SetWatcherPid(jvm_pid, watcher_pid);
-}
-
 
 Watcher::~Watcher() {
 	// TODO Auto-generated destructor stub
 }
+
+void Watcher::run() {
+	LOG4CXX_DEBUG(logger, "Watcher thread started for node " <<
+			node << " with JVM PID " << pid );
+	while (!stop) {
+		//		usleep takes microseconds, we use milliseconds
+		LOG4CXX_TRACE(logger, "Checking "<< pid << " with an interval of " << tick << " milliseconds" );
+		usleep(tick*1000);
+
+
+		// if a signal cannot be sent
+		// notify the Controller which will restart the JVM
+		if (kill(pid, 0) == -1) {
+			LOG4CXX_INFO(logger, "Node " << pid << " seems to have been stopped " );
+			LOG4CXX_DEBUG(logger, "Signaling the controller...");
+			//					controller->SendSignal(JVM_STOPPED, name);
+			//					stop = true;
+		}
+		else{
+			LOG4CXX_TRACE(logger, "Node " << node << " is alive");
+		}
+	}
+}
+
