@@ -22,7 +22,8 @@ Thread::Thread() {}
 
 int Thread::Start(void * arg)
 {
-   Arg(arg); // store user data
+	// store user data
+   Arg(arg);
    int code = pthread_create(&ThreadId_, NULL, Thread::EntryPoint, (void*) arg);
    return code;
 }

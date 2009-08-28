@@ -44,8 +44,7 @@ using namespace std;
 using namespace log4cxx;
 using namespace log4cxx::helpers;
 
-
-
+#include "DBusMessaging.h"
 
 class Controller {
 private:
@@ -68,7 +67,7 @@ private:
 
 	//DBUS methods
 	DBusConnection* ConnectToDBUS(string name);
-	void ListenSignals(DBusConnection *dbus_connection);
+	void ListenSignals();
 	void ProcessSignal(DBusMessage *message);
 
 

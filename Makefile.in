@@ -53,7 +53,8 @@ CONFIG_CLEAN_VPATH_FILES =
 am__installdirs = "$(DESTDIR)$(bindir)"
 PROGRAMS = $(bin_PROGRAMS)
 am_paagent_OBJECTS = paagent.$(OBJEXT) Controller.$(OBJEXT) \
-	Event.$(OBJEXT) NodeStarter.$(OBJEXT) Watcher.$(OBJEXT)
+	Event.$(OBJEXT) NodeStarter.$(OBJEXT) Watcher.$(OBJEXT) \
+	DBusMessaging.$(OBJEXT)
 paagent_OBJECTS = $(am_paagent_OBJECTS)
 paagent_DEPENDENCIES =
 paagent_LINK = $(CXXLD) $(AM_CXXFLAGS) $(CXXFLAGS) $(paagent_LDFLAGS) \
@@ -169,7 +170,7 @@ target_alias = @target_alias@
 top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
-paagent_SOURCES = paagent.cpp Controller.cpp Event.cpp NodeStarter.cpp Watcher.cpp 
+paagent_SOURCES = paagent.cpp Controller.cpp Event.cpp NodeStarter.cpp Watcher.cpp DBusMessaging.cpp
 paagent_LDADD = -llog4cxx -lccext2 -lccgnu2 -lz -ldl -lrt -ldbus-1
 paagent_LDFLAGS = -pthread
 all: config.h
@@ -276,6 +277,7 @@ distclean-compile:
 	-rm -f *.tab.c
 
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Controller.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DBusMessaging.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Event.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/NodeStarter.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Watcher.Po@am__quote@

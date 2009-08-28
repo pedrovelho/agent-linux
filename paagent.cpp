@@ -83,6 +83,7 @@
 #include <string>
 #include "Controller.h"
 #include "Watcher.h"
+#include "DBusMessaging.h"
 using namespace std;
 using namespace ost;
 int main() {
@@ -94,10 +95,13 @@ int main() {
 		controller->SetDefaultNodeStarter(node_exec);
 		controller->SetDefaultShell(shell);
 //
+		DBusMessaging *messenger = DBusMessaging::Inst("pa.controller");
 		int pid_bleah = 15;
 		pid_bleah = controller->StartNode(shell, node_exec, node_name);
-//		Watcher watcher(node_name,pid_bleah,3000);
-//		watcher.start();
+		int pid_bleah1 = controller->StartNode(shell, node_exec, node_name + node_name);
+
+		Watcher watcher(node_name,pid_bleah,3000);
+		watcher.start();
 //		Watcher watcher1("fake",3000,3000);
 //		watcher1.start();
 		Thread::sleep(100000000000);

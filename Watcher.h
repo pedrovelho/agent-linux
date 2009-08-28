@@ -14,6 +14,8 @@
 #define WATCHER_H_
 #include <iostream>
 #include <signal.h>
+#include <string>
+
 //run  ccgnu2-config --help  for libraries and includes
 #include <cc++/thread.h>
 using namespace ost;
@@ -26,6 +28,8 @@ using namespace log4cxx::helpers;
 using namespace std;
 
 //#include "Controller.h"
+#include "DBusMessaging.h"
+#include "Constants.h"
 class Watcher: public Thread {
 private:
 	log4cxx::LoggerPtr logger;

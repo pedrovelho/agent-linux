@@ -11,6 +11,7 @@
 #include <cc++/thread.h>
 #include <string>
 #include <stdlib.h>
+#include <sys/wait.h>
 using namespace ost;
 
 #include "log4cxx/logger.h"

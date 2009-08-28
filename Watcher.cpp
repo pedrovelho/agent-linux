@@ -6,7 +6,7 @@
  */
 
 #include "Watcher.h"
-#include <strings.h>
+
 
 Watcher::Watcher(string node_name, int jvm_pid, int tick) {
 	//initialize logger
@@ -17,6 +17,7 @@ Watcher::Watcher(string node_name, int jvm_pid, int tick) {
 	pid = jvm_pid;
 	node = node_name;
 	this->tick=tick;
+	stop = false;
 }
 
 Watcher::~Watcher() {
@@ -35,10 +36,13 @@ void Watcher::run() {
 		// if a signal cannot be sent
 		// notify the Controller which will restart the JVM
 		if (kill(pid, 0) == -1) {
-			LOG4CXX_INFO(logger, "Node " << pid << " seems to have been stopped " );
+			LOG4CXX_INFO(logger, "Node [" << node << "] with shell [ "
+					<< pid << " seems to have been stopped " );
 			LOG4CXX_DEBUG(logger, "Signaling the controller...");
-			//					controller->SendSignal(JVM_STOPPED, name);
-			//					stop = true;
+			//get messenger instance
+			DBusMessaging *messenger = DBusMessaging::Inst();
+			messenger->SendSignal(JVM_STOPPED, node);
+			//stop = true;
 		}
 		else{
 			LOG4CXX_TRACE(logger, "Node " << node << " is alive");
