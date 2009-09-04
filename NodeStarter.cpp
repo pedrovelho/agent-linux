@@ -7,23 +7,29 @@
 
 #include "NodeStarter.h"
 
-NodeStarter::NodeStarter(string shell, string node_executable,
-		string node_name) {
+NodeStarter::NodeStarter(string _shell = DEFAULT_SHELL,
+						string node_executable = DEFAULT_NODE_EXEC,
+						string node_name = DEFAULT_NODE) {
 	//initialize logger
 	//TODO  move outside the constructor
 	logger = log4cxx::Logger::getLogger("NodeStarter " + node_name);
-	BasicConfigurator::configure();
 	logger->setLevel(log4cxx::Level::getTrace());
-	this->shell = shell;
-	this->node_exec = node_executable;
-	this->name = node_name;
+	shell = _shell;
+	node_exec = node_executable;
+	name = node_name;
 }
-
+NodeStarter::NodeStarter(const NodeStarter &node){
+	logger = log4cxx::Logger::getLogger("NodeStarter " + node.name);
+	logger->setLevel(log4cxx::Level::getTrace());
+	shell = node.shell;
+	node_exec = node.node_exec;
+	name = node.name;
+	pid = node.pid;
+}
 NodeStarter::~NodeStarter() {
-	// TODO Auto-generated destructor stub
 }
 
-void NodeStarter::run(){
+void NodeStarter::start(){
 		/* prevent zombie process when the JVM or shell is killed
 		 * need so the JVM/bash can be checked through kill */
 		if (signal(SIGCHLD, SIG_IGN))
@@ -69,10 +75,12 @@ void NodeStarter::run(){
 			LOG4CXX_ERROR(logger, "Failed to fork when trying to start a node");
 		} else {
 			LOG4CXX_DEBUG(logger, "Returning from parent");
+			return;
 		}
-		//waitpid(pid, NULL,NULL);
 		LOG4CXX_DEBUG(logger, "Node [" << name <<  "] started");
+
 }
 int NodeStarter::getPid(){
+
 	return pid;
 }

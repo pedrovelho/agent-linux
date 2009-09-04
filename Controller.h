@@ -7,73 +7,34 @@
 
 #ifndef GENERICS
 #define GENERICS
-using namespace std;
-#include <signal.h>
-#include <spawn.h>
-#include <iostream>
-#include <string>
-#include <sstream>
-#include <sys/stat.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <unistd.h>
-#include <sys/types.h>
-#include <vector>
-#include <map>
-#include <sys/ipc.h>
-#include <sys/shm.h>
-
-#include <dbus-1.0/dbus/dbus.h>
 
 #endif
 
 #ifndef CONTROLLER_H_
 #define CONTROLLER_H_
-#define PIDS_TICKS  			"pids_ticks"
-#define PIDS_NODES  			"pids_nodes"
-#define PIDS_WATCHERS  			"pids_watchers"
-//ugly hack so I can associate pids with nodes
-//could not get to work the shared maps with char*
-//uses as a constant identifier the pid of the first
-//node to be restarted
-#define FIRST_PROCESS_WATCHER_PID		"old_pid_new_pid"
-#include "log4cxx/logger.h"
-#include "log4cxx/basicconfigurator.h"
-#include "log4cxx/helpers/exception.h"
-
+#include <log4cxx/logger.h>
+#include <log4cxx/basicconfigurator.h>
+#include <log4cxx/helpers/exception.h>
 using namespace log4cxx;
 using namespace log4cxx::helpers;
 
+#include <signal.h>
 #include "DBusMessaging.h"
+#include "Constants.h"
 
-class Controller {
+#include <sigc++-2.0/sigc++/sigc++.h>
+#include <string>
+#include <cstdint>
+class Controller{
 private:
-	log4cxx::LoggerPtr logger;
+	LoggerPtr logger;
 	string default_shell;
 	string default_node_exec;
-	//	static managed_shared_memory segment;
-	// uses the OLD_PIDS_NEW_PIDS shared map to
-	// reassociate when the Node is restarted
-	//uses as a constant identifier the pid of the first
-	//node to be started, on sub
-	//    SharedMap <int1,int2>   int1 the first pid for the node
-	//							   int2  the current pid of the node
-	//int the first pid of the node
-	//char* the name of the node
-	std::map<std::string, int> nodes_pids;
-	std::map<int, int> pids_ticks;
-
-	DBusConnection *dbus_connection;
-
-	//DBUS methods
-	DBusConnection* ConnectToDBUS(string name);
-	void ListenSignals();
-	void ProcessSignal(DBusMessage *message);
-
-
+//	map <int, string> nodes;
 public:
 	void SendSignal(const string signal, string node_name);
 	Controller();
+	Controller(const Controller &controller);
 	virtual ~Controller();
 	/**
 	 * Starts a JVM with the default node starter and shell.
@@ -259,3 +220,4 @@ public:
 };
 
 #endif /* CONTROLLER_H_ */
+

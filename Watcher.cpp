@@ -12,7 +12,6 @@ Watcher::Watcher(string node_name, int jvm_pid, int tick) {
 	//initialize logger
 	//TODO  move outside the constructor
 	logger = log4cxx::Logger::getLogger("Watcher " + node_name);
-	BasicConfigurator::configure();
 	logger->setLevel(log4cxx::Level::getDebug());
 	pid = jvm_pid;
 	node = node_name;
@@ -39,9 +38,9 @@ void Watcher::run() {
 			LOG4CXX_INFO(logger, "Node [" << node << "] with shell [ "
 					<< pid << " seems to have been stopped " );
 			LOG4CXX_DEBUG(logger, "Signaling the controller...");
-			//get messenger instance
-			DBusMessaging *messenger = DBusMessaging::Inst();
-			messenger->SendSignal(JVM_STOPPED, node);
+
+			//method call on Controller asking to start a JVM
+			//returns the pid to check
 			//stop = true;
 		}
 		else{

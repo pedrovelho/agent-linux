@@ -10,7 +10,7 @@
 #include <xercesc/sax2/DefaultHandler.hpp>
 #include <xercesc/util/XMLString.hpp>
 #include <iostream>
-using namespace xercesc_2_8;
+using namespace xercesc;
 using namespace std;
 
 ConfigParser::ConfigParser(std::string xmlFile) {

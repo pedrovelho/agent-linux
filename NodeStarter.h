@@ -8,21 +8,22 @@
 #ifndef NODESTARTER_H_
 #define NODESTARTER_H_
 //run  ccgnu2-config --help  for libraries and includes
-#include <cc++/thread.h>
 #include <string>
-#include <stdlib.h>
-#include <sys/wait.h>
-using namespace ost;
+#include <signal.h>
+#include <sys/types.h>
+#include <sys/stat.h>
 
-#include "log4cxx/logger.h"
-#include "log4cxx/basicconfigurator.h"
-#include "log4cxx/helpers/exception.h"
+#include <log4cxx/logger.h>
+#include <log4cxx/basicconfigurator.h>
+#include <log4cxx/helpers/exception.h>
+
+#include "Constants.h"
+
 using namespace log4cxx;
 using namespace log4cxx::helpers;
 using namespace std;
 
-
-class NodeStarter: public Thread {
+class NodeStarter {
 private:
 	log4cxx::LoggerPtr logger;
 	string node_exec;
@@ -32,9 +33,11 @@ private:
 public:
 	NodeStarter(string shell, string node_executable,
 			string node_name);
+	NodeStarter(const NodeStarter &node);
 	virtual ~NodeStarter();
-	void run();
+	void start();
 	int getPid();
 };
 
 #endif /* NODESTARTER_H_ */
+

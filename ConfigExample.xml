@@ -1,13 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <agent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="config.xsd">
+  
   <internalConfig>
     <proactiveLocation>/home/vasile/workspacePA/PA_new/trunk</proactiveLocation>
-    <java_home>/home/vasile/.gentoo/java-config-2/current-user-vm</java_home>
-    <jvm_params></jvm_params>
+    <java_home>/usr/lib/jvm/java-6-openjdk</java_home>
+    <jvm_params>Xmx 256</jvm_params>
+    
+    <enable_memory_management>false</enable_memory_management>
+    <java_memory>0</java_memory>
+    <native_memory>0</native_memory>
+    <nb_processes>1</nb_processes>
+    <use_all_cpus>false</use_all_cpus>
+    <protocol>rmi</protocol>
+    <port_initial_value>1099</port_initial_value>
+    
   </internalConfig>
 
   <events >
-  
     <event xsi:type="CalendarEvent" >
 	    <startDay>30</startDay>
 	    <startHour>2</startHour>

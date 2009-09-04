@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+	<!--
+		server bindings: dbus-cxx-xml2cpp - - xml Controller.xml - - adapter
+		-f
+	-->
+	<!--
+		client bindings: dbus-cxx-xml2cpp - - xml Controller.xml - - proxy -f
+	-->
+	<!-- Controller MUST have copy constructor !!! -->
+<!DOCTYPE node PUBLIC
+"-//freedesktop//DTD D-Bus Object Introspection 1.0//EN"
+"http://standards.freedesktop.org/dbus/1.0/introspect.dtd">
+	<!--
+		<node gen-namespace="Agent" orig-namespace="Agent"
+		cppname="Controller" cppinclude="&quot;Controller.h&quot;"
+		dest="pa.agent.controller" path="/proactive/agent/Controller" >
+	-->
+	<!--
+		ret = conn->request_name( dest, DBUS_NAME_FLAG_REPLACE_EXISTING );
+		//dest should have the same value as below
+	-->
+<node gen-namespace="DBus" cppname="Controller" cppinclude="&quot;Controller.h&quot;"
+	dest="proactive.agent.controller" path="/proactive/agent/Controller">
+	<interface name="proactive.agent.controller">
+		<method name="StartNode">
+			<arg type="s" name="shell" direction="in" />
+			<arg type="s" name="node_executable" direction="in" />
+			<arg type="s" name="node_name" direction="in" />
+			<arg type="i" name="pid" direction="out" />
+		</method>
+		<method name="StartNode">
+			<arg type="s" name="node_name" direction="in" />
+			<arg type="i" name="pid" direction="out" />
+		</method>
+		
+ 		<method name="StopNode">
+			<arg type="i" name="pid" direction="in" />
+			<arg type="i" name="success" direction="out" />
+		</method>
+		
+ 		<method name="StopNode">
+			<arg type="s" name="name" direction="in" />
+			<arg type="i" name="success" direction="out" />
+		</method>
+<!--		
+		<method name="StartWatcher">
+			<arg type="i" name="pid" direction="in" />
+		</method>
+		<method name="StopWatcher">
+			<arg type="i" name="pid" direction="in" />
+		</method>
+-->
+	</interface>
+</node>
+	<!--
+		y byte u uint i int x int64 t uint64 d double b boolean s string
+		adding 'a' in front makes them arrays
+	-->

@@ -29,7 +29,15 @@ DBusMessaging::DBusMessaging(string connection_name){
 	//initialize logger
 	//TODO  move outside the constructor
 	logger = log4cxx::Logger::getLogger("DBus Messaging singleton " );
-	BasicConfigurator::configure();
+//	logger->setAdditivity(false);
+
+
+//	ConsoleAppender *appender = new ConsoleAppender();
+
+//	logger->removeAllAppenders();
+//	appender->setTarget("System.out");
+//	appender->setWriter()
+//	logger->addAppender(appender);
 	logger->setLevel(log4cxx::Level::getDebug());
 	this->connection_name = connection_name;
 	Initialize();
