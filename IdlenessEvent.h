@@ -14,13 +14,13 @@ class IdlenessEvent: public Event {
 public:
 	IdlenessEvent();
 	virtual ~IdlenessEvent();
-	void SetBeginSecs(int secs);
-	void SetEndSecs(int secs);
+	void SetBeginSeconds(int secs);
+	void SetEndSeconds(int secs);
 	void SetBeginThreshold(int threshold);
 	void SetEndThreshold(int threshold);
 
-	int GetBeginSecs();
-	int GetEndSecs();
+	int GetBeginSeconds();
+	int GetEndSeconds();
 	int GetBeginThreshold();
 	int GetEndThreshold();
 

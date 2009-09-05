@@ -16,10 +16,10 @@ IdlenessEvent::~IdlenessEvent() {
 	// TODO Auto-generated destructor stub
 }
 
-void IdlenessEvent::SetBeginSecs(int secs){
+void IdlenessEvent::SetBeginSeconds(int secs){
 	beginSecs = secs;
 }
-void IdlenessEvent::SetEndSecs(int secs){
+void IdlenessEvent::SetEndSeconds(int secs){
 	endSecs = secs;
 }
 

@@ -17,7 +17,7 @@
   </internalConfig>
 
   <events >
-    <event xsi:type="CalendarEvent" >
+    <event xsi:type="CalendarEvent"  >
 	    <startDay>30</startDay>
 	    <startHour>2</startHour>
 	    <startMinute>10</startMinute>

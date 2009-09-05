@@ -9,6 +9,7 @@
 #define CONFIGHANDLER_H_
 
 #include "XMLDefs.h"
+using namespace xmltags;
 #include <log4cxx/logger.h>
 #include <log4cxx/basicconfigurator.h>
 #include <log4cxx/helpers/exception.h>
@@ -19,16 +20,26 @@ using namespace log4cxx::helpers;
 #include <xercesc/sax2/Attributes.hpp>
 #include <iostream>
 #include <string>
+#include <algorithm>
+#include "Configuration.h"
 using namespace xercesc;
 using namespace std;
-
 class ConfigHandler:public DefaultHandler {
 private:
 	LoggerPtr logger;
 	string element_data;
-	string proactive_location;
-	string java_home;
-	string jvm_params;
+	Configuration *config;
+	Event *currentEvent;
+	Action *currentAction;
+	bool processing_event;
+	bool processing_action;
+	bool processing_config;
+	//some helper functions TODO move to helper class ?
+	int stoint(string value);
+	bool stobool(string value);
+	void processEvent(string name, string value);
+	void processAction(string name, string value);
+
 public:
 	ConfigHandler();
 	virtual ~ConfigHandler();

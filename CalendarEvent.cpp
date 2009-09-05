@@ -39,6 +39,9 @@ void CalendarEvent::SetDurationDays(int days){
 void CalendarEvent::SetDurationHours(int hours){
 	durationHours = hours;
 }
+void CalendarEvent::SetDurationMinutes(int hours){
+	durationMinutes = hours;
+}
 void CalendarEvent::SetDurationSeconds(int seconds){
 	durationSeconds = seconds;
 }

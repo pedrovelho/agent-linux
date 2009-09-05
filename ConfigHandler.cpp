@@ -10,6 +10,7 @@ ConfigHandler::ConfigHandler() {
 	logger = log4cxx::Logger::getLogger("ConfigHandler");
 	BasicConfigurator::configure();
 	logger->setLevel(log4cxx::Level::getTrace());
+	config = Configuration::Inst();
 }
 
 ConfigHandler::~ConfigHandler() {
@@ -28,79 +29,215 @@ void ConfigHandler::characters(const XMLCh* const chars, unsigned int length) {
 void ConfigHandler::startElement(const XMLCh* const uri,
 		const XMLCh* const localname, const XMLCh* const qname,
 		const Attributes& attributes) {
-	//	cout << "Found element: "
-	//		 << "URI: " << XMLString::transcode(uri)
-	//		 << " Local name: "<<  XMLString::transcode(localname)
-	//		 << " Qualified name: " << XMLString::transcode(qname) << 	endl;
-	//
-	XMLSize_t len = attributes.getLength();
-	//
-	//	for (XMLSize_t index = 0; index < len; index++)
-	//    {
-	//			cout << XMLString::transcode(attributes.getURI(index))
-	//			<<  XMLString::transcode(attributes.getLocalName(index))
-	//				<< XMLString::transcode(attributes.getQName(index))
-	//				<< XMLString::transcode(attributes.getValue(index)) << endl;
-	//    }
+
 	std::string name = XMLString::transcode(localname);
-	LOG4CXX_DEBUG(logger, "Processing element [" << name << "] with [" << len << "] attributes");
+	//check type and create appropriate objects
+	LOG4CXX_DEBUG(logger, "Processing element [" << name << "] with [" << attributes.getLength() << "] attributes");
+	//found action
+	if (name == INTERNAL_CONFIG) {
+		processing_config = true;
+	}
 	if (name == ACTION) {
+		processing_action = true;
 		string action_name = XMLString::transcode(attributes.getValue(
 				XMLString::transcode("xsi:type")));
-		cout << "Action found: ";
-		cout << action_name << endl;
+		//create an object and process attributes depending on the event type
+		if (action_name == ADVERT_ACTION) {
+				currentAction = new AdvertAction();
+			} else if  (action_name ==  RM_ACTION) {
+				currentAction = new RMAction() ;
+			}else if (action_name == CUSTOM_ACTION) {
+				currentAction = new CustomAction();
+			}else if (action_name == P2P_ACTION) {
+				currentAction = new P2PAction();
+			}
+		//iterate through attributes
+		XMLSize_t len = attributes.getLength();
+		for (XMLSize_t index = 0; index < len; index++)
+		{
+			LOG4CXX_TRACE(logger, "Processing  attribute" << XMLString::transcode(attributes.getURI(index))
+				<<  XMLString::transcode(attributes.getLocalName(index))
+					<< XMLString::transcode(attributes.getQName(index))
+					<< XMLString::transcode(attributes.getValue(index)) );
+			processAction(XMLString::transcode(attributes.getLocalName(index)),
+					XMLString::transcode(attributes.getValue(index)));
+
+		}
 	}
 
+
+	//found event
 	if (name == EVENT) {
+		processing_event = true;
 		string event_name = XMLString::transcode(attributes.getValue(
 				XMLString::transcode("xsi:type")));
-		cout << "Event found  " << event_name;
+		//create an object and process attributes depending on the event type
+		if (event_name == CALENDAR_EVENT) {
+			currentEvent = new CalendarEvent();
+		} else if  (event_name ==  IDLENESS_EVENT) {
+			currentEvent = new IdlenessEvent() ;
+		}
+		//iterate through attributes
+		XMLSize_t len = attributes.getLength();
+		for (XMLSize_t index = 0; index < len; index++)
+		{
+			LOG4CXX_TRACE(logger, "Processing attribute " << XMLString::transcode(attributes.getURI(index))
+				<<  XMLString::transcode(attributes.getLocalName(index))
+					<< XMLString::transcode(attributes.getQName(index))
+					<< XMLString::transcode(attributes.getValue(index)) );
+			processEvent(XMLString::transcode(attributes.getLocalName(index)),
+					XMLString::transcode(attributes.getValue(index)));
+
+		}
 	}
 }
 void ConfigHandler::endElement(const XMLCh* const uri,
 		const XMLCh* const localname, const XMLCh* const qname) {
-	//	cout << "Found element: "
-	//		 << "URI: " << XMLString::transcode(uri)
-	//		 << " Local name: "<<  XMLString::transcode(localname)
-	//		 << " Qualified name: " << XMLString::transcode(qname) << 	endl;
-	//
-	//
-	//	for (XMLSize_t index = 0; index < len; index++)
-	//    {
-	//			cout << XMLString::transcode(attributes.getURI(index))
-	//			<<  XMLString::transcode(attributes.getLocalName(index))
-	//				<< XMLString::transcode(attributes.getQName(index))
-	//				<< XMLString::transcode(attributes.getValue(index)) << endl;
-	//    }
 	std::string name = XMLString::transcode(localname);
-	LOG4CXX_DEBUG(logger, "Found end element [" << name );
-	//		if (name == ACTION) {
-	//			string action_name = XMLString::transcode(attributes.getValue(
-	//					XMLString::transcode("xsi:type")));
-	//			cout << "Action found: ";
-	//			cout << action_name << endl;
-	//		}
-	//
-	//		if (name == EVENT) {
-	//			string event_name = XMLString::transcode(attributes.getValue(
-	//					XMLString::transcode("xsi:type")));
-	//			cout << "Event found  " << event_name;
-	//		}
+	LOG4CXX_DEBUG(logger, "Found end element [" << name  <<"]");
+
+	//processing events
+	if ((name == START_DAY || name == START_HOUR || name == START_MINUTE
+			|| name == START_SECOND || name == DURATION_DAYS || name == DURATION_HOURS
+			|| name == DURATION_MINUTES || name == DURATION_SECONDS
+			|| name == PROCESS_PRIORITY || name == MAX_CPU_USAGE || name == EVENT) && (processing_event)) {
+		LOG4CXX_TRACE(logger, "Processing end element" << name << " with value " << element_data);
+		processEvent(name, element_data);
+	}
 
 
+	//processing actions
+	if ((name == INITIAL_RESTART_DELAY || name == JAVA_STARTER_CLASS || name == IS_ENABLED ||
+			name == ACTION_ARGS || name == USERNAME || name == PASSWORD || name == PROTOCOL
+			|| name == URL || name == CONTACT || name == ACTION) && (processing_action)){
+		LOG4CXX_TRACE(logger, "Processing end element " << name << " with value " << element_data);
+		processAction(name, element_data);
+	}
+	if (name == INTERNAL_CONFIG) processing_config = false;
 	//configuration values are unique in the document, should be safe to do this
+	if (processing_config) {
 	if (name == PROACTIVE_LOCATION) {
-		proactive_location = element_data;
-		LOG4CXX_TRACE(logger, "Set ProActive location to " + proactive_location);
+		config->setProactive_location(element_data);
+		LOG4CXX_TRACE(logger, "Set ProActive location to " + element_data);
 	} else if (name == JAVA_HOME) {
-		java_home = element_data;
-		LOG4CXX_TRACE(logger, "Set Java home location to " + java_home);
+		config->setJava_home(element_data);
+		LOG4CXX_TRACE(logger, "Set Java home location to " + element_data);
 	} else if (name == JAVA_PARAMS) {
-		jvm_params = element_data;
-		LOG4CXX_TRACE(logger, "Set JVM parameters to " + jvm_params);
-	}else if (name == JAVA_PARAMS) {
-		jvm_params = element_data;
-		LOG4CXX_TRACE(logger, "Set JVM parameters to " + jvm_params);
+		config->setJvm_params(element_data);
+		LOG4CXX_TRACE(logger, "Set JVM parameters to " + element_data);
+	}else if (name == ENABLE_MEMORY_MNGMT) {
+		config->setEnable_memory_management(false);
+		if (element_data == ENABLED)  config->setEnable_memory_management(true);
+		LOG4CXX_TRACE(logger, "Set Memory management " + element_data);
+	}else if (name == JAVA_MEMORY){
+		config->setJava_memory(stoint(element_data));
+		LOG4CXX_TRACE(logger, "Set Java memory " + element_data);
+	}else if (name ==  NATIVE_MEMORY) {
+		config->setNative_memory(stoint(element_data));
+		LOG4CXX_TRACE(logger, "Set native memory " + element_data);
+	}else if (name == NO_PROCESSES) {
+		config->setNo_processes(stoint(element_data));
+		LOG4CXX_TRACE(logger, "Set no of processes " + element_data);
+	}else if (name == USE_ALL_CPUS) {
+		config->setUse_all_cpus(stobool(element_data));
+		LOG4CXX_TRACE(logger, "Set use all cpus to " + element_data);
+	}else if (name == CONFIG_PROTOCOL) {
+		config->setConfig_protocol(element_data);
+		LOG4CXX_TRACE(logger, "Set protocol to " + element_data);
+	}else if (name == PORT_INITIAL_VALUE) {
+		config->setPort_initial_value(stoint(element_data));
+		LOG4CXX_TRACE(logger, "Set port initial value to " + element_data);
+	}
 	}
 }
 
+//helper methods
+int ConfigHandler::stoint(string value){
+	  stringstream ss(value);
+
+	  int i;
+
+	  if( (ss >> i).fail() )
+	  {
+	     LOG4CXX_FATAL(logger, "Conversion of " << value << " to int failed");
+	  }
+	  return 0;
+}
+bool ConfigHandler::stobool(string value){
+	transform(value.begin(), value.end(),	value.begin(), ::tolower);
+	if (value == ENABLED) {
+		return true;
+	}
+	else{
+		return false;
+	}
+	LOG4CXX_FATAL(logger, "Conversion of " << value << " to bool failed");
+	return false;
+}
+void ConfigHandler::processEvent(string name, string value){
+	if (name == START_DAY ) {
+		((CalendarEvent*)currentEvent)->SetStartDay(value);
+	}else if (name == START_HOUR) {
+		((CalendarEvent*)currentEvent)->SetStartHour(stoi(value));
+	}else if (name == START_MINUTE) {
+		((CalendarEvent*)currentEvent)->SetStartMinute(stoi(value));
+	}else if (name == START_SECOND) {
+		((CalendarEvent*)currentEvent)->SetStartSecond(stoi(value));
+	}else if (name == DURATION_DAYS) {
+		((CalendarEvent*)currentEvent)->SetDurationDays(stoi(value));
+	}else if (name == DURATION_HOURS) {
+		((CalendarEvent*)currentEvent)->SetDurationHours(stoi(value));
+	}else if (name == DURATION_MINUTES) {
+		((CalendarEvent*)currentEvent)->SetDurationMinutes(stoi(value));
+	}else if (name == DURATION_SECONDS) {
+		((CalendarEvent*)currentEvent)->SetDurationSeconds(stoi(value));
+	}else if (name == BEGIN_SECONDS) {
+		((IdlenessEvent*)currentEvent)->SetBeginSeconds(stoi(value));
+	}else if (name == END_SECONDS) {
+		((IdlenessEvent*)currentEvent)->SetEndSeconds(stoi(value));
+	}else if (name == BEGIN_THRESHOLD) {
+		((IdlenessEvent*)currentEvent)->SetBeginThreshold(stoi(value));
+	}else if (name == PROCESS_PRIORITY) {
+		currentEvent->SetProcessPriority(value);
+	}else if (name == MAX_CPU_USAGE) {
+		currentEvent->SetMaxCPUUsage(stoi(value));
+		//found end of an event, copying object to
+		//the event vectors and destroying object
+	}else if (name == EVENT){
+		(config->getEvents()).push_back(*currentEvent);
+		delete currentEvent;
+		LOG4CXX_DEBUG(logger, "Added an event to the event vector in configuration");
+		processing_event = false;
+	}
+}
+void ConfigHandler::processAction(string name, string value){
+	if (name == INITIAL_RESTART_DELAY) {
+		currentAction->SetRestartDelay(stoi(value));
+	}  else if (name == JAVA_STARTER_CLASS) {
+		currentAction->SetStarterClass(value);
+	} else if (name == IS_ENABLED) {
+		currentAction->SetEnabled(stobool(value));
+	} else if (name == NODE_NAME) {
+		currentAction->SetNodeName(value);
+	} else if (name == ACTION_ARGS) {
+		((CustomAction*)currentAction)->SetArguments(value);
+	} else if (name == USERNAME) {
+		((RMAction*)currentAction)->SetUsername(value);
+	} else if (name == PASSWORD ) {
+		((RMAction*)currentAction)->SetPassword(value);
+	} else if (name == URL) {
+		((RMAction*)currentAction)->SetURL(value);
+	} else if (name == CONTACT) {
+		((P2PAction*)currentAction)->SetContact(value);
+	}else if (name == PROTOCOL) {
+		((P2PAction*)currentAction)->SetProtocol(value);
+	}
+	else if (name == ACTION) {
+		(config->getActions()).push_back(*currentAction);
+		delete currentAction;
+		LOG4CXX_DEBUG(logger, "Added an action to the action vector in configuration");
+		processing_action =false;
+	}
+
+	LOG4CXX_DEBUG(logger, "process action not implemented");
+}
