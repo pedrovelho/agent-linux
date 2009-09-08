@@ -16,15 +16,16 @@ Event::~Event() {
 	// TODO Auto-generated destructor stub
 }
 
-void Event::SetProcessPriority(string priority){
+void Event::SetProcessPriority(string priority) {
 	process_priority = priority;
 }
-void Event::SetMaxCPUUsage(int max){
+void Event::SetMaxCPUUsage(int max) {
 	max_cpu_usage = max;
 }
-string Event::GetProcessPriority(){
+string Event::GetProcessPriority() {
 	return process_priority;
 }
-int Event::GetMaxCPUUsage(){
+int Event::GetMaxCPUUsage() {
 	return max_cpu_usage;
 }
+

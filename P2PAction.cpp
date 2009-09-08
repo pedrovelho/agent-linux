@@ -16,9 +16,15 @@ P2PAction::~P2PAction() {
 	// TODO Auto-generated destructor stub
 }
 
-void P2PAction::SetContact(string contact){
+void P2PAction::SetContact(string contact) {
 	this->contact = contact;
 }
-void P2PAction::SetProtocol(string protocol){
+void P2PAction::SetProtocol(string protocol) {
 	this->protocol = protocol;
+}
+string P2PAction::GetProtocol() const {
+	return protocol;
+}
+string P2PAction::GetContact() const {
+	return contact;
 }

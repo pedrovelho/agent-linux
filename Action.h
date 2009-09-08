@@ -8,6 +8,7 @@
 #ifndef ACTION_H_
 #define ACTION_H_
 #include <string>
+#include <typeinfo>
 using namespace std;
 class Action {
 public:

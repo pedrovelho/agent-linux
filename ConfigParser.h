@@ -14,15 +14,14 @@
 #include "ConfigHandler.h"
 #include "Event.h"
 
-
 using namespace xercesc;
 using namespace std;
 
-class ConfigParser{
+class ConfigParser {
 public:
 	ConfigParser(std::string config_path);
 	virtual ~ConfigParser();
-	void startNodes();
+	Configuration *GetConfiguration();
 private:
 	std::string xmlFile;
 	SAX2XMLReader* parser;

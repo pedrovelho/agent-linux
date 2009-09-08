@@ -1,52 +1,67 @@
 <?xml version="1.0" encoding="utf-8"?>
-<agent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
-  <internalConfig>
-    <proactiveLocation />
-    <java_home />
-    <jvm_parameters></jvm_parameters>    
-    <enable_memory_management>false</enable_memory_management>
-    <java_memory>0</java_memory>
-    <native_memory>0</native_memory>
-    <nb_processes>1</nb_processes>
-    <use_all_cpus>false</use_all_cpus>
-    <protocol>rmi</protocol>
-    <port_initial_value>1099</port_initial_value>
-  </internalConfig>
-  <events>
-    <event xsi:type="CalendarEvent">
-      <startDay>monday</startDay>
-      <startHour>0</startHour>
-      <startMinute>0</startMinute>
-      <startSecond>0</startSecond>
-      <durationDays>6</durationDays>
-      <durationHours>23</durationHours>
-      <durationMinutes>59</durationMinutes>
-      <durationSeconds>59</durationSeconds>
-      <processPriority>Normal</processPriority>
-      <maxCpuUsage>100</maxCpuUsage>
-    </event>
-  </events>
-  <actions>
-    <action xsi:type="AdvertAction">
-      <initialRestartDelay>0</initialRestartDelay>
-      <javaStarterClass>org.objectweb.proactive.core.util.winagent.PAAgentServiceRMIStarter</javaStarterClass>
-      <isEnabled>false</isEnabled>
-      <nodeName />
-    </action>
-    <action xsi:type="RMAction">
-      <initialRestartDelay>0</initialRestartDelay>
-      <javaStarterClass>org.ow2.proactive.resourcemanager.utils.PAAgentServiceRMStarter</javaStarterClass>
-      <isEnabled>false</isEnabled>
-      <username />
-      <password />
-      <url />
-      <nodeName />
-    </action>
-    <action xsi:type="CustomAction">
-      <initialRestartDelay>0</initialRestartDelay>
-      <javaStarterClass>user.Starter</javaStarterClass>
-      <isEnabled>false</isEnabled>
-      <args></args>      
-    </action>
-  </actions>  
+<agent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+	<internalConfig>
+		<proactiveLocation>/home/vasile/workspacePA/PA_new/trunk</proactiveLocation>
+		<java_home>/usr/lib/jvm/java-6-openjdk</java_home>
+		<jvm_params>Xmx 256</jvm_params>
+		<enable_memory_management>false</enable_memory_management>
+		<java_memory>0</java_memory>
+		<native_memory>0</native_memory>
+		<nb_processes>1</nb_processes>
+		<use_all_cpus>false</use_all_cpus>
+		<protocol>rmi</protocol>
+		<port_initial_value>1099</port_initial_value>
+	</internalConfig>
+	<events>
+		<event xsi:type="CalendarEvent">
+			<startDay>monday</startDay>
+			<startHour>2</startHour>
+			<startMinute>3</startMinute>
+			<startSecond>23</startSecond>
+			<durationDays>6</durationDays>
+			<durationHours>23</durationHours>
+			<durationMinutes>59</durationMinutes>
+			<durationSeconds>59</durationSeconds>
+			<processPriority>Normal</processPriority>
+			<maxCpuUsage>100</maxCpuUsage>
+		</event>
+		<event xsi:type="IdlenessEvent">
+			<beginSecs>10</beginSecs>
+			<endSecs>50</endSecs>
+			<beginThreshold>50</beginThreshold>
+			<endThreshold>60</endThreshold>
+		</event>
+	</events>
+	<actions>
+		<action xsi:type="AdvertAction">
+			<initialRestartDelay>4</initialRestartDelay>
+			<javaStarterClass>org.objectweb.proactive.core.util.winagent.PAAgentServiceRMIStarter</javaStarterClass>
+			<isEnabled>false</isEnabled>
+			<nodeName />
+		</action>
+		<action xsi:type="RMAction">
+			<initialRestartDelay>0</initialRestartDelay>
+			<javaStarterClass>org.ow2.proactive.resourcemanager.utils.PAAgentServiceRMStarter</javaStarterClass>
+			<isEnabled>true</isEnabled>
+			<username>ilie</username>
+			<password>delascularie</password>
+			<url />
+			<nodeName>nod_in_gat</nodeName>
+		</action>
+		<action xsi:type="CustomAction">
+			<initialRestartDelay>0</initialRestartDelay>
+			<javaStarterClass>user.Starter</javaStarterClass>
+			<isEnabled>false</isEnabled>
+			<args>some arguments</args>
+			<nodeName>custom</nodeName>
+		</action>
+		<action initialRestartDelay="100" xsi:type="P2PAction"
+			protocol="RMI">
+			<javaStarterClass>P2PStarter</javaStarterClass>
+			<isEnabled>false</isEnabled>
+			<contact>ilie@scularie</contact>
+			<nodeName>p2p_node</nodeName>
+		</action>
+	</actions>
 </agent>

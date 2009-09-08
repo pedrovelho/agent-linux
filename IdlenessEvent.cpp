@@ -16,17 +16,29 @@ IdlenessEvent::~IdlenessEvent() {
 	// TODO Auto-generated destructor stub
 }
 
-void IdlenessEvent::SetBeginSeconds(int secs){
+void IdlenessEvent::SetBeginSeconds(int secs) {
 	beginSecs = secs;
 }
-void IdlenessEvent::SetEndSeconds(int secs){
+void IdlenessEvent::SetEndSeconds(int secs) {
 	endSecs = secs;
 }
 
-void IdlenessEvent::SetBeginThreshold(int threshold){
+void IdlenessEvent::SetBeginThreshold(int threshold) {
 	beginThreshold = threshold;
 }
 
-void IdlenessEvent::SetEndThreshold(int threshold){
+void IdlenessEvent::SetEndThreshold(int threshold) {
 	endThreshold = threshold;
+}
+int IdlenessEvent::GetBeginSeconds() const {
+	return beginSecs;
+}
+int IdlenessEvent::GetEndSeconds() const {
+	return endSecs;
+}
+int IdlenessEvent::GetBeginThreshold() const {
+	return beginThreshold;
+}
+int IdlenessEvent::GetEndThreshold() const {
+	return endThreshold;
 }

@@ -9,7 +9,7 @@
 #define XMLDEFS_H_
 #include <string>
 using namespace std;
-namespace xmltags{
+namespace xmltags {
 //XML elements
 //configuration
 const string PROACTIVE_LOCATION("proactiveLocation");

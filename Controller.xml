@@ -32,24 +32,21 @@
 			<arg type="s" name="node_name" direction="in" />
 			<arg type="i" name="pid" direction="out" />
 		</method>
-		
- 		<method name="StopNode">
+
+		<method name="StopNode">
 			<arg type="i" name="pid" direction="in" />
 			<arg type="i" name="success" direction="out" />
 		</method>
-		
- 		<method name="StopNode">
+
+		<method name="StopNode">
 			<arg type="s" name="name" direction="in" />
 			<arg type="i" name="success" direction="out" />
 		</method>
-<!--		
-		<method name="StartWatcher">
-			<arg type="i" name="pid" direction="in" />
-		</method>
-		<method name="StopWatcher">
-			<arg type="i" name="pid" direction="in" />
-		</method>
--->
+		<!--
+			<method name="StartWatcher"> <arg type="i" name="pid" direction="in"
+			/> </method> <method name="StopWatcher"> <arg type="i" name="pid"
+			direction="in" /> </method>
+		-->
 	</interface>
 </node>
 	<!--

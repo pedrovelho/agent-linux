@@ -8,6 +8,8 @@
 #ifndef EVENT_H_
 #define EVENT_H_
 #include <string>
+#include <typeinfo>
+
 using namespace std;
 class Event {
 public:

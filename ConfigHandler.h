@@ -24,7 +24,7 @@ using namespace log4cxx::helpers;
 #include "Configuration.h"
 using namespace xercesc;
 using namespace std;
-class ConfigHandler:public DefaultHandler {
+class ConfigHandler: public DefaultHandler {
 private:
 	LoggerPtr logger;
 	string element_data;
@@ -39,28 +39,20 @@ private:
 	bool stobool(string value);
 	void processEvent(string name, string value);
 	void processAction(string name, string value);
-
 public:
 	ConfigHandler();
 	virtual ~ConfigHandler();
 	virtual void startDocument();
 	virtual void endDocument();
-    virtual void startElement
-    (
-        const   XMLCh* const    uri,
-        const   XMLCh* const    localname,
-        const   XMLCh* const    qname
-        , const Attributes&	attrs
-    );
-    virtual void characters(const   XMLCh* const chars,
-    		unsigned int length);
+	virtual void startElement(const XMLCh* const uri,
+			const XMLCh* const localname, const XMLCh* const qname,
+			const Attributes& attrs);
+	virtual void characters(const XMLCh* const chars, unsigned int length);
 
-    virtual void endElement
-	(
-		const XMLCh* const uri,
-		const XMLCh* const localname,
-		const XMLCh* const qname
-	);
+	virtual void endElement(const XMLCh* const uri,
+			const XMLCh* const localname, const XMLCh* const qname);
+	Configuration *GetConfiguration();
+
 };
 
 #endif /* CONFIGHANDLER_H_ */

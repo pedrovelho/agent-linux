@@ -16,13 +16,13 @@ RMAction::~RMAction() {
 	// TODO Auto-generated destructor stub
 }
 
-void RMAction::SetUsername(string user){
+void RMAction::SetUsername(string user) {
 	username = user;
 }
 void RMAction::SetPassword(string pass) {
 	password = pass;
 }
-void RMAction::SetURL(string url){
+void RMAction::SetURL(string url) {
 	this->url = url;
 }
 string RMAction::GetPassword() const {

@@ -31,8 +31,7 @@ private:
 	string shell;
 	int pid;
 public:
-	NodeStarter(string shell, string node_executable,
-			string node_name);
+	NodeStarter(string shell, string node_executable, string node_name);
 	NodeStarter(const NodeStarter &node);
 	virtual ~NodeStarter();
 	void start();

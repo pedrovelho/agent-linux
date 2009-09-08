@@ -37,9 +37,11 @@ private:
 	string node;
 	int tick;
 	bool stop;
-//	Controller *controller;
+	//	Controller *controller;
 public:
-	Watcher() {};
+	Watcher() {
+	}
+	;
 	Watcher(string node_name, int jvm_pid, int tick);
 	int GetTick();
 	int GetPid();

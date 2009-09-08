@@ -5,11 +5,10 @@
  *      Author: vasile
  */
 
-
 #include "StatusChecker.h"
 
 StatusChecker::StatusChecker() {
-//	jvm_pids = new vector<int>;
+	//	jvm_pids = new vector<int>;
 }
 
 StatusChecker::~StatusChecker() {
@@ -25,19 +24,18 @@ bool StatusChecker::RemoveJVM(int jvm_pid) {
 	int size = jvm_pids.size();
 	/* run through the vector and remove
 	 * if the pid exists */
-    for (long index=0; index<size; ++index) {
-        try {
-            if (jvm_pids.at(index) == jvm_pid) {
-            	jvm_pids.erase(jvm_pids.begin()+index);
-            	return true;
-            }
-        }
-        catch (exception& e) {
-            cerr  << index << ": index exceeds vector dimensions." << endl;
-//          cerr << e;
-        }
-    }
-    return false;
+	for (long index = 0; index < size; ++index) {
+		try {
+			if (jvm_pids.at(index) == jvm_pid) {
+				jvm_pids.erase(jvm_pids.begin() + index);
+				return true;
+			}
+		} catch (exception& e) {
+			cerr << index << ": index exceeds vector dimensions." << endl;
+			//          cerr << e;
+		}
+	}
+	return false;
 }
 /**
  * Checks if a process is running by verifying
@@ -56,8 +54,8 @@ bool StatusChecker::IsRunning(int jvm_pid) {
 	int intStat;
 
 	// Attempt to get the file attributes
-	intStat = stat(process_path.c_str(),&stFileInfo);
-	if(intStat == 0) {
+	intStat = stat(process_path.c_str(), &stFileInfo);
+	if (intStat == 0) {
 		// We were able to get the file attributes
 		// so the file obviously exists.
 		pid_exists = true;
@@ -77,40 +75,40 @@ vector<int> StatusChecker::GetJVMs() {
 }
 
 vector<int> StatusChecker::GetStoppedJVMs() {
-	vector <int> stopped;
+	vector<int> stopped;
 	int size = jvm_pids.size();
 	/* run through the vector and
 	 * and add to the list the stoped jvms
 	 */
-    for (long index=0; index<size; ++index) {
-        try {
-            if (IsRunning(jvm_pids.at(index)) ) stopped.push_back(jvm_pids.at(index));
-        }
-        catch (exception& e) {
-            cerr  << index << ": index exceeds vector dimensions." << endl;
-//          cerr << e;
-        }
-    }
-    return stopped;
+	for (long index = 0; index < size; ++index) {
+		try {
+			if (IsRunning(jvm_pids.at(index)))
+				stopped.push_back(jvm_pids.at(index));
+		} catch (exception& e) {
+			cerr << index << ": index exceeds vector dimensions." << endl;
+			//          cerr << e;
+		}
+	}
+	return stopped;
 }
 
 vector<int> StatusChecker::GetRunningJVMs() {
-	vector <int> running;
+	vector<int> running;
 	int size = jvm_pids.size();
 	/* run through the vector and
 	 * and add to the list the running jvms
 	 */
-    for (long index=0; index<size; ++index) {
-        try {
-            if (IsRunning(jvm_pids.at(index)) ) running.push_back(jvm_pids.at(index));
-        }
-        catch (exception& e) {
-            cerr  << index << ": index exceeds vector dimensions." << endl;
-//          cerr << e;
-        }
-    }
-    return running;
+	for (long index = 0; index < size; ++index) {
+		try {
+			if (IsRunning(jvm_pids.at(index)))
+				running.push_back(jvm_pids.at(index));
+		} catch (exception& e) {
+			cerr << index << ": index exceeds vector dimensions." << endl;
+			//          cerr << e;
+		}
+	}
+	return running;
 }
-void StatusChecker::RemoveAllJVMs(){
+void StatusChecker::RemoveAllJVMs() {
 	jvm_pids.empty();
 }

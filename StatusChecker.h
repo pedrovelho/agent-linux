@@ -28,7 +28,7 @@ public:
 	vector<int> GetJVMs();
 	vector<int> GetStoppedJVMs();
 	vector<int> GetRunningJVMs();
- 	//TODO set a tick for check and a reference to a method to be called
+	//TODO set a tick for check and a reference to a method to be called
 	//TODO enable disable tick
 };
 

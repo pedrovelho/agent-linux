@@ -15,9 +15,9 @@ class PAAgentTest: public ::testing::Test {
 public:
 	PAAgentTest();
 	virtual ~PAAgentTest();
-	 virtual void SetUp();
-	 //stops all JVMS
-	 virtual void TearDown();
+	virtual void SetUp();
+	//stops all JVMS
+	virtual void TearDown();
 };
 
 #endif /* PAAGENTTEST_H_ */

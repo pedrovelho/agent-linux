@@ -19,10 +19,10 @@ public:
 	void SetBeginThreshold(int threshold);
 	void SetEndThreshold(int threshold);
 
-	int GetBeginSeconds();
-	int GetEndSeconds();
-	int GetBeginThreshold();
-	int GetEndThreshold();
+	int GetBeginSeconds() const;
+	int GetEndSeconds() const;
+	int GetBeginThreshold() const;
+	int GetEndThreshold() const;
 
 private:
 	int beginSecs;

@@ -16,7 +16,7 @@ Action::~Action() {
 	// TODO Auto-generated destructor stub
 }
 
-void Action::SetRestartDelay(int delay){
+void Action::SetRestartDelay(int delay) {
 	restart_delay = delay;
 }
 
@@ -43,3 +43,4 @@ string Action::GetNodeName() const {
 bool Action::GetEnabled() const {
 	return enabled;
 }
+

@@ -11,7 +11,7 @@
 #include <gtest/gtest.h>
 #include "Controller.h"
 
-class ControllerTest : public ::testing::Test {
+class ControllerTest: public ::testing::Test {
 public:
 	ControllerTest();
 	virtual ~ControllerTest();
@@ -19,8 +19,8 @@ protected:
 	int first_pid;
 	int second_pid;
 	int third_pid;
- virtual void SetUp();
- //stops all JVMS
- virtual void TearDown();
+	virtual void SetUp();
+	//stops all JVMS
+	virtual void TearDown();
 };
 #endif /* CONTROLLERTEST_H_ */

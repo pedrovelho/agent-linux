@@ -29,140 +29,149 @@ private:
 	int no_processes;
 	bool use_all_cpus;
 	string config_protocol;
-	int port_initial_value;
-	//vector of events
-	vector<Event> events;
-	//vector of actions
-	vector<Action> actions;
-//	int onRuntimeExitScript;
-	static Configuration* instance;
-	//responsible with the configuration singleton
-	//FIXME add default values
+	unsigned int port_initial_value;
+	vector<CalendarEvent*> calendar_events;
+	vector<IdlenessEvent*> idle_events;
+	vector<P2PAction*> p2p_actions;
+	vector<RMAction*> rm_actions;
+	vector<AdvertAction*> advert_actions;
+	vector<CustomAction*> custom_actions;
+	static Configuration *instance;
 	void Initialize();
 protected:
 	Configuration();
 public:
+	void AddAction(Action* action);
+	void AddEvent(Event* event);
 	virtual ~Configuration();
-	static Configuration* Inst();
-    vector<Event> getEvents() const
-    {
-        return events;
-    }
+	static Configuration *Inst();
+	vector<CalendarEvent*> getCalendar_events() const {
+		return calendar_events;
+	}
 
-    void setEvents(vector<Event> events)
-    {
-        this->events = events;
-    }
+	void setCalendar_events(vector<CalendarEvent*> calendar_events) {
+		this->calendar_events = calendar_events;
+	}
 
-    vector<Action> getActions() const
-    {
-        return actions;
-    }
+	vector<IdlenessEvent*> getIdle_events() const {
+		return idle_events;
+	}
 
-    void setActions(vector<Action> actions)
-    {
-        this->actions = actions;
-    }
-    //getters/setters
-    string getProactive_location() const
-    {
-        return proactive_location;
-    }
+	void setIdle_events(vector<IdlenessEvent*> idle_events) {
+		this->idle_events = idle_events;
+	}
 
-    void setProactive_location(string proactive_location)
-    {
-        this->proactive_location = proactive_location;
-    }
+	vector<P2PAction*> getP_actions() const {
+		return p2p_actions;
+	}
 
-    string getJava_home() const
-    {
-        return java_home;
-    }
+	void setP_actions(vector<P2PAction*> p2p_actions) {
+		this->p2p_actions = p2p_actions;
+	}
 
-    void setJava_home(string java_home)
-    {
-        this->java_home = java_home;
-    }
+	vector<RMAction*> getRm_actions() const {
+		return rm_actions;
+	}
 
-    string getJvm_params() const
-    {
-        return jvm_params;
-    }
+	void setRm_actions(vector<RMAction*> rm_actions) {
+		this->rm_actions = rm_actions;
+	}
 
-    void setJvm_params(string jvm_params)
-    {
-        this->jvm_params = jvm_params;
-    }
+	vector<AdvertAction*> getAdvert_actions() const {
+		return advert_actions;
+	}
 
-    bool getEnable_memory_management() const
-    {
-        return enable_memory_management;
-    }
+	void setAdvert_actions(vector<AdvertAction*> advert_actions) {
+		this->advert_actions = advert_actions;
+	}
 
-    void setEnable_memory_management(bool enable_memory_management)
-    {
-        this->enable_memory_management = enable_memory_management;
-    }
+	vector<CustomAction*> getCustom_actions() const {
+		return custom_actions;
+	}
 
-    int getJava_memory() const
-    {
-        return java_memory;
-    }
+	void setCustom_actions(vector<CustomAction*> custom_actions) {
+		this->custom_actions = custom_actions;
+	}
 
-    void setJava_memory(int java_memory)
-    {
-        this->java_memory = java_memory;
-    }
+	string getProactive_location() const {
+		return proactive_location;
+	}
 
-    int getNative_memory() const
-    {
-        return native_memory;
-    }
+	void setProactive_location(string proactive_location) {
+		this->proactive_location = proactive_location;
+	}
 
-    void setNative_memory(int native_memory)
-    {
-        this->native_memory = native_memory;
-    }
+	string getJava_home() const {
+		return java_home;
+	}
 
-    int getNo_processes() const
-    {
-        return no_processes;
-    }
+	void setJava_home(string java_home) {
+		this->java_home = java_home;
+	}
 
-    void setNo_processes(int no_processes)
-    {
-        this->no_processes = no_processes;
-    }
+	string getJvm_params() const {
+		return jvm_params;
+	}
 
-    bool getUse_all_cpus() const
-    {
-        return use_all_cpus;
-    }
+	void setJvm_params(string jvm_params) {
+		this->jvm_params = jvm_params;
+	}
 
-    void setUse_all_cpus(bool use_all_cpus)
-    {
-        this->use_all_cpus = use_all_cpus;
-    }
+	bool getEnable_memory_management() const {
+		return enable_memory_management;
+	}
 
-    string getConfig_protocol() const
-    {
-        return config_protocol;
-    }
+	void setEnable_memory_management(bool enable_memory_management) {
+		this->enable_memory_management = enable_memory_management;
+	}
 
-    void setConfig_protocol(string config_protocol)
-    {
-        this->config_protocol = config_protocol;
-    }
+	int getJava_memory() const {
+		return java_memory;
+	}
 
-    int getPort_initial_value() const
-    {
-        return port_initial_value;
-    }
+	void setJava_memory(int java_memory) {
+		this->java_memory = java_memory;
+	}
 
-    void setPort_initial_value(int port_initial_value)
-    {
-        this->port_initial_value = port_initial_value;
-    }
+	int getNative_memory() const {
+		return native_memory;
+	}
+
+	void setNative_memory(int native_memory) {
+		this->native_memory = native_memory;
+	}
+
+	int getNo_processes() const {
+		return no_processes;
+	}
+
+	void setNo_processes(int no_processes) {
+		this->no_processes = no_processes;
+	}
+
+	bool getUse_all_cpus() const {
+		return use_all_cpus;
+	}
+
+	void setUse_all_cpus(bool use_all_cpus) {
+		this->use_all_cpus = use_all_cpus;
+	}
+
+	string getConfig_protocol() const {
+		return config_protocol;
+	}
+
+	void setConfig_protocol(string config_protocol) {
+		this->config_protocol = config_protocol;
+	}
+
+	unsigned int getPort_initial_value() const {
+		return port_initial_value;
+	}
+
+	void setPort_initial_value(unsigned int port_initial_value) {
+		this->port_initial_value = port_initial_value;
+	}
 
 };
 

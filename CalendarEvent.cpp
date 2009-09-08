@@ -13,51 +13,51 @@ CalendarEvent::CalendarEvent() {
 
 CalendarEvent::~CalendarEvent() {
 	// TODO Auto-generated destructor stub
-//	destroy(startDay);
+	//	destroy(startDay);
 }
 
-void CalendarEvent::SetStartDay(std::string day){
+void CalendarEvent::SetStartDay(std::string day) {
 	startDay = day;
 }
 
-void CalendarEvent::SetStartHour(int hour){
+void CalendarEvent::SetStartHour(int hour) {
 	startHour = hour;
 }
 
-void CalendarEvent::SetStartMinute(int minute){
+void CalendarEvent::SetStartMinute(int minute) {
 	startMinute = minute;
 }
 
-void CalendarEvent::SetStartSecond(int second){
+void CalendarEvent::SetStartSecond(int second) {
 	startSecond = second;
 }
 
-void CalendarEvent::SetDurationDays(int days){
+void CalendarEvent::SetDurationDays(int days) {
 	durationDays = days;
 }
 
-void CalendarEvent::SetDurationHours(int hours){
+void CalendarEvent::SetDurationHours(int hours) {
 	durationHours = hours;
 }
-void CalendarEvent::SetDurationMinutes(int hours){
+void CalendarEvent::SetDurationMinutes(int hours) {
 	durationMinutes = hours;
 }
-void CalendarEvent::SetDurationSeconds(int seconds){
+void CalendarEvent::SetDurationSeconds(int seconds) {
 	durationSeconds = seconds;
 }
 std::string CalendarEvent::GetStartDay() {
 	return startDay;
 }
-int CalendarEvent::GetStartHour(){
+int CalendarEvent::GetStartHour() {
 	return startHour;
 }
-int CalendarEvent::GetStartMinute(){
+int CalendarEvent::GetStartMinute() {
 	return startMinute;
 }
-int CalendarEvent::GetStartSecond(){
+int CalendarEvent::GetStartSecond() {
 	return startSecond;
 }
-int CalendarEvent::GetDurationDays(){
+int CalendarEvent::GetDurationDays() {
 	return durationDays;
 }
 int CalendarEvent::GetDurationHours() {
@@ -69,7 +69,10 @@ int CalendarEvent::GetDurationMinutes() {
 int CalendarEvent::GetDurationSeconds() {
 	return durationSeconds;
 }
-int CalendarEvent::GetTotalDuration(){
-	return durationSeconds + durationMinutes * 60 + \
-		durationHours * 3600 + durationDays *  86400;
+int CalendarEvent::GetTotalDuration() {
+	return durationSeconds + durationMinutes * 60 + durationHours * 3600
+			+ durationDays * 86400;
 }
+string CalendarEvent::GetType() {
+	return typeid(*this).name();
+		}

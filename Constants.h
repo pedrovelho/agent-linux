@@ -15,7 +15,8 @@ const string PROACTIVE_DBUS_WATCHER("pa.watcher");
 const int LISTEN_SIGNAL_TIMEOUT = 1;
 const int TICK_DEFAULT = 1000;
 const string DEFAULT_SHELL("/bin/bash");
-const string DEFAULT_NODE_EXEC("/home/vasile/workspacePA/PA_new/trunk/bin/startNode.sh");
+const string DEFAULT_NODE_EXEC(
+		"/home/vasile/workspacePA/PA_new/trunk/bin/startNode.sh");
 
 const string DEFAULT_NODE("default_node");
 const string DEFAULT_PROACTIVE_HOME("/home/vasile/workspacePA/PA_new/trunk");
@@ -27,14 +28,13 @@ const string JVM_STOPPED("JVM_STOPPED");
 /* Object path to the provided object. */
 #define PROACTIVE_SERVICE_OBJECT_PATH "pa/agent/controller"
 /* And we're interested in using it through this interface.
-   This must match the entry in the interface definition XML. */
+ This must match the entry in the interface definition XML. */
 #define PROACTIVE_SERVICE_INTERFACE   "pa.agent.controller"
 /* Symbolic constants for the signal names to use with GLib.
-   These need to map into the D-Bus signal names. */
+ These need to map into the D-Bus signal names. */
 #define SIGNAL_CHANGED_VALUE1    "changed_value1"
 #define SIGNAL_CHANGED_VALUE2    "changed_value2"
 #define SIGNAL_OUTOFRANGE_VALUE1 "outofrange_value1"
 #define SIGNAL_OUTOFRANGE_VALUE2 "outofrange_value2"
-
 
 #endif /* CONSTANTS_H_ */

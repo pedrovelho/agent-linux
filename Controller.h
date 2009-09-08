@@ -25,12 +25,12 @@ using namespace log4cxx::helpers;
 #include <sigc++-2.0/sigc++/sigc++.h>
 #include <string>
 #include <cstdint>
-class Controller{
+class Controller {
 private:
 	LoggerPtr logger;
 	string default_shell;
 	string default_node_exec;
-//	map <int, string> nodes;
+	//	map <int, string> nodes;
 public:
 	void SendSignal(const string signal, string node_name);
 	Controller();

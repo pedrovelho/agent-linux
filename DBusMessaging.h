@@ -20,7 +20,7 @@
 using namespace std;
 using namespace log4cxx;
 using namespace log4cxx::helpers;
-const string DEFAULT_CONNECTION_NAME="pa.controller";
+const string DEFAULT_CONNECTION_NAME = "pa.controller";
 
 class DBusMessaging {
 private:
