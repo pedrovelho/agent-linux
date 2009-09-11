@@ -41,6 +41,7 @@ private:
 protected:
 	Configuration();
 public:
+	int GetNoCPUS();
 	void AddAction(Action* action);
 	void AddEvent(Event* event);
 	virtual ~Configuration();

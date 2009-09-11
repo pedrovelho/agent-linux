@@ -69,10 +69,8 @@ int CalendarEvent::GetDurationMinutes() {
 int CalendarEvent::GetDurationSeconds() {
 	return durationSeconds;
 }
-int CalendarEvent::GetTotalDuration() {
+long CalendarEvent::GetTotalDuration() {
 	return durationSeconds + durationMinutes * 60 + durationHours * 3600
 			+ durationDays * 86400;
 }
-string CalendarEvent::GetType() {
-	return typeid(*this).name();
-		}
+

@@ -7,12 +7,12 @@
 #include <iostream>
 
 #include <string>
-#include "ConfigParser.h"
+#include "Runner.h"
+
 using namespace std;
 int main() {
-	//	ConfigParser parser("/home/vasile/workspacePA/paagent/ConfigExample.xml");
-	//	ConfigParser parser("/home/vasile/workspacePA/paagent/PAAgent-config-planning-night-we.xml");
-	ConfigParser parser("/home/vasile/workspacePA/paagent/PAAgent-config.xml");
-	parser.startNodes();
+	Runner runner;
+	runner.start();
+	runner.join();
 }
 

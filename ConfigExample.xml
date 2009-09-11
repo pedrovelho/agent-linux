@@ -19,21 +19,23 @@
 
 	<events>
 		<event xsi:type="CalendarEvent">
-			<startDay>30</startDay>
-			<startHour>2</startHour>
-			<startMinute>10</startMinute>
-			<startSecond>40</startSecond>
-			<durationDays>2</durationDays>
-			<durationHours>2</durationHours>
-			<durationMinutes>1</durationMinutes>
-			<durationSeconds>1</durationSeconds>
+			<startDay>friDay</startDay>
+			<startHour>17</startHour>
+			<startMinute>25</startMinute>
+			<startSecond>10</startSecond>
+			<durationDays>0</durationDays>
+			<durationHours>0</durationHours>
+			<durationMinutes>0</durationMinutes>
+			<durationSeconds>15</durationSeconds>
+			<processPriority>Normal</processPriority>
+			<maxCpuUsage>100</maxCpuUsage>
 		</event>
 
 		<event xsi:type="IdlenessEvent">
-			<beginSecs>10</beginSecs>
-			<endSecs>50</endSecs>
-			<beginThreshold>50</beginThreshold>
-			<endThreshold>60</endThreshold>
+			<beginSecs>5</beginSecs>
+			<endSecs>10</endSecs>
+			<beginThreshold>10</beginThreshold>
+			<endThreshold>20</endThreshold>
 		</event>
 	</events>
 

@@ -49,3 +49,19 @@ void Configuration::AddEvent(Event *event) {
 		idle_events.push_back(static_cast<IdlenessEvent*> (event));
 	}
 }
+int Configuration::GetNoCPUS() {
+	return sysconf(_SC_NPROCESSORS_ONLN);
+}
+
+
+//static int get_ncpu() {
+//	int ncpu = -1;
+//#ifdef _SC_NPROCESSORS_ONLN
+//	ncpu = sysconf(_SC_NPROCESSORS_ONLN);
+//#elif defined __APPLE__
+//	int mib[2] = {CTL_HW, HW_NCPU};
+//	size_t len = sizeof(ncpu);
+//	sysctl(mib, 2, &ncpu, &len, NULL, 0);
+//#endif
+//	return ncpu;
+//}

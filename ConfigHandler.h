@@ -8,6 +8,7 @@
 #ifndef CONFIGHANDLER_H_
 #define CONFIGHANDLER_H_
 
+#include "Helpers.h"
 #include "XMLDefs.h"
 using namespace xmltags;
 #include <log4cxx/logger.h>
@@ -34,11 +35,10 @@ private:
 	bool processing_event;
 	bool processing_action;
 	bool processing_config;
-	//some helper functions TODO move to helper class ?
-	int stoint(string value);
-	bool stobool(string value);
 	void processEvent(string name, string value);
 	void processAction(string name, string value);
+	int stoint(string value);
+	bool stobool(string value);
 public:
 	ConfigHandler();
 	virtual ~ConfigHandler();

@@ -36,8 +36,7 @@ public:
 	 * Returns the total duration of
 	 * the event in seconds.
 	 */
-	int GetTotalDuration();
-	string GetType();
+	long GetTotalDuration();
 
 private:
 	std::string startDay;
