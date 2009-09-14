@@ -6,24 +6,18 @@
  */
 
 #include "NodeStarter.h"
+#include <iostream>
 
-NodeStarter::NodeStarter(string _shell = DEFAULT_SHELL, string node_executable =
-		DEFAULT_NODE_EXEC, string node_name = DEFAULT_NODE) {
-	//initialize logger
-	//TODO  move outside the constructor
-	logger = log4cxx::Logger::getLogger("NodeStarter " + node_name);
-	logger->setLevel(log4cxx::Level::getTrace());
-	shell = _shell;
-	node_exec = node_executable;
-	name = node_name;
+NodeStarter::NodeStarter(string name, string java_class,
+		string security_policy, string log4j_file, string proactive_home,
+		string classpath, string java_bin) {
+	Initialize(name, java_class, security_policy, log4j_file, proactive_home,
+			classpath, java_bin);
 }
 NodeStarter::NodeStarter(const NodeStarter &node) {
-	logger = log4cxx::Logger::getLogger("NodeStarter " + node.name);
-	logger->setLevel(log4cxx::Level::getTrace());
-	shell = node.shell;
-	node_exec = node.node_exec;
-	name = node.name;
 	pid = node.pid;
+	Initialize(node.name, node.java_class, node.security_policy,
+			node.log4j_file, node.proactive_home, node.classpath, node.java_bin);
 }
 NodeStarter::~NodeStarter() {
 }
@@ -31,15 +25,22 @@ NodeStarter::~NodeStarter() {
 void NodeStarter::start() {
 	/* prevent zombie process when the JVM or shell is killed
 	 * need so the JVM/bash can be checked through kill */
-	if (signal(SIGCHLD, SIG_IGN))
+	if (signal(SIGCHLD, SIG_IGN) == SIG_ERR)
 		LOG4CXX_ERROR(logger,
 				"Unable to ignore SIGCHILD, bash will be left as "
-					"a zombie when JVM is killed and the Watchers may malfunction"
-					"depending on the implementation of kill");
+				"a zombie when JVM is killed and the Watchers may malfunction"
+				"depending on the implementation of kill");
 	pid_t sid;
 	LOG4CXX_DEBUG(logger, "Starting the node [" << name
-			<< "] in a child process "
-				"using [" << node_exec << "] with shell [" << shell << "]");
+			<< "] in a child process. " <<
+			"Name ["<<name << "] " <<
+			"Starter class [" << java_class<< "] "<<
+			"Security policy [" << security_policy<< "] "<<
+			"Log4j files [" << log4j_file<< "] "<<
+			"ProActive home [" << proactive_home<< "] "<<
+			"Classpath [" << classpath<< "] "<<
+			"Java binary [" << java_bin<< "] ");
+
 	//Fork parent process
 	pid = fork();
 	//If the fork was successful execute child code
@@ -63,12 +64,12 @@ void NodeStarter::start() {
 		/* Change the current working directory to prevent the current
 		 directory from being locked and not being able to remove it. */
 		chdir("/");
-		//Decoupling from parent environment done, running command
-		int piexec = execl(shell.c_str(), " -c ", node_exec.c_str(),
-				name.c_str(), name.c_str(), (char *) 0);
 
-		//if the node fails to start in the child process return -1
-		//otherwise return the pid (=0)
+		//Decoupling from parent environment done, running command
+		int piexec = execl(java_bin.c_str(), " ",
+				DEFAULT_DSECURITY_MANAGER.c_str(), security_policy.c_str(),
+				log4j_file.c_str(), proactive_home.c_str(), "-classpath",
+				classpath.c_str(), java_class.c_str(), "node1", (char *) 0);
 
 	}
 	//failed to fork
@@ -84,4 +85,19 @@ void NodeStarter::start() {
 int NodeStarter::getPid() {
 
 	return pid;
+}
+void NodeStarter::Initialize(string name, string java_class,
+		string security_policy, string log4j_file, string proactive_home,
+		string classpath, string java_bin) {
+	logger = log4cxx::Logger::getLogger("NodeStarter " + name);
+	//		BasicConfigurator::resetConfiguration();
+	BasicConfigurator::configure();
+	logger->setLevel(log4cxx::Level::getTrace());
+	this->name = name;
+	this->java_class = java_class;
+	this->security_policy = security_policy;
+	this->log4j_file = log4j_file;
+	this->proactive_home = proactive_home;
+	this->classpath = classpath;
+	this->java_bin = java_bin;
 }

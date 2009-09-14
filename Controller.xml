@@ -23,9 +23,13 @@
 	dest="proactive.agent.controller" path="/proactive/agent/Controller">
 	<interface name="proactive.agent.controller">
 		<method name="StartNode">
-			<arg type="s" name="shell" direction="in" />
-			<arg type="s" name="node_executable" direction="in" />
-			<arg type="s" name="node_name" direction="in" />
+			<arg type="s" name="name" direction="in" />
+			<arg type="s" name="java_class" direction="in" />
+			<arg type="s" name="security_policy" direction="in" />
+			<arg type="s" name="log4j_file" direction="in" />
+			<arg type="s" name="proactive_home" direction="in" />
+			<arg type="s" name="classpath" direction="in" />
+			<arg type="s" name="java_bin" direction="in" />
 			<arg type="i" name="pid" direction="out" />
 		</method>
 		<method name="StartNode">
@@ -35,12 +39,12 @@
 
 		<method name="StopNode">
 			<arg type="i" name="pid" direction="in" />
-			<arg type="i" name="success" direction="out" />
+			<arg type="b" name="success" direction="out" />
 		</method>
 
 		<method name="StopNode">
 			<arg type="s" name="name" direction="in" />
-			<arg type="i" name="success" direction="out" />
+			<arg type="b" name="success" direction="out" />
 		</method>
 		<!--
 			<method name="StartWatcher"> <arg type="i" name="pid" direction="in"

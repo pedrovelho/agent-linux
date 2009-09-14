@@ -2,7 +2,6 @@
 // Constructors/Destructors
 //
 #define SCANFPATTERN "%4s %lf %lf %lf %lf %lf %lf %lf"
-#define PRINTF "%3.1lf%%"
 Runner::Runner() {
 	logger = log4cxx::Logger::getLogger("Controller");
 	//	BasicConfigurator::configure();

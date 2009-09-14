@@ -103,12 +103,4 @@ TEST_F(ConfigParserTest, parse) {
 	EXPECT_EQ("custom",custaction->GetNodeName());
 	EXPECT_EQ(false, custaction->GetEnabled());
 	EXPECT_EQ("user.Starter",custaction->GetStarterClass());
-
-	//		vector<Action>::iterator ait;
-	//		vector<Action> actions =  config->getActions();
-	//		EXPECT_EQ(3, actions.size());
-	//		for ( ait=actions.begin() ; ait < actions.end(); ait++ ){
-	//		    cout << " " << (*ait).GetType() << endl ;
-	//		}
-
 }

@@ -18,6 +18,7 @@ public:
 protected:
 	virtual void SetUp();
 	virtual void TearDown();
+	Configuration *config;
 };
 
 #endif /* CONFIGParserTEST_H_ */

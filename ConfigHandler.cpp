@@ -14,7 +14,12 @@ ConfigHandler::ConfigHandler() {
 }
 
 ConfigHandler::~ConfigHandler() {
-	// TODO Auto-generated destructor stub
+	//unlink from the valid data
+//	currentEvent = new Event();
+//	currentAction = new Action();
+//	//delete
+//	delete currentEvent;
+//	delete currentAction;
 }
 void ConfigHandler::startDocument() {
 	LOG4CXX_INFO(logger, "Started parsing file");

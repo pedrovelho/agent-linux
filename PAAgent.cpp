@@ -30,7 +30,7 @@ void PAAgent::run() {
 	ret = conn->request_name("proactive.agent.controller",
 			DBUS_NAME_FLAG_REPLACE_EXISTING);
 	if (DBUS_REQUEST_NAME_REPLY_PRIMARY_OWNER != ret) {
-		cout << "Shit happened" << endl;
+		cout << "Add proper error message" << endl;
 	}
 	std::cout << "Declaring adapter" << endl;
 
