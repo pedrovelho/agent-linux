@@ -22,7 +22,7 @@ public:
 	int GetRestartDelay() const;
 	string GetStarterClass() const;
 	string GetNodeName() const;
-	bool GetEnabled() const;
+	bool IsEnabled() const;
 private:
 	int restart_delay;
 	string starter_class;

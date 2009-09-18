@@ -53,7 +53,9 @@ CONFIG_CLEAN_FILES =
 CONFIG_CLEAN_VPATH_FILES =
 am__installdirs = "$(DESTDIR)$(bindir)"
 PROGRAMS = $(bin_PROGRAMS)
-am_paagent_OBJECTS = paagent-Runner.$(OBJEXT) \
+am_paagent_OBJECTS = paagent-P2PNodeStarter.$(OBJEXT) \
+	paagent-CustomNodeStarter.$(OBJEXT) \
+	paagent-RMNodeStarter.$(OBJEXT) paagent-Runner.$(OBJEXT) \
 	paagent-AdvertAction.$(OBJEXT) paagent-CustomAction.$(OBJEXT) \
 	paagent-RMAction.$(OBJEXT) paagent-P2PAction.$(OBJEXT) \
 	paagent-Action.$(OBJEXT) paagent-Event.$(OBJEXT) \
@@ -68,7 +70,10 @@ paagent_OBJECTS = $(am_paagent_OBJECTS)
 paagent_DEPENDENCIES =
 paagent_LINK = $(CXXLD) $(paagent_CXXFLAGS) $(CXXFLAGS) \
 	$(paagent_LDFLAGS) $(LDFLAGS) -o $@
-am_paagent_server_OBJECTS = paagent_server-PAAgent.$(OBJEXT) \
+am_paagent_server_OBJECTS = paagent_server-P2PNodeStarter.$(OBJEXT) \
+	paagent_server-CustomNodeStarter.$(OBJEXT) \
+	paagent_server-RMNodeStarter.$(OBJEXT) \
+	paagent_server-PAAgent.$(OBJEXT) \
 	paagent_server-paagent_server.$(OBJEXT) \
 	paagent_server-Controller.$(OBJEXT) \
 	paagent_server-NodeStarter.$(OBJEXT) \
@@ -77,7 +82,10 @@ paagent_server_OBJECTS = $(am_paagent_server_OBJECTS)
 paagent_server_DEPENDENCIES =
 paagent_server_LINK = $(CXXLD) $(paagent_server_CXXFLAGS) $(CXXFLAGS) \
 	$(paagent_server_LDFLAGS) $(LDFLAGS) -o $@
-am_paagent_tests_OBJECTS = paagent_tests-Runner.$(OBJEXT) \
+am_paagent_tests_OBJECTS = paagent_tests-P2PNodeStarter.$(OBJEXT) \
+	paagent_tests-CustomNodeStarter.$(OBJEXT) \
+	paagent_tests-RMNodeStarter.$(OBJEXT) \
+	paagent_tests-Runner.$(OBJEXT) \
 	paagent_tests-ConfigParserTest.$(OBJEXT) \
 	paagent_tests-AdvertAction.$(OBJEXT) \
 	paagent_tests-CustomAction.$(OBJEXT) \
@@ -222,15 +230,15 @@ target_alias = @target_alias@
 top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
-paagent_server_SOURCES = PAAgent.cpp paagent_server.cpp Controller.cpp NodeStarter.cpp  Watcher.cpp 
+paagent_server_SOURCES = P2PNodeStarter.cpp CustomNodeStarter.cpp RMNodeStarter.cpp  PAAgent.cpp paagent_server.cpp Controller.cpp NodeStarter.cpp  Watcher.cpp 
 paagent_server_LDADD = -llog4cxx -lccext2 -lccgnu2 -lz -ldl -lrt -ldbus-1 -lgthread-2.0  -ldbus-glib-1 -lglibmm-2.4  -lsigc-2.0 -ldbus-cxx
 paagent_server_LDFLAGS = -pthread   -I/usr/include/dbus-1.0 -I/usr/lib/dbus-1.0/include -D_GNU_SOURCE 
 paagent_server_CXXFLAGS = -I/usr/include/glibmm-2.4 -I/usr/lib/glibmm-2.4/include -I/usr/include/sigc++-2.0 -I/usr/lib/sigc++-2.0/include -I/usr/local/include/dbus-cxx-0.4 -I/usr/include/dbus-1.0 -I/usr/lib/dbus-1.0/include -I/usr/include/sigc++-2.0 -I/usr/lib/sigc++-2.0/include -std=c++0x -std=gnu++0x
-paagent_tests_SOURCES = Runner.cpp ConfigParserTest.cpp AdvertAction.cpp CustomAction.cpp RMAction.cpp P2PAction.cpp Action.cpp Event.cpp CalendarEvent.cpp IdlenessEvent.cpp Configuration.cpp ConfigParser.cpp ConfigHandler.cpp paagent_tests.cpp PAAgentTest.cpp ControllerTest.cpp  PAAgent.cpp  Controller.cpp NodeStarter.cpp  Watcher.cpp DBusMessaging.cpp
+paagent_tests_SOURCES = P2PNodeStarter.cpp CustomNodeStarter.cpp RMNodeStarter.cpp  Runner.cpp ConfigParserTest.cpp AdvertAction.cpp CustomAction.cpp RMAction.cpp P2PAction.cpp Action.cpp Event.cpp CalendarEvent.cpp IdlenessEvent.cpp Configuration.cpp ConfigParser.cpp ConfigHandler.cpp paagent_tests.cpp PAAgentTest.cpp ControllerTest.cpp  PAAgent.cpp  Controller.cpp NodeStarter.cpp  Watcher.cpp DBusMessaging.cpp
 paagent_tests_LDADD = -lxerces-c-3.0 -lgtest -llog4cxx -lccext2 -lccgnu2 -lz -ldl -lrt -ldbus-1 -lgthread-2.0  -ldbus-glib-1 -lglibmm-2.4  -lsigc-2.0 -ldbus-cxx
 paagent_tests_LDFLAGS = -pthread   -I/usr/include/dbus-1.0 -I/usr/lib/dbus-1.0/include -D_GNU_SOURCE 
 paagent_tests_CXXFLAGS = -I/usr/include/gtest -I/usr/include/glibmm-2.4 -I/usr/lib/glibmm-2.4/include -I/usr/include/sigc++-2.0 -I/usr/lib/sigc++-2.0/include -I/usr/local/include/dbus-cxx-0.4 -I/usr/include/dbus-1.0 -I/usr/lib/dbus-1.0/include -I/usr/include/sigc++-2.0 -I/usr/lib/sigc++-2.0/include -std=c++0x -std=gnu++0x
-paagent_SOURCES = Runner.cpp AdvertAction.cpp CustomAction.cpp RMAction.cpp P2PAction.cpp Action.cpp Event.cpp CalendarEvent.cpp IdlenessEvent.cpp Configuration.cpp ConfigParser.cpp ConfigHandler.cpp PAAgent.cpp paagent.cpp Controller.cpp NodeStarter.cpp  Watcher.cpp DBusMessaging.cpp
+paagent_SOURCES = P2PNodeStarter.cpp CustomNodeStarter.cpp RMNodeStarter.cpp Runner.cpp AdvertAction.cpp CustomAction.cpp RMAction.cpp P2PAction.cpp Action.cpp Event.cpp CalendarEvent.cpp IdlenessEvent.cpp Configuration.cpp ConfigParser.cpp ConfigHandler.cpp PAAgent.cpp paagent.cpp Controller.cpp NodeStarter.cpp  Watcher.cpp DBusMessaging.cpp
 paagent_LDADD = -lxerces-c-3.0 -llog4cxx -lccext2 -lccgnu2 -lz -ldl -lrt -ldbus-1 -lgthread-2.0  -ldbus-glib-1 -lglibmm-2.4  -lsigc-2.0 -ldbus-cxx
 paagent_LDFLAGS = -pthread   -I/usr/include/dbus-1.0 -I/usr/lib/dbus-1.0/include -D_GNU_SOURCE 
 paagent_CXXFLAGS = -I/usr/include/glibmm-2.4 -I/usr/lib/glibmm-2.4/include -I/usr/include/sigc++-2.0 -I/usr/lib/sigc++-2.0/include -I/usr/local/include/dbus-cxx-0.4 -I/usr/include/dbus-1.0 -I/usr/lib/dbus-1.0/include -I/usr/include/sigc++-2.0 -I/usr/lib/sigc++-2.0/include -std=c++0x -std=gnu++0x
@@ -354,19 +362,25 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/paagent-Configuration.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/paagent-Controller.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/paagent-CustomAction.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/paagent-CustomNodeStarter.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/paagent-DBusMessaging.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/paagent-Event.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/paagent-IdlenessEvent.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/paagent-NodeStarter.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/paagent-P2PAction.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/paagent-P2PNodeStarter.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/paagent-PAAgent.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/paagent-RMAction.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/paagent-RMNodeStarter.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/paagent-Runner.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/paagent-Watcher.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/paagent-paagent.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/paagent_server-Controller.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/paagent_server-CustomNodeStarter.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/paagent_server-NodeStarter.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/paagent_server-P2PNodeStarter.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/paagent_server-PAAgent.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/paagent_server-RMNodeStarter.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/paagent_server-Watcher.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/paagent_server-paagent_server.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/paagent_tests-Action.Po@am__quote@
@@ -379,14 +393,17 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/paagent_tests-Controller.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/paagent_tests-ControllerTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/paagent_tests-CustomAction.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/paagent_tests-CustomNodeStarter.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/paagent_tests-DBusMessaging.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/paagent_tests-Event.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/paagent_tests-IdlenessEvent.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/paagent_tests-NodeStarter.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/paagent_tests-P2PAction.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/paagent_tests-P2PNodeStarter.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/paagent_tests-PAAgent.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/paagent_tests-PAAgentTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/paagent_tests-RMAction.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/paagent_tests-RMNodeStarter.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/paagent_tests-Runner.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/paagent_tests-Watcher.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/paagent_tests-paagent_tests.Po@am__quote@
@@ -404,6 +421,48 @@ distclean-compile:
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$<' object='$@' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXXCOMPILE) -c -o $@ `$(CYGPATH_W) '$<'`
+
+paagent-P2PNodeStarter.o: P2PNodeStarter.cpp
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(paagent_CXXFLAGS) $(CXXFLAGS) -MT paagent-P2PNodeStarter.o -MD -MP -MF $(DEPDIR)/paagent-P2PNodeStarter.Tpo -c -o paagent-P2PNodeStarter.o `test -f 'P2PNodeStarter.cpp' || echo '$(srcdir)/'`P2PNodeStarter.cpp
+@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/paagent-P2PNodeStarter.Tpo $(DEPDIR)/paagent-P2PNodeStarter.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='P2PNodeStarter.cpp' object='paagent-P2PNodeStarter.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(paagent_CXXFLAGS) $(CXXFLAGS) -c -o paagent-P2PNodeStarter.o `test -f 'P2PNodeStarter.cpp' || echo '$(srcdir)/'`P2PNodeStarter.cpp
+
+paagent-P2PNodeStarter.obj: P2PNodeStarter.cpp
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(paagent_CXXFLAGS) $(CXXFLAGS) -MT paagent-P2PNodeStarter.obj -MD -MP -MF $(DEPDIR)/paagent-P2PNodeStarter.Tpo -c -o paagent-P2PNodeStarter.obj `if test -f 'P2PNodeStarter.cpp'; then $(CYGPATH_W) 'P2PNodeStarter.cpp'; else $(CYGPATH_W) '$(srcdir)/P2PNodeStarter.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/paagent-P2PNodeStarter.Tpo $(DEPDIR)/paagent-P2PNodeStarter.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='P2PNodeStarter.cpp' object='paagent-P2PNodeStarter.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(paagent_CXXFLAGS) $(CXXFLAGS) -c -o paagent-P2PNodeStarter.obj `if test -f 'P2PNodeStarter.cpp'; then $(CYGPATH_W) 'P2PNodeStarter.cpp'; else $(CYGPATH_W) '$(srcdir)/P2PNodeStarter.cpp'; fi`
+
+paagent-CustomNodeStarter.o: CustomNodeStarter.cpp
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(paagent_CXXFLAGS) $(CXXFLAGS) -MT paagent-CustomNodeStarter.o -MD -MP -MF $(DEPDIR)/paagent-CustomNodeStarter.Tpo -c -o paagent-CustomNodeStarter.o `test -f 'CustomNodeStarter.cpp' || echo '$(srcdir)/'`CustomNodeStarter.cpp
+@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/paagent-CustomNodeStarter.Tpo $(DEPDIR)/paagent-CustomNodeStarter.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='CustomNodeStarter.cpp' object='paagent-CustomNodeStarter.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(paagent_CXXFLAGS) $(CXXFLAGS) -c -o paagent-CustomNodeStarter.o `test -f 'CustomNodeStarter.cpp' || echo '$(srcdir)/'`CustomNodeStarter.cpp
+
+paagent-CustomNodeStarter.obj: CustomNodeStarter.cpp
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(paagent_CXXFLAGS) $(CXXFLAGS) -MT paagent-CustomNodeStarter.obj -MD -MP -MF $(DEPDIR)/paagent-CustomNodeStarter.Tpo -c -o paagent-CustomNodeStarter.obj `if test -f 'CustomNodeStarter.cpp'; then $(CYGPATH_W) 'CustomNodeStarter.cpp'; else $(CYGPATH_W) '$(srcdir)/CustomNodeStarter.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/paagent-CustomNodeStarter.Tpo $(DEPDIR)/paagent-CustomNodeStarter.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='CustomNodeStarter.cpp' object='paagent-CustomNodeStarter.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(paagent_CXXFLAGS) $(CXXFLAGS) -c -o paagent-CustomNodeStarter.obj `if test -f 'CustomNodeStarter.cpp'; then $(CYGPATH_W) 'CustomNodeStarter.cpp'; else $(CYGPATH_W) '$(srcdir)/CustomNodeStarter.cpp'; fi`
+
+paagent-RMNodeStarter.o: RMNodeStarter.cpp
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(paagent_CXXFLAGS) $(CXXFLAGS) -MT paagent-RMNodeStarter.o -MD -MP -MF $(DEPDIR)/paagent-RMNodeStarter.Tpo -c -o paagent-RMNodeStarter.o `test -f 'RMNodeStarter.cpp' || echo '$(srcdir)/'`RMNodeStarter.cpp
+@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/paagent-RMNodeStarter.Tpo $(DEPDIR)/paagent-RMNodeStarter.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='RMNodeStarter.cpp' object='paagent-RMNodeStarter.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(paagent_CXXFLAGS) $(CXXFLAGS) -c -o paagent-RMNodeStarter.o `test -f 'RMNodeStarter.cpp' || echo '$(srcdir)/'`RMNodeStarter.cpp
+
+paagent-RMNodeStarter.obj: RMNodeStarter.cpp
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(paagent_CXXFLAGS) $(CXXFLAGS) -MT paagent-RMNodeStarter.obj -MD -MP -MF $(DEPDIR)/paagent-RMNodeStarter.Tpo -c -o paagent-RMNodeStarter.obj `if test -f 'RMNodeStarter.cpp'; then $(CYGPATH_W) 'RMNodeStarter.cpp'; else $(CYGPATH_W) '$(srcdir)/RMNodeStarter.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/paagent-RMNodeStarter.Tpo $(DEPDIR)/paagent-RMNodeStarter.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='RMNodeStarter.cpp' object='paagent-RMNodeStarter.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(paagent_CXXFLAGS) $(CXXFLAGS) -c -o paagent-RMNodeStarter.obj `if test -f 'RMNodeStarter.cpp'; then $(CYGPATH_W) 'RMNodeStarter.cpp'; else $(CYGPATH_W) '$(srcdir)/RMNodeStarter.cpp'; fi`
 
 paagent-Runner.o: Runner.cpp
 @am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(paagent_CXXFLAGS) $(CXXFLAGS) -MT paagent-Runner.o -MD -MP -MF $(DEPDIR)/paagent-Runner.Tpo -c -o paagent-Runner.o `test -f 'Runner.cpp' || echo '$(srcdir)/'`Runner.cpp
@@ -657,6 +716,48 @@ paagent-DBusMessaging.obj: DBusMessaging.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(paagent_CXXFLAGS) $(CXXFLAGS) -c -o paagent-DBusMessaging.obj `if test -f 'DBusMessaging.cpp'; then $(CYGPATH_W) 'DBusMessaging.cpp'; else $(CYGPATH_W) '$(srcdir)/DBusMessaging.cpp'; fi`
 
+paagent_server-P2PNodeStarter.o: P2PNodeStarter.cpp
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(paagent_server_CXXFLAGS) $(CXXFLAGS) -MT paagent_server-P2PNodeStarter.o -MD -MP -MF $(DEPDIR)/paagent_server-P2PNodeStarter.Tpo -c -o paagent_server-P2PNodeStarter.o `test -f 'P2PNodeStarter.cpp' || echo '$(srcdir)/'`P2PNodeStarter.cpp
+@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/paagent_server-P2PNodeStarter.Tpo $(DEPDIR)/paagent_server-P2PNodeStarter.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='P2PNodeStarter.cpp' object='paagent_server-P2PNodeStarter.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(paagent_server_CXXFLAGS) $(CXXFLAGS) -c -o paagent_server-P2PNodeStarter.o `test -f 'P2PNodeStarter.cpp' || echo '$(srcdir)/'`P2PNodeStarter.cpp
+
+paagent_server-P2PNodeStarter.obj: P2PNodeStarter.cpp
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(paagent_server_CXXFLAGS) $(CXXFLAGS) -MT paagent_server-P2PNodeStarter.obj -MD -MP -MF $(DEPDIR)/paagent_server-P2PNodeStarter.Tpo -c -o paagent_server-P2PNodeStarter.obj `if test -f 'P2PNodeStarter.cpp'; then $(CYGPATH_W) 'P2PNodeStarter.cpp'; else $(CYGPATH_W) '$(srcdir)/P2PNodeStarter.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/paagent_server-P2PNodeStarter.Tpo $(DEPDIR)/paagent_server-P2PNodeStarter.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='P2PNodeStarter.cpp' object='paagent_server-P2PNodeStarter.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(paagent_server_CXXFLAGS) $(CXXFLAGS) -c -o paagent_server-P2PNodeStarter.obj `if test -f 'P2PNodeStarter.cpp'; then $(CYGPATH_W) 'P2PNodeStarter.cpp'; else $(CYGPATH_W) '$(srcdir)/P2PNodeStarter.cpp'; fi`
+
+paagent_server-CustomNodeStarter.o: CustomNodeStarter.cpp
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(paagent_server_CXXFLAGS) $(CXXFLAGS) -MT paagent_server-CustomNodeStarter.o -MD -MP -MF $(DEPDIR)/paagent_server-CustomNodeStarter.Tpo -c -o paagent_server-CustomNodeStarter.o `test -f 'CustomNodeStarter.cpp' || echo '$(srcdir)/'`CustomNodeStarter.cpp
+@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/paagent_server-CustomNodeStarter.Tpo $(DEPDIR)/paagent_server-CustomNodeStarter.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='CustomNodeStarter.cpp' object='paagent_server-CustomNodeStarter.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(paagent_server_CXXFLAGS) $(CXXFLAGS) -c -o paagent_server-CustomNodeStarter.o `test -f 'CustomNodeStarter.cpp' || echo '$(srcdir)/'`CustomNodeStarter.cpp
+
+paagent_server-CustomNodeStarter.obj: CustomNodeStarter.cpp
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(paagent_server_CXXFLAGS) $(CXXFLAGS) -MT paagent_server-CustomNodeStarter.obj -MD -MP -MF $(DEPDIR)/paagent_server-CustomNodeStarter.Tpo -c -o paagent_server-CustomNodeStarter.obj `if test -f 'CustomNodeStarter.cpp'; then $(CYGPATH_W) 'CustomNodeStarter.cpp'; else $(CYGPATH_W) '$(srcdir)/CustomNodeStarter.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/paagent_server-CustomNodeStarter.Tpo $(DEPDIR)/paagent_server-CustomNodeStarter.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='CustomNodeStarter.cpp' object='paagent_server-CustomNodeStarter.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(paagent_server_CXXFLAGS) $(CXXFLAGS) -c -o paagent_server-CustomNodeStarter.obj `if test -f 'CustomNodeStarter.cpp'; then $(CYGPATH_W) 'CustomNodeStarter.cpp'; else $(CYGPATH_W) '$(srcdir)/CustomNodeStarter.cpp'; fi`
+
+paagent_server-RMNodeStarter.o: RMNodeStarter.cpp
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(paagent_server_CXXFLAGS) $(CXXFLAGS) -MT paagent_server-RMNodeStarter.o -MD -MP -MF $(DEPDIR)/paagent_server-RMNodeStarter.Tpo -c -o paagent_server-RMNodeStarter.o `test -f 'RMNodeStarter.cpp' || echo '$(srcdir)/'`RMNodeStarter.cpp
+@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/paagent_server-RMNodeStarter.Tpo $(DEPDIR)/paagent_server-RMNodeStarter.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='RMNodeStarter.cpp' object='paagent_server-RMNodeStarter.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(paagent_server_CXXFLAGS) $(CXXFLAGS) -c -o paagent_server-RMNodeStarter.o `test -f 'RMNodeStarter.cpp' || echo '$(srcdir)/'`RMNodeStarter.cpp
+
+paagent_server-RMNodeStarter.obj: RMNodeStarter.cpp
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(paagent_server_CXXFLAGS) $(CXXFLAGS) -MT paagent_server-RMNodeStarter.obj -MD -MP -MF $(DEPDIR)/paagent_server-RMNodeStarter.Tpo -c -o paagent_server-RMNodeStarter.obj `if test -f 'RMNodeStarter.cpp'; then $(CYGPATH_W) 'RMNodeStarter.cpp'; else $(CYGPATH_W) '$(srcdir)/RMNodeStarter.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/paagent_server-RMNodeStarter.Tpo $(DEPDIR)/paagent_server-RMNodeStarter.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='RMNodeStarter.cpp' object='paagent_server-RMNodeStarter.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(paagent_server_CXXFLAGS) $(CXXFLAGS) -c -o paagent_server-RMNodeStarter.obj `if test -f 'RMNodeStarter.cpp'; then $(CYGPATH_W) 'RMNodeStarter.cpp'; else $(CYGPATH_W) '$(srcdir)/RMNodeStarter.cpp'; fi`
+
 paagent_server-PAAgent.o: PAAgent.cpp
 @am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(paagent_server_CXXFLAGS) $(CXXFLAGS) -MT paagent_server-PAAgent.o -MD -MP -MF $(DEPDIR)/paagent_server-PAAgent.Tpo -c -o paagent_server-PAAgent.o `test -f 'PAAgent.cpp' || echo '$(srcdir)/'`PAAgent.cpp
 @am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/paagent_server-PAAgent.Tpo $(DEPDIR)/paagent_server-PAAgent.Po
@@ -726,6 +827,48 @@ paagent_server-Watcher.obj: Watcher.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='Watcher.cpp' object='paagent_server-Watcher.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(paagent_server_CXXFLAGS) $(CXXFLAGS) -c -o paagent_server-Watcher.obj `if test -f 'Watcher.cpp'; then $(CYGPATH_W) 'Watcher.cpp'; else $(CYGPATH_W) '$(srcdir)/Watcher.cpp'; fi`
+
+paagent_tests-P2PNodeStarter.o: P2PNodeStarter.cpp
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(paagent_tests_CXXFLAGS) $(CXXFLAGS) -MT paagent_tests-P2PNodeStarter.o -MD -MP -MF $(DEPDIR)/paagent_tests-P2PNodeStarter.Tpo -c -o paagent_tests-P2PNodeStarter.o `test -f 'P2PNodeStarter.cpp' || echo '$(srcdir)/'`P2PNodeStarter.cpp
+@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/paagent_tests-P2PNodeStarter.Tpo $(DEPDIR)/paagent_tests-P2PNodeStarter.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='P2PNodeStarter.cpp' object='paagent_tests-P2PNodeStarter.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(paagent_tests_CXXFLAGS) $(CXXFLAGS) -c -o paagent_tests-P2PNodeStarter.o `test -f 'P2PNodeStarter.cpp' || echo '$(srcdir)/'`P2PNodeStarter.cpp
+
+paagent_tests-P2PNodeStarter.obj: P2PNodeStarter.cpp
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(paagent_tests_CXXFLAGS) $(CXXFLAGS) -MT paagent_tests-P2PNodeStarter.obj -MD -MP -MF $(DEPDIR)/paagent_tests-P2PNodeStarter.Tpo -c -o paagent_tests-P2PNodeStarter.obj `if test -f 'P2PNodeStarter.cpp'; then $(CYGPATH_W) 'P2PNodeStarter.cpp'; else $(CYGPATH_W) '$(srcdir)/P2PNodeStarter.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/paagent_tests-P2PNodeStarter.Tpo $(DEPDIR)/paagent_tests-P2PNodeStarter.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='P2PNodeStarter.cpp' object='paagent_tests-P2PNodeStarter.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(paagent_tests_CXXFLAGS) $(CXXFLAGS) -c -o paagent_tests-P2PNodeStarter.obj `if test -f 'P2PNodeStarter.cpp'; then $(CYGPATH_W) 'P2PNodeStarter.cpp'; else $(CYGPATH_W) '$(srcdir)/P2PNodeStarter.cpp'; fi`
+
+paagent_tests-CustomNodeStarter.o: CustomNodeStarter.cpp
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(paagent_tests_CXXFLAGS) $(CXXFLAGS) -MT paagent_tests-CustomNodeStarter.o -MD -MP -MF $(DEPDIR)/paagent_tests-CustomNodeStarter.Tpo -c -o paagent_tests-CustomNodeStarter.o `test -f 'CustomNodeStarter.cpp' || echo '$(srcdir)/'`CustomNodeStarter.cpp
+@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/paagent_tests-CustomNodeStarter.Tpo $(DEPDIR)/paagent_tests-CustomNodeStarter.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='CustomNodeStarter.cpp' object='paagent_tests-CustomNodeStarter.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(paagent_tests_CXXFLAGS) $(CXXFLAGS) -c -o paagent_tests-CustomNodeStarter.o `test -f 'CustomNodeStarter.cpp' || echo '$(srcdir)/'`CustomNodeStarter.cpp
+
+paagent_tests-CustomNodeStarter.obj: CustomNodeStarter.cpp
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(paagent_tests_CXXFLAGS) $(CXXFLAGS) -MT paagent_tests-CustomNodeStarter.obj -MD -MP -MF $(DEPDIR)/paagent_tests-CustomNodeStarter.Tpo -c -o paagent_tests-CustomNodeStarter.obj `if test -f 'CustomNodeStarter.cpp'; then $(CYGPATH_W) 'CustomNodeStarter.cpp'; else $(CYGPATH_W) '$(srcdir)/CustomNodeStarter.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/paagent_tests-CustomNodeStarter.Tpo $(DEPDIR)/paagent_tests-CustomNodeStarter.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='CustomNodeStarter.cpp' object='paagent_tests-CustomNodeStarter.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(paagent_tests_CXXFLAGS) $(CXXFLAGS) -c -o paagent_tests-CustomNodeStarter.obj `if test -f 'CustomNodeStarter.cpp'; then $(CYGPATH_W) 'CustomNodeStarter.cpp'; else $(CYGPATH_W) '$(srcdir)/CustomNodeStarter.cpp'; fi`
+
+paagent_tests-RMNodeStarter.o: RMNodeStarter.cpp
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(paagent_tests_CXXFLAGS) $(CXXFLAGS) -MT paagent_tests-RMNodeStarter.o -MD -MP -MF $(DEPDIR)/paagent_tests-RMNodeStarter.Tpo -c -o paagent_tests-RMNodeStarter.o `test -f 'RMNodeStarter.cpp' || echo '$(srcdir)/'`RMNodeStarter.cpp
+@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/paagent_tests-RMNodeStarter.Tpo $(DEPDIR)/paagent_tests-RMNodeStarter.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='RMNodeStarter.cpp' object='paagent_tests-RMNodeStarter.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(paagent_tests_CXXFLAGS) $(CXXFLAGS) -c -o paagent_tests-RMNodeStarter.o `test -f 'RMNodeStarter.cpp' || echo '$(srcdir)/'`RMNodeStarter.cpp
+
+paagent_tests-RMNodeStarter.obj: RMNodeStarter.cpp
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(paagent_tests_CXXFLAGS) $(CXXFLAGS) -MT paagent_tests-RMNodeStarter.obj -MD -MP -MF $(DEPDIR)/paagent_tests-RMNodeStarter.Tpo -c -o paagent_tests-RMNodeStarter.obj `if test -f 'RMNodeStarter.cpp'; then $(CYGPATH_W) 'RMNodeStarter.cpp'; else $(CYGPATH_W) '$(srcdir)/RMNodeStarter.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/paagent_tests-RMNodeStarter.Tpo $(DEPDIR)/paagent_tests-RMNodeStarter.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='RMNodeStarter.cpp' object='paagent_tests-RMNodeStarter.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(paagent_tests_CXXFLAGS) $(CXXFLAGS) -c -o paagent_tests-RMNodeStarter.obj `if test -f 'RMNodeStarter.cpp'; then $(CYGPATH_W) 'RMNodeStarter.cpp'; else $(CYGPATH_W) '$(srcdir)/RMNodeStarter.cpp'; fi`
 
 paagent_tests-Runner.o: Runner.cpp
 @am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(paagent_tests_CXXFLAGS) $(CXXFLAGS) -MT paagent_tests-Runner.o -MD -MP -MF $(DEPDIR)/paagent_tests-Runner.Tpo -c -o paagent_tests-Runner.o `test -f 'Runner.cpp' || echo '$(srcdir)/'`Runner.cpp

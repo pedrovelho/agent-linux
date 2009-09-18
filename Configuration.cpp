@@ -52,7 +52,14 @@ void Configuration::AddEvent(Event *event) {
 int Configuration::GetNoCPUS() {
 	return sysconf(_SC_NPROCESSORS_ONLN);
 }
+string Configuration::GetClasspath() {
 
+	string classpath;
+	classpath = proactive_location + PROACTIVE_JAR + ":" + proactive_location
+			+ PROACTIVE_EXAMPLES_JAR + ":" + proactive_location
+			+ PROACTIVE_UTILS_JAR;
+	return classpath;
+}
 
 //static int get_ncpu() {
 //	int ncpu = -1;

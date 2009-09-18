@@ -15,6 +15,3 @@ AdvertAction::AdvertAction() {
 AdvertAction::~AdvertAction() {
 	// TODO Auto-generated destructor stub
 }
-string AdvertAction::GetType() {
-	return typeid(*this).name();
-}

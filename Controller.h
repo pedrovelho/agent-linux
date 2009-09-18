@@ -28,7 +28,11 @@ using namespace log4cxx::helpers;
 class Controller {
 private:
 	LoggerPtr logger;
-	//	map <int, string> nodes;
+	string security_policy;
+	string log4j_file;
+	string proactive_home;
+	string classpath;
+	string java_bin;
 public:
 	void SendSignal(const string signal, string node_name);
 	Controller();
@@ -51,9 +55,7 @@ public:
 	 * Returns the pid of the shell process which starts the Node
 	 * on successful execution.
 	 */
-	int StartNode(string name, string java_class, string security_policy,
-			string log4j_file, string proactive_home, string classpath,
-			string java_bin);
+	int StartNode(string name, string java_class);
 	/**
 	 * Starts a JVM with the default node starter and shell.
 	 * node_name - the name of the node to be started
@@ -74,6 +76,11 @@ public:
 	 *
 	 * Returns false if no Node has been found.
 	 */
+	int StartRMNode(string name, string java_class, string user,
+			string password, string url);
+	//contact ? WTF
+	int StartP2PNode(string name, string java_class, string contact);
+	int StartCustomNode(string name, string java_class, string arguments);
 	bool StopNode(int pid);
 
 	/**
@@ -86,6 +93,8 @@ public:
 	bool StopNode(string node_name);
 
 	LoggerPtr getLogger();
+	int SetStartConfiguration(string security_policy, string log4j_file,
+			string proactive_home, string classpath, string java_bin);
 };
 
 #endif /* CONTROLLER_H_ */

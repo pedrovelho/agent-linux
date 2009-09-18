@@ -5,15 +5,27 @@
  *      Author: vasile
  */
 
+#include "RMNodeStarter.h"
+#include "CustomNodeStarter.h"
+#include "P2PNodeStarter.h"
 #include "NodeStarter.h"
 #include "Controller.h"
+#include "Constants.h"
 
 Controller::Controller() {
+
 	//initialize logger
 	//TODO  move outside the constructor
-//	logger = log4cxx::Logger::getLogger("Controller");
-//	BasicConfigurator::configure();
-//	logger->setLevel(log4cxx::Level::getTrace());
+	//	logger = log4cxx::Logger::getLogger("Controller");
+	//	BasicConfigurator::configure();
+	//	logger->setLevel(log4cxx::Level::getTrace());
+
+	//initialize to defaults for safety
+	security_policy= DEFAULT_DJAVA_SECURITY;
+	log4j_file=DEFAULT_DLOG4J_FILE;
+	proactive_home=DEFAULT_PROACTIVE_HOME;
+	classpath=DEFAULT_DCLASSPATH;
+	java_bin=DEFAULT_JAVA_BIN;
 }
 //Controller::Controller(const Controller &controller){
 //	default_node_exec = controller.default_node_exec;
@@ -23,13 +35,11 @@ Controller::Controller() {
 //}
 Controller::~Controller() {
 }
-int Controller::StartNode(string name, string java_class,
-		string security_policy, string log4j_file, string proactive_home,
-		string classpath, string java_bin) {
+int Controller::StartNode(string name, string java_class) {
 
 	NodeStarter starter(name, java_class, security_policy, log4j_file,
 			proactive_home, classpath, java_bin);
-	starter.start();
+	starter.run();
 
 	//	LOG4CXX_DEBUG(logger, "Node started");
 	return starter.getPid();
@@ -37,9 +47,36 @@ int Controller::StartNode(string name, string java_class,
 
 int Controller::StartNode(string node_name) {
 	NodeStarter starter(node_name);
-	starter.start();
+	starter.run();
 	return starter.getPid();
 }
+
+int Controller::StartRMNode(string name, string java_class, string user,
+		string password, string url) {
+
+	RMNodeStarter starter(name, java_class, security_policy, log4j_file,
+			proactive_home, classpath, java_bin, user, password, url);
+	starter.run();
+	//	LOG4CXX_DEBUG(logger, "Node started");
+	return starter.getPid();
+}
+int Controller::StartP2PNode(string name,string java_class, string contact){
+	P2PNodeStarter starter(name, java_class, security_policy, log4j_file,
+			proactive_home, classpath, java_bin,contact);
+	starter.run();
+	//	LOG4CXX_DEBUG(logger, "Node started");
+	return starter.getPid();
+
+}
+
+int Controller::StartCustomNode(string name,string java_class, string arguments){
+	CustomNodeStarter starter(name, java_class, security_policy, log4j_file,
+			proactive_home, classpath, java_bin, arguments);
+	starter.run();
+	//	LOG4CXX_DEBUG(logger, "Node started");
+	return starter.getPid();
+}
+
 bool Controller::StopNode(int pid) {
 	//try to stop
 
@@ -57,11 +94,21 @@ bool Controller::StopNode(int pid) {
 	return dead;
 }
 
-bool Controller::StopNode(string name){
+bool Controller::StopNode(string name) {
 	LOG4CXX_ERROR(logger,"Method not implemented, use stop by PID");
 	return false;
 }
 LoggerPtr Controller::getLogger() {
 	return logger;
+}
+int Controller::SetStartConfiguration(string security_policy,
+		string log4j_file, string proactive_home, string classpath,
+		string java_bin) {
+	this->security_policy = security_policy;
+	this->log4j_file = log4j_file;
+	this->proactive_home = proactive_home;
+	this->classpath = classpath;
+	this->java_bin = java_bin;
+	return 0;
 }
 

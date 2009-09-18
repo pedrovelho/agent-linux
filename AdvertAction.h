@@ -14,8 +14,6 @@ class AdvertAction: public Action {
 public:
 	AdvertAction();
 	virtual ~AdvertAction();
-	string GetType();
-
 };
 
 #endif /* ADVERTACTION_H_ */

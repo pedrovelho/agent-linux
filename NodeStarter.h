@@ -19,25 +19,14 @@
 
 #include "Constants.h"
 
+
 using namespace log4cxx;
 using namespace log4cxx::helpers;
 using namespace std;
 
-class NodeStarter {
-private:
-	log4cxx::LoggerPtr logger;
-	string name;
-	string java_class;
-	string security_policy;
-	string log4j_file;
-	string proactive_home;
-	string classpath;
-	string java_bin;
-	int pid;
-
-	void Initialize(string name, string java_class, string security_policy,
-			string log4j_file, string proactive_home, string classpath,
-			string java_bin);
+//#include <cc++/thread.h>
+//using namespace ost;
+class NodeStarter{
 public:
 	//	int piexec = execl(DEFAULT_JAVA_BIN.c_str(), " ",
 	//			DEFAULT_DSECURITY_MANAGER.c_str(),
@@ -54,8 +43,24 @@ public:
 			string java_bin = DEFAULT_JAVA_BIN);
 	NodeStarter(const NodeStarter &node);
 	virtual ~NodeStarter();
-	void start();
+	virtual void run();
 	int getPid();
+	int RunCommand();
+protected:
+	string name;
+	string java_class;
+	string security_policy;
+	string log4j_file;
+	string proactive_home;
+	string classpath;
+	string java_bin;
+private:
+	log4cxx::LoggerPtr logger;
+	int pid;
+
+	void Initialize(string name, string java_class, string security_policy,
+			string log4j_file, string proactive_home, string classpath,
+			string java_bin);
 };
 
 #endif /* NODESTARTER_H_ */

@@ -71,7 +71,7 @@ TEST_F(ConfigParserTest, parse) {
 	AdvertAction *adaction = advert_actions.at(0);
 	EXPECT_EQ(4, adaction->GetRestartDelay());
 	EXPECT_EQ("org.objectweb.proactive.core.util.winagent.PAAgentServiceRMIStarter", adaction->GetStarterClass());
-	EXPECT_EQ(false, adaction->GetEnabled());
+	EXPECT_EQ(false, adaction->IsEnabled());
 	//	    EXPECT_EQ("", adaction->GetNodeName());
 
 	vector<RMAction*> rm_actions = config->getRm_actions();
@@ -79,7 +79,7 @@ TEST_F(ConfigParserTest, parse) {
 	RMAction *rmaction = rm_actions.at(0);
 	EXPECT_EQ(0, rmaction->GetRestartDelay());
 	EXPECT_EQ("org.ow2.proactive.resourcemanager.utils.PAAgentServiceRMStarter", rmaction->GetStarterClass());
-	EXPECT_EQ(true, rmaction->GetEnabled());
+	EXPECT_EQ(true, rmaction->IsEnabled());
 	EXPECT_EQ("ilie", rmaction->GetUsername());
 	EXPECT_EQ("delascularie", rmaction->GetPassword());
 	//	    EXPECT_EQ("", rmaction->GetURL());
@@ -92,7 +92,7 @@ TEST_F(ConfigParserTest, parse) {
 	EXPECT_EQ("ilie@scularie", p2paction->GetContact());
 	EXPECT_EQ("RMI", p2paction->GetProtocol());
 	EXPECT_EQ("p2p_node",p2paction->GetNodeName());
-	EXPECT_EQ(false, p2paction->GetEnabled());
+	EXPECT_EQ(false, p2paction->IsEnabled());
 	EXPECT_EQ("P2PStarter",p2paction->GetStarterClass());
 
 	vector<CustomAction*> cust_actions = config->getCustom_actions();
@@ -101,6 +101,6 @@ TEST_F(ConfigParserTest, parse) {
 	EXPECT_EQ(0, custaction->GetRestartDelay());
 	EXPECT_EQ("some arguments", custaction->GetArguments());
 	EXPECT_EQ("custom",custaction->GetNodeName());
-	EXPECT_EQ(false, custaction->GetEnabled());
+	EXPECT_EQ(false, custaction->IsEnabled());
 	EXPECT_EQ("user.Starter",custaction->GetStarterClass());
 }

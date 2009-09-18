@@ -22,13 +22,13 @@ NodeStarter::NodeStarter(const NodeStarter &node) {
 NodeStarter::~NodeStarter() {
 }
 
-void NodeStarter::start() {
+void NodeStarter::run() {
 	/* prevent zombie process when the JVM or shell is killed
 	 * need so the JVM/bash can be checked through kill */
 	if (signal(SIGCHLD, SIG_IGN) == SIG_ERR)
 		LOG4CXX_ERROR(logger,
-				"Unable to ignore SIGCHILD, bash will be left as "
-				"a zombie when JVM is killed and the Watchers may malfunction"
+				"Unable to ignore SIGCHILD, JVM maybe left as zombies when"
+				"stopped and the Watchers may malfunction"
 				"depending on the implementation of kill");
 	pid_t sid;
 	LOG4CXX_DEBUG(logger, "Starting the node [" << name
@@ -66,11 +66,9 @@ void NodeStarter::start() {
 		chdir("/");
 
 		//Decoupling from parent environment done, running command
-		int piexec = execl(java_bin.c_str(), " ",
-				DEFAULT_DSECURITY_MANAGER.c_str(), security_policy.c_str(),
-				log4j_file.c_str(), proactive_home.c_str(), "-classpath",
-				classpath.c_str(), java_class.c_str(), "node1", (char *) 0);
-
+		RunCommand();
+		//if we reach this command has failed
+		LOG4CXX_ERROR(logger, "Error starting JVM, execl has failed");
 	}
 	//failed to fork
 	else if (pid < 0) {
@@ -100,4 +98,18 @@ void NodeStarter::Initialize(string name, string java_class,
 	this->proactive_home = proactive_home;
 	this->classpath = classpath;
 	this->java_bin = java_bin;
+}
+
+int NodeStarter::RunCommand(){
+//	return  execl(java_bin.c_str(), " ",
+//			DEFAULT_DSECURITY_MANAGER.c_str(), security_policy.c_str(),
+//			log4j_file.c_str(), proactive_home.c_str(), "-classpath",
+//			classpath.c_str(), java_class.c_str(), name.c_str(), (char *) 0);
+	return execl(DEFAULT_JAVA_BIN.c_str(), " ",
+				DEFAULT_DSECURITY_MANAGER.c_str(),
+				DEFAULT_DJAVA_SECURITY.c_str(),
+				DEFAULT_DLOG4J_FILE.c_str(),
+				DEFAULT_DPROACTIVE_HOME.c_str(),
+				"-classpath", DEFAULT_DCLASSPATH.c_str(),
+				DEFAULT_JAVA_CLASS.c_str(), "node1", (char *) 0);
 }

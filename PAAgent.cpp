@@ -40,12 +40,22 @@ void PAAgent::run() {
 	std::cout << "Created adapter" << endl;
 	std::cout << "Register adapter" << endl;
 	conn->register_object(adapter);
-	std::cout << "Running" << std::flush;
+	std::cout << "Running" << std::flush << endl;;
 
 	for (;;) {
-		std::cout << "." << std::flush;
-		usleep(1000* 1000 );
+//		std::cout << "\b\\" << std::flush;
+//
+//		usleep(1000* 1000 );
+//		std::cout << "\b-" << std::flush;
+//
+//		usleep(1000* 1000 );
+//		std::cout << "\b/" << std::flush;
+//
+//		usleep(1000* 1000 );
+//		std::cout << "\b|" << std::flush;
+//
+//		usleep(1000* 1000 );
+		usleep(1000*1000);
 	}
-
 	std::cout << std::endl;
 }

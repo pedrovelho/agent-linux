@@ -7,15 +7,16 @@
 #include <iostream>
 #include <cc++/thread.h>
 #include "ConfigParser.h"
-
+#include "Watcher.h"
 #include <sys/sysinfo.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
+#include "controller_proxy.h"
 
 using namespace ost;
 
-class Runner: public Thread {
+class Runner : public Thread{
 public:
 	Runner();
 	virtual ~Runner();
@@ -32,9 +33,12 @@ public:
 	bool isNow(CalendarEvent *calendar);
 	void setConfiguration(Configuration* new_var);
 	Configuration* getConfiguration();
+	void StartActions();
+
 private:
 	Configuration* configuration;
 	LoggerPtr logger;
+	vector<Watcher*> watchers;
 protected:
 	virtual void run();
 

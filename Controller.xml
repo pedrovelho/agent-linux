@@ -22,21 +22,45 @@
 <node gen-namespace="DBus" cppname="Controller" cppinclude="&quot;Controller.h&quot;"
 	dest="proactive.agent.controller" path="/proactive/agent/Controller">
 	<interface name="proactive.agent.controller">
-		<method name="StartNode">
-			<arg type="s" name="name" direction="in" />
-			<arg type="s" name="java_class" direction="in" />
+		<method name="SetStartConfiguration">
 			<arg type="s" name="security_policy" direction="in" />
 			<arg type="s" name="log4j_file" direction="in" />
 			<arg type="s" name="proactive_home" direction="in" />
 			<arg type="s" name="classpath" direction="in" />
 			<arg type="s" name="java_bin" direction="in" />
+			<arg type="i" name="success" direction="out" />
+		</method>
+		<method name="StartNode">
+			<arg type="s" name="name" direction="in" />
+			<arg type="s" name="java_class" direction="in" />
 			<arg type="i" name="pid" direction="out" />
 		</method>
 		<method name="StartNode">
 			<arg type="s" name="node_name" direction="in" />
 			<arg type="i" name="pid" direction="out" />
 		</method>
+		<method name="StartRMNode">
+			<arg type="s" name="name" direction="in" />
+			<arg type="s" name="java_class" direction="in" />
+			<arg type="s" name="user" direction="in" />
+			<arg type="s" name="password" direction="in" />
+			<arg type="s" name="url" direction="in" />
+			<arg type="i" name="pid" direction="out" />
+		</method>
 
+		<method name="StartP2PNode">
+			<arg type="s" name="name" direction="in" />
+			<arg type="s" name="java_class" direction="in" />
+			<arg type="s" name="contact" direction="in" />
+			<arg type="i" name="pid" direction="out" />
+		</method>
+		<method name="StartCustomNode">
+			<arg type="s" name="name" direction="in" />
+			<arg type="s" name="java_class" direction="in" />
+			<arg type="s" name="arguments" direction="in" />
+			<arg type="i" name="pid" direction="out" />
+		</method>
+		
 		<method name="StopNode">
 			<arg type="i" name="pid" direction="in" />
 			<arg type="b" name="success" direction="out" />

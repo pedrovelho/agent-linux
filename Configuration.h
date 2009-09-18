@@ -17,6 +17,7 @@
 #include "P2PAction.h"
 #include "CustomAction.h"
 #include "AdvertAction.h"
+#include "Constants.h"
 using namespace std;
 class Configuration {
 private:
@@ -42,6 +43,9 @@ protected:
 	Configuration();
 public:
 	int GetNoCPUS();
+	//composed from the ProActive home and the names of
+	//the ProActive jars
+	string GetClasspath();
 	void AddAction(Action* action);
 	void AddEvent(Event* event);
 	virtual ~Configuration();

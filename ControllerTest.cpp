@@ -36,14 +36,11 @@ TEST_F(ControllerTest, StartNode)
 	//it will check for the *shell* pid not the JVM pid
 	Controller controller;
 
-	first_pid = controller.StartNode(DEFAULT_SHELL, DEFAULT_NODE_EXEC,
-			"first_node");
+	first_pid = controller.StartNode("first_node");
 	EXPECT_NE(-1, kill(first_pid, 0));
-	second_pid = controller.StartNode(DEFAULT_SHELL, DEFAULT_NODE_EXEC,
-			"second_node");
+	second_pid = controller.StartNode("second_node");
 	EXPECT_NE(-1, kill(second_pid, 0));
-	third_pid = controller.StartNode(DEFAULT_SHELL, DEFAULT_NODE_EXEC,
-			"third_node");
+	third_pid = controller.StartNode("third_node");
 	EXPECT_NE(-1, kill(third_pid, 0));
 
 }

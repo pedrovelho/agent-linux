@@ -15,14 +15,14 @@
 	</internalConfig>
 	<events>
 		<event xsi:type="CalendarEvent">
-			<startDay>monday</startDay>
-			<startHour>2</startHour>
-			<startMinute>3</startMinute>
-			<startSecond>23</startSecond>
+			<startDay>fri</startDay>
+			<startHour>15</startHour>
+			<startMinute>04</startMinute>
+			<startSecond>15</startSecond>
 			<durationDays>6</durationDays>
-			<durationHours>23</durationHours>
-			<durationMinutes>59</durationMinutes>
-			<durationSeconds>59</durationSeconds>
+			<durationHours>0</durationHours>
+			<durationMinutes>0</durationMinutes>
+			<durationSeconds>20</durationSeconds>
 			<processPriority>Normal</processPriority>
 			<maxCpuUsage>100</maxCpuUsage>
 		</event>
@@ -36,14 +36,14 @@
 	<actions>
 		<action xsi:type="AdvertAction">
 			<initialRestartDelay>4</initialRestartDelay>
-			<javaStarterClass>org.objectweb.proactive.core.util.winagent.PAAgentServiceRMIStarter</javaStarterClass>
-			<isEnabled>false</isEnabled>
-			<nodeName />
+			<javaStarterClass>org.objectweb.proactive.core.node.StartNode</javaStarterClass>
+			<isEnabled>true</isEnabled>
+			<nodeName>Nume_oarecare</nodeName>
 		</action>
 		<action xsi:type="RMAction">
 			<initialRestartDelay>0</initialRestartDelay>
 			<javaStarterClass>org.ow2.proactive.resourcemanager.utils.PAAgentServiceRMStarter</javaStarterClass>
-			<isEnabled>true</isEnabled>
+			<isEnabled>false</isEnabled>
 			<username>ilie</username>
 			<password>delascularie</password>
 			<url />

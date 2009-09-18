@@ -1,6 +1,4 @@
 #include "Runner.h"
-// Constructors/Destructors
-//
 #define SCANFPATTERN "%4s %lf %lf %lf %lf %lf %lf %lf"
 Runner::Runner() {
 	logger = log4cxx::Logger::getLogger("Controller");
@@ -11,101 +9,23 @@ Runner::Runner() {
 Runner::~Runner() {
 }
 void Runner::run() {
-	ConfigParser parser("./ConfigExample.xml");
+	//initialize DBus Connection
+	ConfigParser parser("./PAAgent-config.xml");
+
 	configuration = parser.GetConfiguration();
 
 	CalendarEvent *calendar;
+
 	IdlenessEvent *idle;
+
 	int sleep_time = 1; //second value
+
 	int passes = 0;
-	//	while (1) {
-	//
-	//		//*********read cpu ticks
-	//		int num = 7;
-	//
-	//		FILE *f1 = fopen("/proc/stat", "r");
-	//
-	//		double ticks1[7];
-	//		char label1[5];
-	//
-	//		int vals1 = fscanf(f1, SCANFPATTERN, label1, &ticks1[0], &ticks1[1],
-	//				&ticks1[2], &ticks1[3], &ticks1[4], &ticks1[5], &ticks1[6]);
-	//
-	//		fclose(f1);
-	//
-	//		vector<CalendarEvent*> events = configuration->getCalendar_events();
-	//		int no_calendars = events.size();
-	//		for (int i = 0; i < no_calendars; i++) {
-	//			calendar = events.at(i);
-	//			//start event if the time matches
-	//			if (isNow(calendar)) {
-	//				events_duration.push_back(calendar->GetTotalDuration());
-	//				cout << "++++++++++++STARTING NOW";
-	//			}
-	//		}
-	//
-	//		//stop event if the time is up
-	//		int k = 0;
-	//		while (k < events_duration.size()) {
-	//			if (events_duration.at(k) < 0) {
-	//				cout << "++++++++++++STOPPING NOW";
-	//				events_duration.erase(events_duration.begin() + k);
-	//				// don't increment  k because erasing the k
-	//				// element moves all the elements to the left
-	//			} else {
-	//				k++;
-	//			}
-	//
-	//		}
-	//
-	//		//sleep takes milliseconds
-	//		sleep(sleep_time * 1000);
-	//
-	//		//decrement time for event duration equal to sleep time
-	//		//durations are in seconds
-	//		for (int i = 0; i < events_duration.size(); i++) {
-	//			events_duration.at(i) = events_duration.at(i) - sleep_time;
-	//		}
-	//
-	//		double idleness = 10000; //making sure it is bigger than end threshold
-	//		//read cpu ticks again but wait for 10 passes
-	//		//to get more accurate readings
-	//		if (passes > 10) {
-	//			FILE *f2 = fopen("/proc/stat", "r");
-	//			double ticks2[7];
-	//			char label2[5];
-	//			int vals2 = fscanf(f2, SCANFPATTERN, label2, &ticks2[0],
-	//					&ticks2[1], &ticks2[2], &ticks2[3], &ticks2[4], &ticks2[5],
-	//					&ticks2[6]);
-	//			fclose(f2);
-	//			cout << "Idle :" << (ticks2[3] - ticks1[3]) / 2 << "%" << endl;
-	//			passes = 0;
-	//
-	//			idleness = (ticks2[3] - ticks1[3]) / 2;
-	//			//test idle events with the
-	//			//idle value calculated
-	//
-	//		}
-	//		passes++;
-	//		vector<IdlenessEvent*> idle_events = configuration->getIdle_events();
-	//		for (int i = 0; i < idle_events.size(); i++) {
-	//			IdlenessEvent * idle = idle_events.at(i);
-	//			//FIXME why a begin and end threshold ?
-	//			//why not one idleness limit ?
-	//			//doesn't make sense
-	//
-	//			//if idleness is between thresholds
-	//			if ((idle->GetBeginThreshold() < idleness)
-	//					&& (idle->GetEndThreshold() > idleness)) {
-	//				//start counting seconds
-	//
-	//			}
-	//
-	//		}
-	//
-	//	}
+
 
 	int idleness = 0;
+
+
 	FILE *f;
 	//init flags
 	bool cal_event_on = false;
@@ -133,8 +53,8 @@ void Runner::run() {
 	//3. there is only 1 event running at the time (although the code is bit more general)
 	//4. all events start the same actions
 	//5? time taken in loop, except for sleep is negligible
-	while (1) {
 
+	while (1) {
 		//--------- CPU utilization check
 		int num = 7;
 		f = fopen("/proc/stat", "r");
@@ -176,7 +96,7 @@ void Runner::run() {
 					stop_actions = true;
 				} else {
 					//decrease timer for running calendar event
-					events_duration.at(i)= events_duration.at(i) - sleep_time;
+					events_duration.at(i) = events_duration.at(i) - sleep_time;
 					LOG4CXX_TRACE(logger, "Decreasing timer for calendar event " <<
 							events_duration.at(i) << " seconds left");
 
@@ -239,6 +159,7 @@ void Runner::run() {
 				cal_event_on = true;
 				LOG4CXX_DEBUG(logger, "++++++++++STARTING CALENDAR EVENT with duration of "<<
 						events_duration.at(i) << " seconds");
+				StartActions();
 			}
 		}//for
 
@@ -360,3 +281,57 @@ Configuration* Runner::getConfiguration() {
 	return configuration;
 }
 
+/**
+ * check which actions are enabled and start them
+ *
+ * Assuming that an event starts all the enabled actions and
+ * a stop event also stops all the actions
+ *
+ * int StartNode(string name, string java_class);
+ */
+//TODO DRY much ?
+void Runner::StartActions() {
+
+	//FIXME placing this in constructor does not work, why?
+	DBus::init();
+	DBus::Dispatcher dispatcher;
+	DBus::Connection::pointer connection = dispatcher.create_connection(
+			DBus::BUS_SESSION);
+	DBus::ControllerProxy::pointer controller= DBus::ControllerProxy::create(connection);
+	string java_bin = configuration->getJava_home() + "/bin/java";
+	controller->SetStartConfiguration(DEFAULT_DJAVA_SECURITY,
+			DEFAULT_DLOG4J_FILE, configuration->getProactive_location(),
+			configuration->GetClasspath(), java_bin);
+	LOG4CXX_TRACE(logger, "Set start configuration for controller to :" <<
+			DEFAULT_DJAVA_SECURITY<< "] [" <<
+			DEFAULT_DLOG4J_FILE<< "] [" <<
+			configuration->getProactive_location()<< "] [" <<
+			configuration->GetClasspath()<< "] [" <<
+			java_bin);
+	vector<AdvertAction*> advert_actions = configuration->getAdvert_actions();
+	vector<RMAction*> rm_actions = configuration->getRm_actions();
+	vector<P2PAction*> p2p_actions = configuration->getP_actions();
+	vector<CustomAction*> cust_actions = configuration->getCustom_actions();
+
+	int pid;
+	AdvertAction *advert;
+	Watcher *watcher;
+	for (int i = 0; i < advert_actions.size(); i++) {
+		advert = advert_actions.at(i);
+		if (advert->IsEnabled()) {
+			//start and add the pid to the pid vector
+			pid = controller->StartNode(advert->GetNodeName(),
+					advert->GetStarterClass());
+
+			//FIXME check the node has been actually started !!!
+//			LOG4CXX_TRACE(logger, "Advert node started " << advert->GetNodeName() );
+//			watcher = new Watcher(pid, DEFAULT_TICK, advert->GetRestartDelay(),
+//					advert->GetNodeName(), controller);
+//			watcher->start();
+//			watchers.push_back(watcher);
+//			LOG4CXX_TRACE(logger, "Watcher for advert node started PID:" << pid);
+
+		}
+	}
+
+}

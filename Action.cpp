@@ -40,7 +40,7 @@ string Action::GetStarterClass() const {
 string Action::GetNodeName() const {
 	return node_name;
 }
-bool Action::GetEnabled() const {
+bool Action::IsEnabled() const {
 	return enabled;
 }
 
