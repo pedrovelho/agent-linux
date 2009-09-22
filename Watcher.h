@@ -33,7 +33,7 @@ class Watcher: public Thread {
 private:
 	log4cxx::LoggerPtr logger;
 	int pid;
-	string node;
+	string node_name;
 	int tick;
 	bool stop;
 	long restart_delay;
@@ -49,18 +49,21 @@ public:
 
 	//named constructors for different types of action restarts
 	//AdvertAction
-	static Watcher AdvertWatcher(int jvm_pid, int tick, int restart_delay, string name,
-			string java_class, DBus::ControllerProxy::pointer controller);
-	//RMAction
-	static Watcher RMWatcher(int jvm_pid, int tick, int restart_delay, string name,
-			string java_class, string user, string password, string url,
+	static Watcher* AdvertWatcher(int jvm_pid, int tick, int restart_delay,
+			string name, string java_class,
 			DBus::ControllerProxy::pointer controller);
+	//RMAction
+	static Watcher* RMWatcher(int jvm_pid, int tick, int restart_delay,
+			string name, string java_class, string user, string password,
+			string url, DBus::ControllerProxy::pointer controller);
 	//P2PAction
-	static Watcher P2PWatcher(int jvm_pid, int tick, int restart_delay, string name,
-			string java_class, string contact, DBus::ControllerProxy::pointer controller);
+	static Watcher* P2PWatcher(int jvm_pid, int tick, int restart_delay,
+			string name, string java_class, string contact,
+			DBus::ControllerProxy::pointer controller);
 	//CustomAction
-	static Watcher CustomWatcher(int jvm_pid, int tick, int restart_delay, string name,
-			string java_class, string arguments, DBus::ControllerProxy::pointer controller);
+	static Watcher* CustomWatcher(int jvm_pid, int tick, int restart_delay,
+			string name, string java_class, string arguments,
+			DBus::ControllerProxy::pointer controller);
 
 	int GetTick();
 	int GetPid();
@@ -68,16 +71,17 @@ public:
 	void SetPid();
 	long GetRestartDelay();
 	void SetRestartDelay();
+	void StopWatcher();
 	virtual ~Watcher();
 	void run();
-protected:
-	Watcher(int jvm_pid, int tick, int restart_delay,
-			string name,  string java_class, DBus::ControllerProxy::pointer controller, ActionType action);
-private:
-	void SetRMValues(string user, string password,
-			string url);
+	Watcher(int jvm_pid, int tick, int restart_delay, string name,
+			string java_class, DBus::ControllerProxy::pointer controller,
+			ActionType action);
+	//these should be private
+	void SetRMValues(string user, string password, string url);
 	void SetP2PValues(string contact);
 	void SetCustomValues(string arguments);
+private:
 	int RestartNode(ActionType action);
 };
 

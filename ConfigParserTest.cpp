@@ -22,7 +22,8 @@ void ConfigParserTest::TearDown() {
 /* load known test files and compare the objects
  * created
  */
-TEST_F(ConfigParserTest, parse) {
+TEST_F(ConfigParserTest, parse)
+{
 
 	ConfigParser parser("./PAAgent-config.xml");
 	Configuration *config = parser.GetConfiguration();

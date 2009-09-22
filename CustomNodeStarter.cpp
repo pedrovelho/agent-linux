@@ -19,9 +19,9 @@ CustomNodeStarter::~CustomNodeStarter() {
 	// TODO Auto-generated destructor stub
 }
 //FIXME parse the arguments and add to exec
-int CustomNodeStarter::RunCommand(){
-	return  execl(java_bin.c_str(), " ",
-			DEFAULT_DSECURITY_MANAGER.c_str(), security_policy.c_str(),
-			log4j_file.c_str(), proactive_home.c_str(), "-classpath",
-			classpath.c_str(), java_class.c_str(), name.c_str(), (char *) 0);
+int CustomNodeStarter::RunCommand() {
+	return execl(java_bin.c_str(), " ", DEFAULT_DSECURITY_MANAGER.c_str(),
+			security_policy.c_str(), log4j_file.c_str(),
+			proactive_home.c_str(), "-classpath", classpath.c_str(),
+			java_class.c_str(), name.c_str(), (char *) 0);
 }

@@ -19,7 +19,6 @@ using namespace log4cxx;
 using namespace log4cxx::helpers;
 
 #include <signal.h>
-#include "DBusMessaging.h"
 #include "Constants.h"
 
 #include <sigc++-2.0/sigc++/sigc++.h>
@@ -81,7 +80,7 @@ public:
 	//contact ? WTF
 	int StartP2PNode(string name, string java_class, string contact);
 	int StartCustomNode(string name, string java_class, string arguments);
-	bool StopNode(int pid);
+	int StopNode(int pid);
 
 	/**
 	 * Stops the Node with the give name.
@@ -92,7 +91,6 @@ public:
 	 */
 	bool StopNode(string node_name);
 
-	LoggerPtr getLogger();
 	int SetStartConfiguration(string security_policy, string log4j_file,
 			string proactive_home, string classpath, string java_bin);
 };

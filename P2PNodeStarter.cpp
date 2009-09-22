@@ -19,10 +19,10 @@ P2PNodeStarter::~P2PNodeStarter() {
 	// TODO Auto-generated destructor stub
 }
 //what's contact good for ?
-int P2PNodeStarter::RunCommand(){
-	return  execl(java_bin.c_str(), " ",
-			DEFAULT_DSECURITY_MANAGER.c_str(), security_policy.c_str(),
-			log4j_file.c_str(), proactive_home.c_str(), "-classpath",
-			classpath.c_str(), java_class.c_str(), name.c_str(), (char *) 0);
+int P2PNodeStarter::RunCommand() {
+	return execl(java_bin.c_str(), " ", DEFAULT_DSECURITY_MANAGER.c_str(),
+			security_policy.c_str(), log4j_file.c_str(),
+			proactive_home.c_str(), "-classpath", classpath.c_str(),
+			java_class.c_str(), name.c_str(), (char *) 0);
 }
 

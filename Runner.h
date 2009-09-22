@@ -16,7 +16,7 @@
 
 using namespace ost;
 
-class Runner : public Thread{
+class Runner: public Thread {
 public:
 	Runner();
 	virtual ~Runner();
@@ -28,20 +28,20 @@ public:
 
 	/**
 	 */
-	void ReloadConfiguration() {
-	}
+	void ReloadConfiguration();
+	void LoadConfiguration(string xml_file);
 	bool isNow(CalendarEvent *calendar);
 	void setConfiguration(Configuration* new_var);
 	Configuration* getConfiguration();
-	void StartActions();
-
+	void StartActions(DBus::ControllerProxy::pointer controller);
+	void StopActions(DBus::ControllerProxy::pointer controller);
 private:
 	Configuration* configuration;
 	LoggerPtr logger;
 	vector<Watcher*> watchers;
+	string config_file;
 protected:
 	virtual void run();
-
 };
 
 #endif // RUNNER_H

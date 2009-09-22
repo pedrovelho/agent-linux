@@ -64,8 +64,7 @@ am_paagent_OBJECTS = paagent-P2PNodeStarter.$(OBJEXT) \
 	paagent-Configuration.$(OBJEXT) paagent-ConfigParser.$(OBJEXT) \
 	paagent-ConfigHandler.$(OBJEXT) paagent-PAAgent.$(OBJEXT) \
 	paagent-paagent.$(OBJEXT) paagent-Controller.$(OBJEXT) \
-	paagent-NodeStarter.$(OBJEXT) paagent-Watcher.$(OBJEXT) \
-	paagent-DBusMessaging.$(OBJEXT)
+	paagent-NodeStarter.$(OBJEXT) paagent-Watcher.$(OBJEXT)
 paagent_OBJECTS = $(am_paagent_OBJECTS)
 paagent_DEPENDENCIES =
 paagent_LINK = $(CXXLD) $(paagent_CXXFLAGS) $(CXXFLAGS) \
@@ -103,8 +102,7 @@ am_paagent_tests_OBJECTS = paagent_tests-P2PNodeStarter.$(OBJEXT) \
 	paagent_tests-PAAgent.$(OBJEXT) \
 	paagent_tests-Controller.$(OBJEXT) \
 	paagent_tests-NodeStarter.$(OBJEXT) \
-	paagent_tests-Watcher.$(OBJEXT) \
-	paagent_tests-DBusMessaging.$(OBJEXT)
+	paagent_tests-Watcher.$(OBJEXT)
 paagent_tests_OBJECTS = $(am_paagent_tests_OBJECTS)
 paagent_tests_DEPENDENCIES =
 paagent_tests_LINK = $(CXXLD) $(paagent_tests_CXXFLAGS) $(CXXFLAGS) \
@@ -234,14 +232,14 @@ paagent_server_SOURCES = P2PNodeStarter.cpp CustomNodeStarter.cpp RMNodeStarter.
 paagent_server_LDADD = -llog4cxx -lccext2 -lccgnu2 -lz -ldl -lrt -ldbus-1 -lgthread-2.0  -ldbus-glib-1 -lglibmm-2.4  -lsigc-2.0 -ldbus-cxx
 paagent_server_LDFLAGS = -pthread   -I/usr/include/dbus-1.0 -I/usr/lib/dbus-1.0/include -D_GNU_SOURCE 
 paagent_server_CXXFLAGS = -I/usr/include/glibmm-2.4 -I/usr/lib/glibmm-2.4/include -I/usr/include/sigc++-2.0 -I/usr/lib/sigc++-2.0/include -I/usr/local/include/dbus-cxx-0.4 -I/usr/include/dbus-1.0 -I/usr/lib/dbus-1.0/include -I/usr/include/sigc++-2.0 -I/usr/lib/sigc++-2.0/include -std=c++0x -std=gnu++0x
-paagent_tests_SOURCES = P2PNodeStarter.cpp CustomNodeStarter.cpp RMNodeStarter.cpp  Runner.cpp ConfigParserTest.cpp AdvertAction.cpp CustomAction.cpp RMAction.cpp P2PAction.cpp Action.cpp Event.cpp CalendarEvent.cpp IdlenessEvent.cpp Configuration.cpp ConfigParser.cpp ConfigHandler.cpp paagent_tests.cpp PAAgentTest.cpp ControllerTest.cpp  PAAgent.cpp  Controller.cpp NodeStarter.cpp  Watcher.cpp DBusMessaging.cpp
+paagent_tests_SOURCES = P2PNodeStarter.cpp CustomNodeStarter.cpp RMNodeStarter.cpp  Runner.cpp ConfigParserTest.cpp AdvertAction.cpp CustomAction.cpp RMAction.cpp P2PAction.cpp Action.cpp Event.cpp CalendarEvent.cpp IdlenessEvent.cpp Configuration.cpp ConfigParser.cpp ConfigHandler.cpp paagent_tests.cpp PAAgentTest.cpp ControllerTest.cpp  PAAgent.cpp  Controller.cpp NodeStarter.cpp  Watcher.cpp 
 paagent_tests_LDADD = -lxerces-c-3.0 -lgtest -llog4cxx -lccext2 -lccgnu2 -lz -ldl -lrt -ldbus-1 -lgthread-2.0  -ldbus-glib-1 -lglibmm-2.4  -lsigc-2.0 -ldbus-cxx
 paagent_tests_LDFLAGS = -pthread   -I/usr/include/dbus-1.0 -I/usr/lib/dbus-1.0/include -D_GNU_SOURCE 
 paagent_tests_CXXFLAGS = -I/usr/include/gtest -I/usr/include/glibmm-2.4 -I/usr/lib/glibmm-2.4/include -I/usr/include/sigc++-2.0 -I/usr/lib/sigc++-2.0/include -I/usr/local/include/dbus-cxx-0.4 -I/usr/include/dbus-1.0 -I/usr/lib/dbus-1.0/include -I/usr/include/sigc++-2.0 -I/usr/lib/sigc++-2.0/include -std=c++0x -std=gnu++0x
-paagent_SOURCES = P2PNodeStarter.cpp CustomNodeStarter.cpp RMNodeStarter.cpp Runner.cpp AdvertAction.cpp CustomAction.cpp RMAction.cpp P2PAction.cpp Action.cpp Event.cpp CalendarEvent.cpp IdlenessEvent.cpp Configuration.cpp ConfigParser.cpp ConfigHandler.cpp PAAgent.cpp paagent.cpp Controller.cpp NodeStarter.cpp  Watcher.cpp DBusMessaging.cpp
+paagent_SOURCES = P2PNodeStarter.cpp CustomNodeStarter.cpp RMNodeStarter.cpp Runner.cpp AdvertAction.cpp CustomAction.cpp RMAction.cpp P2PAction.cpp Action.cpp Event.cpp CalendarEvent.cpp IdlenessEvent.cpp Configuration.cpp ConfigParser.cpp ConfigHandler.cpp PAAgent.cpp paagent.cpp Controller.cpp NodeStarter.cpp  Watcher.cpp
 paagent_LDADD = -lxerces-c-3.0 -llog4cxx -lccext2 -lccgnu2 -lz -ldl -lrt -ldbus-1 -lgthread-2.0  -ldbus-glib-1 -lglibmm-2.4  -lsigc-2.0 -ldbus-cxx
 paagent_LDFLAGS = -pthread   -I/usr/include/dbus-1.0 -I/usr/lib/dbus-1.0/include -D_GNU_SOURCE 
-paagent_CXXFLAGS = -I/usr/include/glibmm-2.4 -I/usr/lib/glibmm-2.4/include -I/usr/include/sigc++-2.0 -I/usr/lib/sigc++-2.0/include -I/usr/local/include/dbus-cxx-0.4 -I/usr/include/dbus-1.0 -I/usr/lib/dbus-1.0/include -I/usr/include/sigc++-2.0 -I/usr/lib/sigc++-2.0/include -std=c++0x -std=gnu++0x
+paagent_CXXFLAGS = -I/usr/include/tclap -I/usr/include/glibmm-2.4 -I/usr/lib/glibmm-2.4/include -I/usr/include/sigc++-2.0 -I/usr/lib/sigc++-2.0/include -I/usr/local/include/dbus-cxx-0.4 -I/usr/include/dbus-1.0 -I/usr/lib/dbus-1.0/include -I/usr/include/sigc++-2.0 -I/usr/lib/sigc++-2.0/include -std=c++0x -std=gnu++0x
 
 # Interface XML name 
 interface_xml = Controller.xml
@@ -363,7 +361,6 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/paagent-Controller.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/paagent-CustomAction.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/paagent-CustomNodeStarter.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/paagent-DBusMessaging.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/paagent-Event.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/paagent-IdlenessEvent.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/paagent-NodeStarter.Po@am__quote@
@@ -394,7 +391,6 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/paagent_tests-ControllerTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/paagent_tests-CustomAction.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/paagent_tests-CustomNodeStarter.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/paagent_tests-DBusMessaging.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/paagent_tests-Event.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/paagent_tests-IdlenessEvent.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/paagent_tests-NodeStarter.Po@am__quote@
@@ -701,20 +697,6 @@ paagent-Watcher.obj: Watcher.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='Watcher.cpp' object='paagent-Watcher.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(paagent_CXXFLAGS) $(CXXFLAGS) -c -o paagent-Watcher.obj `if test -f 'Watcher.cpp'; then $(CYGPATH_W) 'Watcher.cpp'; else $(CYGPATH_W) '$(srcdir)/Watcher.cpp'; fi`
-
-paagent-DBusMessaging.o: DBusMessaging.cpp
-@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(paagent_CXXFLAGS) $(CXXFLAGS) -MT paagent-DBusMessaging.o -MD -MP -MF $(DEPDIR)/paagent-DBusMessaging.Tpo -c -o paagent-DBusMessaging.o `test -f 'DBusMessaging.cpp' || echo '$(srcdir)/'`DBusMessaging.cpp
-@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/paagent-DBusMessaging.Tpo $(DEPDIR)/paagent-DBusMessaging.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='DBusMessaging.cpp' object='paagent-DBusMessaging.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(paagent_CXXFLAGS) $(CXXFLAGS) -c -o paagent-DBusMessaging.o `test -f 'DBusMessaging.cpp' || echo '$(srcdir)/'`DBusMessaging.cpp
-
-paagent-DBusMessaging.obj: DBusMessaging.cpp
-@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(paagent_CXXFLAGS) $(CXXFLAGS) -MT paagent-DBusMessaging.obj -MD -MP -MF $(DEPDIR)/paagent-DBusMessaging.Tpo -c -o paagent-DBusMessaging.obj `if test -f 'DBusMessaging.cpp'; then $(CYGPATH_W) 'DBusMessaging.cpp'; else $(CYGPATH_W) '$(srcdir)/DBusMessaging.cpp'; fi`
-@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/paagent-DBusMessaging.Tpo $(DEPDIR)/paagent-DBusMessaging.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='DBusMessaging.cpp' object='paagent-DBusMessaging.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(paagent_CXXFLAGS) $(CXXFLAGS) -c -o paagent-DBusMessaging.obj `if test -f 'DBusMessaging.cpp'; then $(CYGPATH_W) 'DBusMessaging.cpp'; else $(CYGPATH_W) '$(srcdir)/DBusMessaging.cpp'; fi`
 
 paagent_server-P2PNodeStarter.o: P2PNodeStarter.cpp
 @am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(paagent_server_CXXFLAGS) $(CXXFLAGS) -MT paagent_server-P2PNodeStarter.o -MD -MP -MF $(DEPDIR)/paagent_server-P2PNodeStarter.Tpo -c -o paagent_server-P2PNodeStarter.o `test -f 'P2PNodeStarter.cpp' || echo '$(srcdir)/'`P2PNodeStarter.cpp
@@ -1149,20 +1131,6 @@ paagent_tests-Watcher.obj: Watcher.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='Watcher.cpp' object='paagent_tests-Watcher.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(paagent_tests_CXXFLAGS) $(CXXFLAGS) -c -o paagent_tests-Watcher.obj `if test -f 'Watcher.cpp'; then $(CYGPATH_W) 'Watcher.cpp'; else $(CYGPATH_W) '$(srcdir)/Watcher.cpp'; fi`
-
-paagent_tests-DBusMessaging.o: DBusMessaging.cpp
-@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(paagent_tests_CXXFLAGS) $(CXXFLAGS) -MT paagent_tests-DBusMessaging.o -MD -MP -MF $(DEPDIR)/paagent_tests-DBusMessaging.Tpo -c -o paagent_tests-DBusMessaging.o `test -f 'DBusMessaging.cpp' || echo '$(srcdir)/'`DBusMessaging.cpp
-@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/paagent_tests-DBusMessaging.Tpo $(DEPDIR)/paagent_tests-DBusMessaging.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='DBusMessaging.cpp' object='paagent_tests-DBusMessaging.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(paagent_tests_CXXFLAGS) $(CXXFLAGS) -c -o paagent_tests-DBusMessaging.o `test -f 'DBusMessaging.cpp' || echo '$(srcdir)/'`DBusMessaging.cpp
-
-paagent_tests-DBusMessaging.obj: DBusMessaging.cpp
-@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(paagent_tests_CXXFLAGS) $(CXXFLAGS) -MT paagent_tests-DBusMessaging.obj -MD -MP -MF $(DEPDIR)/paagent_tests-DBusMessaging.Tpo -c -o paagent_tests-DBusMessaging.obj `if test -f 'DBusMessaging.cpp'; then $(CYGPATH_W) 'DBusMessaging.cpp'; else $(CYGPATH_W) '$(srcdir)/DBusMessaging.cpp'; fi`
-@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/paagent_tests-DBusMessaging.Tpo $(DEPDIR)/paagent_tests-DBusMessaging.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='DBusMessaging.cpp' object='paagent_tests-DBusMessaging.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(paagent_tests_CXXFLAGS) $(CXXFLAGS) -c -o paagent_tests-DBusMessaging.obj `if test -f 'DBusMessaging.cpp'; then $(CYGPATH_W) 'DBusMessaging.cpp'; else $(CYGPATH_W) '$(srcdir)/DBusMessaging.cpp'; fi`
 
 ID: $(HEADERS) $(SOURCES) $(LISP) $(TAGS_FILES)
 	list='$(SOURCES) $(HEADERS) $(LISP) $(TAGS_FILES)'; \

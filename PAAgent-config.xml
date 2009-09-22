@@ -15,14 +15,14 @@
 	</internalConfig>
 	<events>
 		<event xsi:type="CalendarEvent">
-			<startDay>fri</startDay>
-			<startHour>15</startHour>
-			<startMinute>04</startMinute>
-			<startSecond>15</startSecond>
-			<durationDays>6</durationDays>
+			<startDay>tue</startDay>
+			<startHour>12</startHour>
+			<startMinute>32</startMinute>
+			<startSecond>0</startSecond>
+			<durationDays>0</durationDays>
 			<durationHours>0</durationHours>
 			<durationMinutes>0</durationMinutes>
-			<durationSeconds>20</durationSeconds>
+			<durationSeconds>3</durationSeconds>
 			<processPriority>Normal</processPriority>
 			<maxCpuUsage>100</maxCpuUsage>
 		</event>

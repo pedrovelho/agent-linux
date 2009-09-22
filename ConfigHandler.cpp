@@ -8,18 +8,16 @@
 #include "ConfigHandler.h"
 ConfigHandler::ConfigHandler() {
 	logger = log4cxx::Logger::getLogger("ConfigHandler");
-	BasicConfigurator::configure();
-	logger->setLevel(log4cxx::Level::getInfo());
 	config = Configuration::Inst();
 }
 
 ConfigHandler::~ConfigHandler() {
 	//unlink from the valid data
-//	currentEvent = new Event();
-//	currentAction = new Action();
-//	//delete
-//	delete currentEvent;
-//	delete currentAction;
+	//	currentEvent = new Event();
+	//	currentAction = new Action();
+	//	//delete
+	//	delete currentEvent;
+	//	delete currentAction;
 }
 void ConfigHandler::startDocument() {
 	LOG4CXX_INFO(logger, "Started parsing file");

@@ -12,9 +12,9 @@
 
 class P2PNodeStarter: public NodeStarter {
 public:
-	P2PNodeStarter(string name, string java_class,
-			string security_policy, string log4j_file, string proactive_home,
-			string classpath, string java_bin, string contact);
+	P2PNodeStarter(string name, string java_class, string security_policy,
+			string log4j_file, string proactive_home, string classpath,
+			string java_bin, string contact);
 	virtual ~P2PNodeStarter();
 	int RunCommand();
 private:

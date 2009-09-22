@@ -27,33 +27,37 @@ const string DEFAULT_JAVA_CLASS("org.objectweb.proactive.core.node.StartNode");
 //JAVACMD=$JAVA_HOME"/bin/java -Djava.security.manager -Djava.security.policy=$PROACTIVE/examples/proactive.java.policy -Dlog4j.configuration=file:${PROACTIVE}/examples/proactive-log4j -Dproactive.home=$PROACTIVE "
 const string DEFAULT_JAVA_BIN(DEFAULT_JAVA_HOME + "/bin/java");
 const string DEFAULT_DSECURITY_MANAGER("-Djava.security.manager");
-const string DEFAULT_DJAVA_SECURITY("-Djava.security.policy="+ DEFAULT_PROACTIVE_HOME + "/examples/proactive.java.policy");
-const string DEFAULT_DLOG4J_FILE("-Dlog4j.configuration=file:" + DEFAULT_PROACTIVE_HOME + "/examples/proactive-log4j");
-const string DEFAULT_DPROACTIVE_HOME("-Dproactive.home="+ DEFAULT_PROACTIVE_HOME);
+const string DEFAULT_DJAVA_SECURITY("-Djava.security.policy="
+		+ DEFAULT_PROACTIVE_HOME + "/examples/proactive.java.policy");
+const string DEFAULT_DLOG4J_FILE("-Dlog4j.configuration=file:"
+		+ DEFAULT_PROACTIVE_HOME + "/examples/proactive-log4j");
+const string DEFAULT_DPROACTIVE_HOME("-Dproactive.home="
+		+ DEFAULT_PROACTIVE_HOME);
 const string PROACTIVE_JAR("/dist/lib/ProActive.jar");
 const string PROACTIVE_EXAMPLES_JAR("/dist/lib/ProActive_examples.jar");
 const string PROACTIVE_UTILS_JAR("/dist/lib/ProActive_utils.jar");
 //CLASSPATH=$CLASSPATH:$PROACTIVE/dist/lib/ProActive.jar
 //CLASSPATH=$CLASSPATH:$PROACTIVE/dist/lib/ProActive_examples.jar
 //CLASSPATH=$CLASSPATH:$PROACTIVE/dist/lib/ProActive_utils.jar
-const string DEFAULT_DCLASSPATH(DEFAULT_PROACTIVE_HOME
-		+ PROACTIVE_JAR+ ":" + DEFAULT_PROACTIVE_HOME
-		+ PROACTIVE_EXAMPLES_JAR + ":" + DEFAULT_PROACTIVE_HOME
-		+ PROACTIVE_UTILS_JAR);
+const string DEFAULT_DCLASSPATH(DEFAULT_PROACTIVE_HOME + PROACTIVE_JAR + ":"
+		+ DEFAULT_PROACTIVE_HOME + PROACTIVE_EXAMPLES_JAR + ":"
+		+ DEFAULT_PROACTIVE_HOME + PROACTIVE_UTILS_JAR);
 
 //const string DEFAULT_NODE_STARTER(DEFAULT_JAVA_COMMAND + " "
 //		+" -classpath " + DEFAULT_CLASSPATH + " " + DEFAULT_JAVA_CLASS );
 
 const string JVM_STOPPED("JVM_STOPPED");
 //the JVM kill needs some time to finish, setting an arbitray time here to wait for the JVM to stop
-const int SLEEP_TIME_AFTER_KILL = 3;
+const int SLEEP_TIME_AFTER_KILL = 1;
 const int DEFAULT_TICK = 1000;
 
 //define types of actions
 
 
 //used in watchers to decide what action to restart
-enum ActionType {ADVERT, RM, CUSTOM, P2P};
+enum ActionType {
+	ADVERT, RM, CUSTOM, P2P
+};
 
 #define PROACTIVE_SERVICE_NAME        "pa.agent"
 /* Object path to the provided object. */

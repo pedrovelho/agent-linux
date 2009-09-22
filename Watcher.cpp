@@ -9,45 +9,48 @@
 
 //named constructors for different types of action restarts
 //AdvertAction
-Watcher Watcher::AdvertWatcher(int jvm_pid, int tick, int restart_delay,
-		string name, string java_class, DBus::ControllerProxy::pointer controller) {
-	Watcher w(jvm_pid, tick, restart_delay, name, java_class, controller, ADVERT);
-	return w;
+Watcher *Watcher::AdvertWatcher(int jvm_pid, int tick, int restart_delay,
+		string name, string java_class,
+		DBus::ControllerProxy::pointer controller) {
+	return new Watcher(jvm_pid, tick, restart_delay, name, java_class,
+			controller, ADVERT);
 }
 //RMAction
-Watcher Watcher::RMWatcher(int jvm_pid, int tick, int restart_delay,
+Watcher *Watcher::RMWatcher(int jvm_pid, int tick, int restart_delay,
 		string name, string java_class, string user, string password,
 		string url, DBus::ControllerProxy::pointer controller) {
-	Watcher w(jvm_pid, tick, restart_delay, name, java_class, controller, RM);
-	w.SetRMValues(user, password, url);
+	Watcher *w = new Watcher(jvm_pid, tick, restart_delay, name, java_class,
+			controller, RM);
+	w->SetRMValues(user, password, url);
 	return w;
 
 }
 //P2PAction
-Watcher Watcher::P2PWatcher(int jvm_pid, int tick, int restart_delay,
+Watcher *Watcher::P2PWatcher(int jvm_pid, int tick, int restart_delay,
 		string name, string java_class, string contact,
 		DBus::ControllerProxy::pointer controller) {
-	Watcher w(jvm_pid, tick, restart_delay, name, java_class, controller, P2P);
-	w.SetP2PValues(contact);
+	Watcher *w = new Watcher(jvm_pid, tick, restart_delay, name, java_class,
+			controller, P2P);
+	w->SetP2PValues(contact);
 	return w;
 }
 //CustomAction
-Watcher Watcher::CustomWatcher(int jvm_pid, int tick, int restart_delay,
+Watcher *Watcher::CustomWatcher(int jvm_pid, int tick, int restart_delay,
 		string name, string java_class, string arguments,
 		DBus::ControllerProxy::pointer controller) {
-	Watcher w(jvm_pid, tick, restart_delay, name, java_class, controller, CUSTOM);
-	w.SetCustomValues(arguments);
+	Watcher *w = new Watcher(jvm_pid, tick, restart_delay, name, java_class,
+			controller, CUSTOM);
+	w->SetCustomValues(arguments);
 	return w;
 }
 
-Watcher::Watcher(int jvm_pid, int tick, int restart_delay, string name, string java_class,
-		DBus::ControllerProxy::pointer controller, ActionType action) {
+Watcher::Watcher(int jvm_pid, int tick, int restart_delay, string name,
+		string java_class, DBus::ControllerProxy::pointer controller,
+		ActionType action) {
 	//initialize logger
-	//TODO  move outside the constructor
 	logger = log4cxx::Logger::getLogger("Watcher " + name);
-	logger->setLevel(log4cxx::Level::getTrace());
 	pid = jvm_pid;
-	node = name;
+	node_name = name;
 	this->tick = tick;
 	stop = false;
 	this->restart_delay = restart_delay;
@@ -61,7 +64,7 @@ Watcher::~Watcher() {
 }
 
 void Watcher::run() {
-	LOG4CXX_DEBUG(logger, "Watcher thread started for node " << node
+	LOG4CXX_DEBUG(logger, "Watcher thread started for node " << node_name
 			<< " with JVM PID " << pid);
 	while (!stop) {
 		//		usleep takes microseconds, we use milliseconds
@@ -72,8 +75,8 @@ void Watcher::run() {
 		// if a signal cannot be sent
 		// notify the Controller which will restart the JVM
 		if (kill(pid, 0) == -1) {
-			LOG4CXX_INFO(logger, "Node [" << node << "] with shell [ " << pid
-					<< " seems to have been stopped ");
+			LOG4CXX_INFO(logger, "Node [" << node_name << "] with pid [ " << pid
+					<< " has stopped ");
 			LOG4CXX_DEBUG(logger, "Sleeping for the amount in restart delay");
 			//restart_delay is in milliseconds
 			usleep(restart_delay * 1000);
@@ -82,12 +85,19 @@ void Watcher::run() {
 			//			method call on Controller asking to start a JVM
 			//			returns the pid to check
 			pid = RestartNode(action_select);
+			LOG4CXX_DEBUG(logger, "Restarted the node with PID " << pid);
+			//restart_delay is in milliseconds
+
 			//stop = true;
 
 		} else {
-			LOG4CXX_TRACE(logger, "Node " << node << " is alive");
+			LOG4CXX_TRACE(logger, "Node " << node_name << " is alive");
 		}
 	}
+	//FIXME why does one method work and the other doesn't ?
+	controller->StartNode(node_name, java_class);
+	LOG4CXX_TRACE(logger, "Watcher loop has finished.");
+	//	controller->StopNode(pid);
 }
 long Watcher::GetRestartDelay() {
 	return restart_delay;
@@ -107,25 +117,33 @@ void Watcher::SetCustomValues(string arguments) {
 int Watcher::RestartNode(ActionType action) {
 	switch (action) {
 	case ADVERT: {
-		return controller->StartNode(node,java_class);
-		break;
+		LOG4CXX_TRACE(logger, "Restarting node for Advert action... ");
+		return controller->StartNode(node_name, java_class);
 	}
 	case RM: {
-		return controller->StartRMNode(node, java_class, user, password, url);
-		break;
+		LOG4CXX_TRACE(logger, "Restarting node for RM action... ");
+		return controller->StartRMNode(node_name, java_class, user, password,
+				url);
 	}
 	case P2P: {
-		return controller->StartP2PNode(node,java_class, contact);
-		break;
+		LOG4CXX_TRACE(logger, "Restarting node for P2P action... ");
+		return controller->StartP2PNode(node_name, java_class, contact);
 	}
 	case CUSTOM: {
-		return controller->StartCustomNode(node, java_class, arguments);
-		break;
+		LOG4CXX_TRACE(logger, "Restarting node for Custom action... ");
+		return controller->StartCustomNode(node_name, java_class, arguments);
 	}
 	default: {
 		LOG4CXX_WARN(logger, "Action type not defined, node will not be restarted");
-		stop  = true;
+		stop = true;
 		return -1;
 	}
 	}
+}
+
+int Watcher::GetPid() {
+	return pid;
+}
+void Watcher::StopWatcher() {
+	stop = true;
 }

@@ -12,9 +12,9 @@
 
 class CustomNodeStarter: public NodeStarter {
 public:
-	CustomNodeStarter(string name, string java_class,
-			string security_policy, string log4j_file, string proactive_home,
-			string classpath, string java_bin, string arguments);
+	CustomNodeStarter(string name, string java_class, string security_policy,
+			string log4j_file, string proactive_home, string classpath,
+			string java_bin, string arguments);
 	virtual ~CustomNodeStarter();
 	int RunCommand();
 private:

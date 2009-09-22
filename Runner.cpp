@@ -1,16 +1,24 @@
 #include "Runner.h"
 #define SCANFPATTERN "%4s %lf %lf %lf %lf %lf %lf %lf"
 Runner::Runner() {
-	logger = log4cxx::Logger::getLogger("Controller");
-	//	BasicConfigurator::configure();
-	logger->setLevel(log4cxx::Level::getTrace());
+	logger = log4cxx::Logger::getLogger("Runner");
 }
 
 Runner::~Runner() {
+	//delete watchers
+	watchers.clear();
 }
 void Runner::run() {
+	//FIXME placing this in constructor does not work, why?
+	DBus::init(true);
+	DBus::Dispatcher dispatcher;
+	DBus::Connection::pointer connection = dispatcher.create_connection(
+			DBus::BUS_SESSION);
+	DBus::ControllerProxy::pointer controller = DBus::ControllerProxy::create(
+			connection);
+
 	//initialize DBus Connection
-	ConfigParser parser("./PAAgent-config.xml");
+	ConfigParser parser(config_file);
 
 	configuration = parser.GetConfiguration();
 
@@ -22,9 +30,7 @@ void Runner::run() {
 
 	int passes = 0;
 
-
 	int idleness = 0;
-
 
 	FILE *f;
 	//init flags
@@ -139,8 +145,8 @@ void Runner::run() {
 		}
 
 		if (stop_actions) {
-			//TODO stop actions
-			LOG4CXX_DEBUG(logger," ++++++++++STOPPING ACTIONS");
+			LOG4CXX_DEBUG(logger,"++++++++++++STOPPING ACTIONS");
+			StopActions(controller);
 		}
 
 		//check for  calendar events to start
@@ -159,7 +165,7 @@ void Runner::run() {
 				cal_event_on = true;
 				LOG4CXX_DEBUG(logger, "++++++++++STARTING CALENDAR EVENT with duration of "<<
 						events_duration.at(i) << " seconds");
-				StartActions();
+				StartActions(controller);
 			}
 		}//for
 
@@ -191,13 +197,12 @@ void Runner::run() {
 				//if start_counter is < 1 start idleness event
 				//because the CPU has been between thresholds for the required time
 				if (start_counter.at(i) < 1) {
-					//TODO start JVMS
 					LOG4CXX_DEBUG(logger,"++++++++++STARTING IDLE EVENT");
 					idle_event_on = true;
+					StartActions(controller);
 				}
 			}//for
 		}//if (!cal_event_on || !idle_event_on)
-
 	}
 }
 /**
@@ -287,17 +292,9 @@ Configuration* Runner::getConfiguration() {
  * Assuming that an event starts all the enabled actions and
  * a stop event also stops all the actions
  *
- * int StartNode(string name, string java_class);
  */
 //TODO DRY much ?
-void Runner::StartActions() {
-
-	//FIXME placing this in constructor does not work, why?
-	DBus::init();
-	DBus::Dispatcher dispatcher;
-	DBus::Connection::pointer connection = dispatcher.create_connection(
-			DBus::BUS_SESSION);
-	DBus::ControllerProxy::pointer controller= DBus::ControllerProxy::create(connection);
+void Runner::StartActions(DBus::ControllerProxy::pointer controller) {
 	string java_bin = configuration->getJava_home() + "/bin/java";
 	controller->SetStartConfiguration(DEFAULT_DJAVA_SECURITY,
 			DEFAULT_DLOG4J_FILE, configuration->getProactive_location(),
@@ -311,27 +308,122 @@ void Runner::StartActions() {
 	vector<AdvertAction*> advert_actions = configuration->getAdvert_actions();
 	vector<RMAction*> rm_actions = configuration->getRm_actions();
 	vector<P2PAction*> p2p_actions = configuration->getP_actions();
-	vector<CustomAction*> cust_actions = configuration->getCustom_actions();
+	vector<CustomAction*> custom_actions = configuration->getCustom_actions();
 
 	int pid;
 	AdvertAction *advert;
-	Watcher *watcher;
+
 	for (int i = 0; i < advert_actions.size(); i++) {
 		advert = advert_actions.at(i);
 		if (advert->IsEnabled()) {
 			//start and add the pid to the pid vector
 			pid = controller->StartNode(advert->GetNodeName(),
 					advert->GetStarterClass());
-
-			//FIXME check the node has been actually started !!!
-//			LOG4CXX_TRACE(logger, "Advert node started " << advert->GetNodeName() );
-//			watcher = new Watcher(pid, DEFAULT_TICK, advert->GetRestartDelay(),
-//					advert->GetNodeName(), controller);
-//			watcher->start();
-//			watchers.push_back(watcher);
-//			LOG4CXX_TRACE(logger, "Watcher for advert node started PID:" << pid);
+			//FIXME if watchers are initialized by static methods the
+			//thread stops after a call to StartNode in controller
+			//creating a watcher using a regular constructor doesn't seem to have
+			//this problem
+			//			Watcher *watcher = Watcher::AdvertWatcher(pid, DEFAULT_TICK, advert->GetRestartDelay(),
+			//					advert->GetNodeName(), advert->GetStarterClass(), controller);
+			Watcher *watcher = new Watcher(pid, DEFAULT_TICK,
+					advert->GetRestartDelay(), advert->GetNodeName(),
+					advert->GetStarterClass(), controller, ADVERT);
+			//			//FIXME check the node has been actually started !!!
+			LOG4CXX_TRACE(logger, "Advert node started " << advert->GetNodeName() );
+			watcher->start();
+			watchers.push_back(watcher);
 
 		}
 	}
 
+	RMAction *rm;
+
+	for (int i = 0; i < rm_actions.size(); i++) {
+		rm = rm_actions.at(i);
+		if (rm->IsEnabled()) {
+			//start and add the pid to the pid vector
+			pid = controller->StartRMNode(rm->GetNodeName(),
+					rm->GetStarterClass(), rm->GetUsername(),
+					rm->GetPassword(), rm->GetURL());
+			//FIXME if watchers are initialized by static methods the
+			//thread stops after a call to StartNode in controller
+			//creating a watcher using a regular constructor doesn't seem to have
+			//this problem
+			//			Watcher *watcher = Watcher::RMWatcher(pid, DEFAULT_TICK, rm->GetRestartDelay(),
+			//					rm->GetNodeName(), rm->GetStarterClass(), controller);
+			Watcher *watcher = new Watcher(pid, DEFAULT_TICK,
+					rm->GetRestartDelay(), rm->GetNodeName(),
+					rm->GetStarterClass(), controller, RM);
+			watcher->SetRMValues(rm->GetUsername(), rm->GetPassword(),
+					rm->GetURL());
+			LOG4CXX_TRACE(logger, "RM node started " << rm->GetNodeName() );
+			watcher->start();
+			watchers.push_back(watcher);
+
+		}
+	}
+
+	P2PAction *p2p;
+
+	for (int i = 0; i < p2p_actions.size(); i++) {
+		p2p = p2p_actions.at(i);
+		if (p2p->IsEnabled()) {
+			//start and add the pid to the pid vector
+			pid = controller->StartP2PNode(p2p->GetNodeName(),
+					p2p->GetStarterClass(), p2p->GetContact());
+			//FIXME if watchers are initialized by static methods the
+			//thread stops after a call to StartNode in controller
+			//creating a watcher using a regular constructor doesn't seem to have
+			//this problem
+			//			Watcher *watcher = Watcher::P2PWatcher(pid, DEFAULT_TICK, p2p->GetRestartDelay(),
+			//					p2p->GetNodeName(), p2p->GetStarterClass(), controller);
+			Watcher *watcher = new Watcher(pid, DEFAULT_TICK,
+					p2p->GetRestartDelay(), p2p->GetNodeName(),
+					p2p->GetStarterClass(), controller, P2P);
+			watcher->SetP2PValues(p2p->GetContact());
+			LOG4CXX_TRACE(logger, "P2P node started " << p2p->GetNodeName() );
+			watcher->start();
+			watchers.push_back(watcher);
+		}
+	}
+
+	CustomAction *custom;
+
+	for (int i = 0; i < custom_actions.size(); i++) {
+		custom = custom_actions.at(i);
+		if (custom->IsEnabled()) {
+			//start and add the pid to the pid vector
+			pid = controller->StartCustomNode(custom->GetNodeName(),
+					custom->GetStarterClass(), custom->GetArguments());
+			//FIXME if watchers are initialized by static methods the
+			//thread stops after a call to StartNode in controller
+			//creating a watcher using a regular constructor doesn't seem to have
+			//this problem
+			//			Watcher *watcher = Watcher::CustomWatcher(pid, DEFAULT_TICK, custom->GetRestartDelay(),
+			//					custom->GetNodeName(), custom->GetStarterClass(), controller);
+			Watcher *watcher = new Watcher(pid, DEFAULT_TICK,
+					custom->GetRestartDelay(), custom->GetNodeName(),
+					custom->GetStarterClass(), controller, CUSTOM);
+			watcher->SetCustomValues(custom->GetArguments());
+			LOG4CXX_TRACE(logger, "Custom node started " << custom->GetNodeName() );
+			watcher->start();
+			watchers.push_back(watcher);
+		}
+	}
+
+}
+
+void Runner::StopActions(DBus::ControllerProxy::pointer controller) {
+	int pid;
+	Watcher *watcher;
+	for (int i = 0; i < watchers.size(); i++) {
+		watcher = watchers.at(i);
+		pid = watcher->GetPid();
+		watcher->StopWatcher();
+		//		controller->StopNode(pid);
+	}
+}
+
+void Runner::LoadConfiguration(string xml_file) {
+	config_file = xml_file;
 }

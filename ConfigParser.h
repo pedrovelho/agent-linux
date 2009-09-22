@@ -27,6 +27,7 @@ private:
 	SAX2XMLReader* parser;
 	ConfigHandler* defaultHandler;
 	std::vector<Event> events;
+	LoggerPtr logger;
 };
 
 #endif /* CONFIGPARSER_H_ */

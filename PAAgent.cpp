@@ -8,8 +8,7 @@
 #include "PAAgent.h"
 #include "controller_adapter.h"
 PAAgent::PAAgent() {
-	// TODO Auto-generated constructor stub
-
+	logger = log4cxx::Logger::getLogger("PAAgent");
 }
 
 PAAgent::~PAAgent() {
@@ -25,37 +24,23 @@ void PAAgent::run() {
 
 	DBus::Connection::pointer conn = dispatcher.create_connection(
 			DBus::BUS_SESSION);
-	std::cout << "Requesting name" << endl;
+	LOG4CXX_DEBUG(logger, "Requesting name on DBus");
 	// request a name on the bus
 	ret = conn->request_name("proactive.agent.controller",
 			DBUS_NAME_FLAG_REPLACE_EXISTING);
 	if (DBUS_REQUEST_NAME_REPLY_PRIMARY_OWNER != ret) {
-		cout << "Add proper error message" << endl;
+		LOG4CXX_ERROR(logger, "Server is not primary owner");
 	}
-	std::cout << "Declaring adapter" << endl;
-
+	LOG4CXX_DEBUG(logger, "Declaring adapter")
 	Controller controller;
 	DBus::ControllerAdapter::pointer adapter = DBus::ControllerAdapter::create(
 			&controller);
-	std::cout << "Created adapter" << endl;
-	std::cout << "Register adapter" << endl;
+
+	LOG4CXX_DEBUG(logger, "Registering adapter");
 	conn->register_object(adapter);
-	std::cout << "Running" << std::flush << endl;;
+	LOG4CXX_INFO(logger, "Server is running...");
 
 	for (;;) {
-//		std::cout << "\b\\" << std::flush;
-//
-//		usleep(1000* 1000 );
-//		std::cout << "\b-" << std::flush;
-//
-//		usleep(1000* 1000 );
-//		std::cout << "\b/" << std::flush;
-//
-//		usleep(1000* 1000 );
-//		std::cout << "\b|" << std::flush;
-//
-//		usleep(1000* 1000 );
-		usleep(1000*1000);
+		usleep(1000* 1000 );
 	}
-	std::cout << std::endl;
 }

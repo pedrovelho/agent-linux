@@ -22,5 +22,7 @@ protected:
 	virtual void SetUp();
 	//stops all JVMS
 	virtual void TearDown();
+private:
+	log4cxx::LoggerPtr logger;
 };
 #endif /* CONTROLLERTEST_H_ */

@@ -28,17 +28,18 @@
 #include "PAAgentTest.h"
 using namespace std;
 int main(int argc, char **argv) {
-//	::testing::InitGoogleTest(&argc, argv);
-//	return RUN_ALL_TESTS();
-//
+	//	::testing::InitGoogleTest(&argc, argv);
+	//	return RUN_ALL_TESTS();
+	//
 
 	DBus::init();
 	DBus::Dispatcher dispatcher;
 	DBus::Connection::pointer connection = dispatcher.create_connection(
 			DBus::BUS_SESSION);
-	DBus::ControllerProxy::pointer controller = DBus::ControllerProxy::create(connection);
-	for(;;){
-	cout << controller->StartNode("unuDetest") <<  endl;;
-	usleep(1000*1000);
-	}
+	DBus::ControllerProxy::pointer controller = DBus::ControllerProxy::create(
+			connection);
+	//	for(;;){
+	//	cout << controller->StartNode("unuDetest") <<  endl;;
+	//	usleep(1000*1000);
+	//	}
 }

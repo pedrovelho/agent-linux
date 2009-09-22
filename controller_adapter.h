@@ -29,9 +29,6 @@ namespace DBus {
         temp_method->set_arg_name( 0, "pid" );
         temp_method->set_arg_name( 1, "name" );
         temp_method->set_arg_name( 2, "java_class" );
-        temp_method = this->create_method<int32_t,std::string>( "proactive.agent.controller", "StartNode", sigc::mem_fun(*this, &ControllerAdapter::StartNode_adapter_stub_is) );
-        temp_method->set_arg_name( 0, "pid" );
-        temp_method->set_arg_name( 1, "node_name" );
         temp_method = this->create_method<int32_t,std::string,std::string,std::string,std::string,std::string>( "proactive.agent.controller", "StartRMNode", sigc::mem_fun(*this, &ControllerAdapter::StartRMNode_adapter_stub_isssss) );
         temp_method->set_arg_name( 0, "pid" );
         temp_method->set_arg_name( 1, "name" );
@@ -49,12 +46,9 @@ namespace DBus {
         temp_method->set_arg_name( 1, "name" );
         temp_method->set_arg_name( 2, "java_class" );
         temp_method->set_arg_name( 3, "arguments" );
-        temp_method = this->create_method<bool,int32_t>( "proactive.agent.controller", "StopNode", sigc::mem_fun(*this, &ControllerAdapter::StopNode_adapter_stub_bi) );
-        temp_method->set_arg_name( 0, "success" );
+        temp_method = this->create_method<int32_t,int32_t>( "proactive.agent.controller", "StopNode", sigc::mem_fun(*this, &ControllerAdapter::StopNode_adapter_stub_ii) );
+        temp_method->set_arg_name( 0, "breaks_without" );
         temp_method->set_arg_name( 1, "pid" );
-        temp_method = this->create_method<bool,std::string>( "proactive.agent.controller", "StopNode", sigc::mem_fun(*this, &ControllerAdapter::StopNode_adapter_stub_bs) );
-        temp_method->set_arg_name( 0, "success" );
-        temp_method->set_arg_name( 1, "name" );
       }
 
     public:
@@ -84,12 +78,10 @@ namespace DBus {
 
       int32_t SetStartConfiguration_adapter_stub_isssss( std::string security_policy, std::string log4j_file, std::string proactive_home, std::string classpath, std::string java_bin ) { this->check_adaptee(); return m_adaptee->SetStartConfiguration( security_policy, log4j_file, proactive_home, classpath, java_bin); }
       int32_t StartNode_adapter_stub_iss( std::string name, std::string java_class ) { this->check_adaptee(); return m_adaptee->StartNode( name, java_class); }
-      int32_t StartNode_adapter_stub_is( std::string node_name ) { this->check_adaptee(); return m_adaptee->StartNode( node_name); }
       int32_t StartRMNode_adapter_stub_isssss( std::string name, std::string java_class, std::string user, std::string password, std::string url ) { this->check_adaptee(); return m_adaptee->StartRMNode( name, java_class, user, password, url); }
       int32_t StartP2PNode_adapter_stub_isss( std::string name, std::string java_class, std::string contact ) { this->check_adaptee(); return m_adaptee->StartP2PNode( name, java_class, contact); }
       int32_t StartCustomNode_adapter_stub_isss( std::string name, std::string java_class, std::string arguments ) { this->check_adaptee(); return m_adaptee->StartCustomNode( name, java_class, arguments); }
-      bool StopNode_adapter_stub_bi( int32_t pid ) { this->check_adaptee(); return m_adaptee->StopNode( pid); }
-      bool StopNode_adapter_stub_bs( std::string name ) { this->check_adaptee(); return m_adaptee->StopNode( name); }
+      int32_t StopNode_adapter_stub_ii( int32_t pid ) { this->check_adaptee(); return m_adaptee->StopNode( pid); }
 
 
   };
