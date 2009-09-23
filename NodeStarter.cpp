@@ -121,13 +121,8 @@ void NodeStarter::Initialize(string name, string java_class,
 }
 
 int NodeStarter::RunCommand() {
-	//	return  execl(java_bin.c_str(), " ",
-	//			DEFAULT_DSECURITY_MANAGER.c_str(), security_policy.c_str(),
-	//			log4j_file.c_str(), proactive_home.c_str(), "-classpath",
-	//			classpath.c_str(), java_class.c_str(), name.c_str(), (char *) 0);
-	return execl(DEFAULT_JAVA_BIN.c_str(), " ",
-			DEFAULT_DSECURITY_MANAGER.c_str(), DEFAULT_DJAVA_SECURITY.c_str(),
-			DEFAULT_DLOG4J_FILE.c_str(), DEFAULT_DPROACTIVE_HOME.c_str(),
-			"-classpath", DEFAULT_DCLASSPATH.c_str(),
-			DEFAULT_JAVA_CLASS.c_str(), "node1", (char *) 0);
+	return execl(java_bin.c_str(), " ", DEFAULT_DSECURITY_MANAGER.c_str(),
+			security_policy.c_str(), log4j_file.c_str(),
+			proactive_home.c_str(), "-classpath", classpath.c_str(),
+			java_class.c_str(), name.c_str(), (char *) 0);
 }

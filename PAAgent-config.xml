@@ -15,10 +15,10 @@
 	</internalConfig>
 	<events>
 		<event xsi:type="CalendarEvent">
-			<startDay>tue</startDay>
-			<startHour>12</startHour>
-			<startMinute>32</startMinute>
-			<startSecond>0</startSecond>
+			<startDay>wed</startDay>
+			<startHour>10</startHour>
+			<startMinute>53</startMinute>
+			<startSecond>00</startSecond>
 			<durationDays>0</durationDays>
 			<durationHours>0</durationHours>
 			<durationMinutes>0</durationMinutes>

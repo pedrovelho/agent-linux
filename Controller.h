@@ -43,7 +43,7 @@ using namespace log4cxx::helpers;
 
 #include <signal.h>
 #include "Constants.h"
-
+using namespace pa_agent_constants;
 #include <sigc++-2.0/sigc++/sigc++.h>
 #include <string>
 #include <cstdint>

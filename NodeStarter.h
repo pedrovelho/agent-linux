@@ -41,7 +41,7 @@
 #include <log4cxx/helpers/exception.h>
 
 #include "Constants.h"
-
+using namespace pa_agent_constants;
 using namespace log4cxx;
 using namespace log4cxx::helpers;
 using namespace std;
@@ -50,19 +50,8 @@ using namespace std;
 //using namespace ost;
 class NodeStarter {
 public:
-	//	int piexec = execl(DEFAULT_JAVA_BIN.c_str(), " ",
-	//			DEFAULT_DSECURITY_MANAGER.c_str(),
-	//			DEFAULT_DJAVA_SECURITY.c_str(),
-	//			DEFAULT_DLOG4J_FILE.c_str(),
-	//			DEFAULT_DPROACTIVE_HOME.c_str(),
-	//			"-classpath", DEFAULT_DCLASSPATH.c_str(),
-	//			DEFAULT_JAVA_CLASS.c_str(), "node1", (char *) 0);
-
-	NodeStarter(string name, string java_class = DEFAULT_JAVA_CLASS,
-			string security_policy = DEFAULT_DJAVA_SECURITY, string log4j_file =
-					DEFAULT_DLOG4J_FILE, string proactive_home =
-					DEFAULT_DPROACTIVE_HOME, string classpath =
-					DEFAULT_DCLASSPATH, string java_bin = DEFAULT_JAVA_BIN);
+	NodeStarter(string name, string java_class, string security_policy,
+			string log4j_file, string proactive_home, string, string java_bin);
 	NodeStarter(const NodeStarter &node);
 	virtual ~NodeStarter();
 	virtual void run();

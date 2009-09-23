@@ -41,6 +41,7 @@
 #include "CustomAction.h"
 #include "AdvertAction.h"
 #include "Constants.h"
+using namespace pa_agent_constants;
 using namespace std;
 class Configuration {
 private:

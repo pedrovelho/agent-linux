@@ -37,12 +37,6 @@
 
 Controller::Controller() {
 	logger = log4cxx::Logger::getLogger("Controller");
-	//initialize to defaults for safety
-	security_policy = DEFAULT_DJAVA_SECURITY;
-	log4j_file = DEFAULT_DLOG4J_FILE;
-	proactive_home = DEFAULT_PROACTIVE_HOME;
-	classpath = DEFAULT_DCLASSPATH;
-	java_bin = DEFAULT_JAVA_BIN;
 }
 //Controller::Controller(const Controller &controller){
 //	default_node_exec = controller.default_node_exec;

@@ -49,7 +49,7 @@ void PAAgent::run() {
 			DBus::BUS_SESSION);
 	LOG4CXX_DEBUG(logger, "Requesting name on DBus");
 	// request a name on the bus
-	ret = conn->request_name("proactive.agent.controller",
+	ret = conn->request_name(PROACTIVE_DBUS_NAME,
 			DBUS_NAME_FLAG_REPLACE_EXISTING);
 	if (DBUS_REQUEST_NAME_REPLY_PRIMARY_OWNER != ret) {
 		LOG4CXX_ERROR(logger, "Server is not primary owner");

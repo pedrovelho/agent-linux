@@ -1,4 +1,26 @@
 /*
+ * ################################################################
+ *
+ * ProActive: The ProActive Linux Agent
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version
+ * 2 of the License, or any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this library; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
+ * USA
+ *
+ * ################################################################
+ */
+/*
  * Constants.h
  *
  *  Created on: Aug 11, 2009
@@ -9,67 +31,59 @@
 #define CONSTANTS_H_
 #include <string>
 using namespace std;
-const string PROACTIVE_DBUS_SERVER("pa.controller");
-const string PROACTIVE_DBUS_WATCHER("pa.watcher");
-//define sleep seconds for checking signals loop
-const int LISTEN_SIGNAL_TIMEOUT = 1;
-const int TICK_DEFAULT = 1000;
-const string DEFAULT_SHELL("/bin/bash");
-const string DEFAULT_NODE_EXEC(
-		"/home/vasile/workspacePA/PA_new/trunk/bin/startNode.sh");
+/**
+ * Constants and defaults used by the client and the server.
+ */
+namespace pa_agent_constants {
+/** The name the agent requests on DBus. This is the same name as the
+ * one defined in Controller.xml for the dest attribute. */
+const string PROACTIVE_DBUS_NAME("proactive.agent.controller");
 
-const string DEFAULT_NODE("default_node");
-
-const string DEFAULT_PROACTIVE_HOME("/home/vasile/workspacePA/PA_new/trunk");
-const string DEFAULT_JAVA_HOME("/usr/lib/jvm/java-6-openjdk");
+/** Default class used to start JVMs. To customize the class, use the
+ * configuration XML file  and set the javaStarterClass element  in Action elements. */
 const string DEFAULT_JAVA_CLASS("org.objectweb.proactive.core.node.StartNode");
 
 //JAVACMD=$JAVA_HOME"/bin/java -Djava.security.manager -Djava.security.policy=$PROACTIVE/examples/proactive.java.policy -Dlog4j.configuration=file:${PROACTIVE}/examples/proactive-log4j -Dproactive.home=$PROACTIVE "
-const string DEFAULT_JAVA_BIN(DEFAULT_JAVA_HOME + "/bin/java");
+/** Default Java executable */
+const string DEFAULT_JAVA_BIN("/bin/java");
+
+/** This is the option name for enabling the security manager in Java. */
 const string DEFAULT_DSECURITY_MANAGER("-Djava.security.manager");
-const string DEFAULT_DJAVA_SECURITY("-Djava.security.policy="
-		+ DEFAULT_PROACTIVE_HOME + "/examples/proactive.java.policy");
-const string DEFAULT_DLOG4J_FILE("-Dlog4j.configuration=file:"
-		+ DEFAULT_PROACTIVE_HOME + "/examples/proactive-log4j");
-const string DEFAULT_DPROACTIVE_HOME("-Dproactive.home="
-		+ DEFAULT_PROACTIVE_HOME);
-const string PROACTIVE_JAR("/dist/lib/ProActive.jar");
-const string PROACTIVE_EXAMPLES_JAR("/dist/lib/ProActive_examples.jar");
-const string PROACTIVE_UTILS_JAR("/dist/lib/ProActive_utils.jar");
+
+/** Default option name for setting a security policy file in Java */
+const string DEFAULT_DJAVA_SECURITY_OPTION("-Djava.security.policy=");
+/** Default security policy file path. */
+const string DEFAULT_DJAVA_SECURITY_FILE("/examples/proactive.java.policy");
+
+/** Default option for setting a log4j configuration file. */
+const string DEFAULT_DLOG4J_OPTION("-Dlog4j.configuration=file:");
+/** Default log4j configuration file path for nodes */
+const string DEFAULT_DLOG4J_FILE("/examples/proactive-log4j");
+
+/** Default option name for setting the ProActive home*/
+const string DEFAULT_DPROACTIVE_OPTION("-Dproactive.home=");
+
 //CLASSPATH=$CLASSPATH:$PROACTIVE/dist/lib/ProActive.jar
 //CLASSPATH=$CLASSPATH:$PROACTIVE/dist/lib/ProActive_examples.jar
 //CLASSPATH=$CLASSPATH:$PROACTIVE/dist/lib/ProActive_utils.jar
-const string DEFAULT_DCLASSPATH(DEFAULT_PROACTIVE_HOME + PROACTIVE_JAR + ":"
-		+ DEFAULT_PROACTIVE_HOME + PROACTIVE_EXAMPLES_JAR + ":"
-		+ DEFAULT_PROACTIVE_HOME + PROACTIVE_UTILS_JAR);
 
-//const string DEFAULT_NODE_STARTER(DEFAULT_JAVA_COMMAND + " "
-//		+" -classpath " + DEFAULT_CLASSPATH + " " + DEFAULT_JAVA_CLASS );
+/** Default name of the main ProActive jar file. */
+const string PROACTIVE_JAR("/dist/lib/ProActive.jar");
+/** Default name for the ProActive examples jar file. */
+const string PROACTIVE_EXAMPLES_JAR("/dist/lib/ProActive_examples.jar");
+/** Default name for the ProActive utils jar file. */
+const string PROACTIVE_UTILS_JAR("/dist/lib/ProActive_utils.jar");
 
-const string JVM_STOPPED("JVM_STOPPED");
-//the JVM kill needs some time to finish, setting an arbitray time here to wait for the JVM to stop
+/** Time to wait for the JVM to stop when stopping nodes. */
 const int SLEEP_TIME_AFTER_KILL = 1;
+/** Time interval between node checks for watchers. */
 const int DEFAULT_TICK = 1000;
 
-//define types of actions
-
-
-//used in watchers to decide what action to restart
+/** Enum identifying types of Actions.
+ * It is used in {@link Watcher} to decide which action to restart.
+ */
 enum ActionType {
 	ADVERT, RM, CUSTOM, P2P
 };
-
-#define PROACTIVE_SERVICE_NAME        "pa.agent"
-/* Object path to the provided object. */
-#define PROACTIVE_SERVICE_OBJECT_PATH "pa/agent/controller"
-/* And we're interested in using it through this interface.
- This must match the entry in the interface definition XML. */
-#define PROACTIVE_SERVICE_INTERFACE   "pa.agent.controller"
-/* Symbolic constants for the signal names to use with GLib.
- These need to map into the D-Bus signal names. */
-#define SIGNAL_CHANGED_VALUE1    "changed_value1"
-#define SIGNAL_CHANGED_VALUE2    "changed_value2"
-#define SIGNAL_OUTOFRANGE_VALUE1 "outofrange_value1"
-#define SIGNAL_OUTOFRANGE_VALUE2 "outofrange_value2"
-
+}
 #endif /* CONSTANTS_H_ */

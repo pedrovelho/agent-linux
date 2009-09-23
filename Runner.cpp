@@ -318,16 +318,21 @@ Configuration* Runner::getConfiguration() {
  */
 //TODO DRY much ?
 void Runner::StartActions(DBus::ControllerProxy::pointer controller) {
-	string java_bin = configuration->getJava_home() + "/bin/java";
-	controller->SetStartConfiguration(DEFAULT_DJAVA_SECURITY,
-			DEFAULT_DLOG4J_FILE, configuration->getProactive_location(),
-			configuration->GetClasspath(), java_bin);
-	LOG4CXX_TRACE(logger, "Set start configuration for controller to :" <<
-			DEFAULT_DJAVA_SECURITY<< "] [" <<
-			DEFAULT_DLOG4J_FILE<< "] [" <<
-			configuration->getProactive_location()<< "] [" <<
+	string pa_location = configuration->getProactive_location();
+	string java_bin = configuration->getJava_home() + DEFAULT_JAVA_BIN;
+	string java_security = DEFAULT_DJAVA_SECURITY_OPTION + pa_location
+			+ DEFAULT_DJAVA_SECURITY_FILE;
+	string log4j_configuration = DEFAULT_DLOG4J_OPTION + pa_location
+			+ DEFAULT_DLOG4J_FILE;
+	string pa_home_option = DEFAULT_DPROACTIVE_OPTION + pa_location;
+	controller->SetStartConfiguration(java_security, log4j_configuration,
+			pa_home_option, configuration->GetClasspath(), java_bin);
+	LOG4CXX_TRACE(logger, "Set start configuration for controller to : [" <<
+			java_security << "] [" <<
+			log4j_configuration<< "] [" <<
+			pa_home_option<< "] [" <<
 			configuration->GetClasspath()<< "] [" <<
-			java_bin);
+			java_bin << "]");
 	vector<AdvertAction*> advert_actions = configuration->getAdvert_actions();
 	vector<RMAction*> rm_actions = configuration->getRm_actions();
 	vector<P2PAction*> p2p_actions = configuration->getP_actions();

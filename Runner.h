@@ -36,9 +36,9 @@
 #include <stdlib.h>
 #include <time.h>
 #include "controller_proxy.h"
-
+#include "Constants.h"
 using namespace ost;
-
+using namespace pa_agent_constants;
 class Runner: public Thread {
 public:
 	Runner();
