@@ -70,6 +70,7 @@ using namespace std;
  * @param arc the name of the program
  * @param argv the arguments passed to the program, configuration and logging file
  * @see paagent_server.cpp
+ * @author vjuresch
  * @since 0.1
  */
 int main(int argc, char** argv) {
@@ -114,9 +115,7 @@ int main(int argc, char** argv) {
 		}
 
 		//start agent client
-		Runner runner;
-		LOG4CXX_DEBUG(logger, "Loading agent configuration file...");
-		runner.LoadConfiguration(xml_file);
+		Runner runner(xml_file);
 		LOG4CXX_DEBUG(logger, "Starting agent main loop...");
 		runner.start();
 		runner.join();

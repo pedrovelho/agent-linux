@@ -23,10 +23,11 @@
 
 #include "Runner.h"
 #define SCANFPATTERN "%4s %lf %lf %lf %lf %lf %lf %lf"
-Runner::Runner() {
+Runner::Runner(string xml_file) {
 	logger = log4cxx::Logger::getLogger("Runner");
-}
+	config_file = xml_file;
 
+}
 Runner::~Runner() {
 	//delete watchers
 	watchers.clear();
@@ -228,11 +229,6 @@ void Runner::run() {
 		}//if (!cal_event_on || !idle_event_on)
 	}
 }
-/**
- * Get the month, day of the month, and year to
- * be able to construct a string to compare with
- * the current time.
- */
 bool Runner::isNow(CalendarEvent *calendar) {
 	//used for easy int->string conversion;
 	stringstream out;
@@ -293,12 +289,8 @@ bool Runner::isNow(CalendarEvent *calendar) {
 	return false;
 }
 
-/**
- * Set the value of configuration
- * @param new_var the new value of configuration
- */
-void Runner::setConfiguration(Configuration* new_var) {
-	configuration = new_var;
+void Runner::setConfiguration(Configuration* config) {
+	configuration = config;
 }
 
 /**
@@ -452,6 +444,6 @@ void Runner::StopActions(DBus::ControllerProxy::pointer controller) {
 	}
 }
 
-void Runner::LoadConfiguration(string xml_file) {
+void Runner::SetConfigurationFile(string xml_file) {
 	config_file = xml_file;
 }
