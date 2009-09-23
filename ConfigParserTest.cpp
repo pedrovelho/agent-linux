@@ -52,22 +52,22 @@ TEST_F(ConfigParserTest, parse)
 	Configuration *config = parser.GetConfiguration();
 
 	//test configuration values
-	EXPECT_EQ("/home/vasile/workspacePA/PA_new/trunk", config->getProactive_location());
+	EXPECT_EQ("/home/vasile/workspacePA/PA_new/trunk", config->GetPALocation());
 
-	EXPECT_EQ("/usr/lib/jvm/java-6-openjdk", config->getJava_home());
-	EXPECT_EQ("Xmx 256", config->getJvm_params());
-	EXPECT_EQ(false, config->getEnable_memory_management());
-	EXPECT_EQ(0, config->getJava_memory());
-	EXPECT_EQ(0, config->getNative_memory());
-	EXPECT_EQ(false, config->getUse_all_cpus());
-	EXPECT_EQ("rmi", config->getConfig_protocol());
+	EXPECT_EQ("/usr/lib/jvm/java-6-openjdk", config->GetJavaHome());
+	EXPECT_EQ("Xmx 256", config->GetJVMParams());
+	EXPECT_EQ(false, config->isMemoryManaged());
+	EXPECT_EQ(0, config->GetJavaMemory());
+	EXPECT_EQ(0, config->GetNativeMemory());
+	EXPECT_EQ(false, config->UseAllCPUs());
+	EXPECT_EQ("rmi", config->GetConfigProtocol());
 
-	EXPECT_EQ(1, config->getNo_processes());
-	EXPECT_EQ(1099, config->getPort_initial_value());
+	EXPECT_EQ(1, config->GetNoProcesses());
+	EXPECT_EQ(1099, config->GetPortInitialValue());
 
 	//	    ASSERT_GT()
 	//test events
-	vector<CalendarEvent*> events = config->getCalendar_events();
+	vector<CalendarEvent*> events = config->GetCalendarEvents();
 	ASSERT_EQ(1, events.size());
 	CalendarEvent *cal1 = events.at(0);
 	EXPECT_EQ(100,cal1->GetMaxCPUUsage());
@@ -81,7 +81,7 @@ TEST_F(ConfigParserTest, parse)
 	EXPECT_EQ(59, cal1->GetDurationSeconds());
 	EXPECT_EQ("Normal", cal1->GetProcessPriority());
 
-	vector<IdlenessEvent*> idle_events = config->getIdle_events();
+	vector<IdlenessEvent*> idle_events = config->GetIdleEvents();
 	ASSERT_EQ(1, idle_events.size());
 	IdlenessEvent *idle1 = idle_events.at(0);
 	EXPECT_EQ(10, idle1->GetBeginSeconds());
@@ -90,7 +90,7 @@ TEST_F(ConfigParserTest, parse)
 	EXPECT_EQ(60, idle1->GetEndThreshold());
 
 	//test actions
-	vector<AdvertAction*> advert_actions = config->getAdvert_actions();
+	vector<AdvertAction*> advert_actions = config->GetAdvertActions();
 	ASSERT_EQ(1, advert_actions.size());
 	AdvertAction *adaction = advert_actions.at(0);
 	EXPECT_EQ(4, adaction->GetRestartDelay());
@@ -98,7 +98,7 @@ TEST_F(ConfigParserTest, parse)
 	EXPECT_EQ(false, adaction->IsEnabled());
 	//	    EXPECT_EQ("", adaction->GetNodeName());
 
-	vector<RMAction*> rm_actions = config->getRm_actions();
+	vector<RMAction*> rm_actions = config->GetRMActions();
 	ASSERT_EQ(1, rm_actions.size());
 	RMAction *rmaction = rm_actions.at(0);
 	EXPECT_EQ(0, rmaction->GetRestartDelay());
@@ -109,7 +109,7 @@ TEST_F(ConfigParserTest, parse)
 	//	    EXPECT_EQ("", rmaction->GetURL());
 	EXPECT_EQ("nod_in_gat", rmaction->GetNodeName());
 
-	vector<P2PAction*> p2p_actions = config->getP_actions();
+	vector<P2PAction*> p2p_actions = config->GetP2PActions();
 	ASSERT_EQ(1, p2p_actions.size());
 	P2PAction *p2paction = p2p_actions.at(0);
 	EXPECT_EQ(100, p2paction->GetRestartDelay());
@@ -119,7 +119,7 @@ TEST_F(ConfigParserTest, parse)
 	EXPECT_EQ(false, p2paction->IsEnabled());
 	EXPECT_EQ("P2PStarter",p2paction->GetStarterClass());
 
-	vector<CustomAction*> cust_actions = config->getCustom_actions();
+	vector<CustomAction*> cust_actions = config->GetCustomActions();
 	ASSERT_EQ(1, cust_actions.size());
 	CustomAction *custaction = cust_actions.at(0);
 	EXPECT_EQ(0, custaction->GetRestartDelay());

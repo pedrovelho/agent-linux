@@ -43,14 +43,24 @@
 #include "Constants.h"
 using namespace pa_agent_constants;
 using namespace std;
+/**
+ * Singleton container class for configuration read from the
+ * XML file.
+ * */
 class Configuration {
 private:
+	/** Location of ProActive used in starting nodes */
 	string proactive_location;
 	string java_home;
+	/** General parameters for all JVMs started*/
 	string jvm_params;
+	/** Flag for enabling Java and native memory checks*/
 	bool enable_memory_management;
+	/** Maximum Java memory to be used */
 	int java_memory;
+	/** Maximum native memory to be used */
 	int native_memory;
+	/** Maxim number of processes */
 	int no_processes;
 	bool use_all_cpus;
 	string config_protocol;
@@ -66,141 +76,93 @@ private:
 protected:
 	Configuration();
 public:
+	/** Gets the number of CPUs on the machine. It is used
+	 * in calculating the idleness of the processors
+	 *
+	 * @return the number of CPUs
+	 * */
 	int GetNoCPUS();
-	//composed from the ProActive home and the names of
-	//the ProActive jars
+	/** Gets the ProActive classpath.
+	 * @return a path with the ProActive jars defined in Constants.h
+	 * */
 	string GetClasspath();
+	/** Adds an Action to one of the Action vectors. The Action
+	 * is added to the vectors depending on the type.
+	 *
+	 * @param action a pointer to an Action
+	 * */
 	void AddAction(Action* action);
+	/** Adds an Event to one of the Event vectors. The Event
+	 * is added to the vectors depending on the type.
+	 *
+	 * @param action a pointer to an Event
+	 * */
 	void AddEvent(Event* event);
 	virtual ~Configuration();
+	/** Singleton initialization method. */
 	static Configuration *Inst();
-	vector<CalendarEvent*> getCalendar_events() const {
-		return calendar_events;
-	}
 
-	void setCalendar_events(vector<CalendarEvent*> calendar_events) {
-		this->calendar_events = calendar_events;
-	}
+	vector<CalendarEvent*> GetCalendarEvents() const;
 
-	vector<IdlenessEvent*> getIdle_events() const {
-		return idle_events;
-	}
+	void SetCalendarEvents(vector<CalendarEvent*> calendar_events);
 
-	void setIdle_events(vector<IdlenessEvent*> idle_events) {
-		this->idle_events = idle_events;
-	}
+	vector<IdlenessEvent*> GetIdleEvents() const;
 
-	vector<P2PAction*> getP_actions() const {
-		return p2p_actions;
-	}
+	void SetIdleEvents(vector<IdlenessEvent*> idle_events);
 
-	void setP_actions(vector<P2PAction*> p2p_actions) {
-		this->p2p_actions = p2p_actions;
-	}
+	vector<P2PAction*> GetP2PActions() const;
 
-	vector<RMAction*> getRm_actions() const {
-		return rm_actions;
-	}
+	void SetP2Actions(vector<P2PAction*> p2p_actions);
 
-	void setRm_actions(vector<RMAction*> rm_actions) {
-		this->rm_actions = rm_actions;
-	}
+	vector<RMAction*> GetRMActions() const;
 
-	vector<AdvertAction*> getAdvert_actions() const {
-		return advert_actions;
-	}
+	void SetRMActions(vector<RMAction*> rm_actions);
 
-	void setAdvert_actions(vector<AdvertAction*> advert_actions) {
-		this->advert_actions = advert_actions;
-	}
+	vector<AdvertAction*> GetAdvertActions() const;
 
-	vector<CustomAction*> getCustom_actions() const {
-		return custom_actions;
-	}
+	void SetAdvertActions(vector<AdvertAction*> advert_actions);
 
-	void setCustom_actions(vector<CustomAction*> custom_actions) {
-		this->custom_actions = custom_actions;
-	}
+	vector<CustomAction*> GetCustomActions() const;
 
-	string getProactive_location() const {
-		return proactive_location;
-	}
+	void SetCustomActions(vector<CustomAction*> custom_actions);
 
-	void setProactive_location(string proactive_location) {
-		this->proactive_location = proactive_location;
-	}
+	string GetPALocation() const;
 
-	string getJava_home() const {
-		return java_home;
-	}
+	void SetPALocation(string proactive_location);
 
-	void setJava_home(string java_home) {
-		this->java_home = java_home;
-	}
+	string GetJavaHome() const;
 
-	string getJvm_params() const {
-		return jvm_params;
-	}
+	void SetJavaHome(string java_home);
 
-	void setJvm_params(string jvm_params) {
-		this->jvm_params = jvm_params;
-	}
+	string GetJVMParams() const;
+	void SetJVMParams(string jvm_params);
 
-	bool getEnable_memory_management() const {
-		return enable_memory_management;
-	}
+	bool isMemoryManaged() const;
+	void setMemoryManagement(bool enable_memory_management);
 
-	void setEnable_memory_management(bool enable_memory_management) {
-		this->enable_memory_management = enable_memory_management;
-	}
+	int GetJavaMemory() const;
 
-	int getJava_memory() const {
-		return java_memory;
-	}
+	void SetJavaMemory(int java_memory);
 
-	void setJava_memory(int java_memory) {
-		this->java_memory = java_memory;
-	}
+	int GetNativeMemory() const;
 
-	int getNative_memory() const {
-		return native_memory;
-	}
+	void SetNativeMemory(int native_memory);
 
-	void setNative_memory(int native_memory) {
-		this->native_memory = native_memory;
-	}
+	int GetNoProcesses() const;
 
-	int getNo_processes() const {
-		return no_processes;
-	}
+	void SetNoProcesses(int no_processes);
 
-	void setNo_processes(int no_processes) {
-		this->no_processes = no_processes;
-	}
+	bool UseAllCPUs() const;
 
-	bool getUse_all_cpus() const {
-		return use_all_cpus;
-	}
+	void SetUseAllCPUs(bool use_all_cpus);
 
-	void setUse_all_cpus(bool use_all_cpus) {
-		this->use_all_cpus = use_all_cpus;
-	}
+	string GetConfigProtocol() const;
 
-	string getConfig_protocol() const {
-		return config_protocol;
-	}
+	void SetConfigProtocol(string config_protocol);
 
-	void setConfig_protocol(string config_protocol) {
-		this->config_protocol = config_protocol;
-	}
+	unsigned int GetPortInitialValue() const;
 
-	unsigned int getPort_initial_value() const {
-		return port_initial_value;
-	}
-
-	void setPort_initial_value(unsigned int port_initial_value) {
-		this->port_initial_value = port_initial_value;
-	}
+	void SetPortInitialValue(unsigned int port_initial_value);
 
 };
 

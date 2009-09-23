@@ -64,8 +64,8 @@ void Runner::run() {
 	//init counter
 	long cal_duration = 0;
 	//init vectors
-	vector<CalendarEvent*> cal_events = configuration->getCalendar_events();
-	vector<IdlenessEvent*> idle_events = configuration->getIdle_events();
+	vector<CalendarEvent*> cal_events = configuration->GetCalendarEvents();
+	vector<IdlenessEvent*> idle_events = configuration->GetIdleEvents();
 	//init time checks vector for Idleness event start or stop
 	vector<int> start_counter;
 	vector<int> stop_counter;
@@ -134,7 +134,7 @@ void Runner::run() {
 			}
 		} else if (idle_event_on) {
 			LOG4CXX_TRACE(logger, "Checking if idleness events have to be stopped")
-			idle_events = configuration->getIdle_events();
+			idle_events = configuration->GetIdleEvents();
 			for (int i = 0; i < idle_events.size(); i++) {
 				idle = idle_events.at(i);
 				//FIXME why a begin and end threshold ?
@@ -174,7 +174,7 @@ void Runner::run() {
 		}
 
 		//check for  calendar events to start
-		cal_events = configuration->getCalendar_events();
+		cal_events = configuration->GetCalendarEvents();
 		for (int i = 0; i < cal_events.size(); i++) {
 			LOG4CXX_TRACE(logger, "Checking for calendar events to start");
 			calendar = cal_events.at(i);
@@ -310,8 +310,8 @@ Configuration* Runner::getConfiguration() {
  */
 //TODO DRY much ?
 void Runner::StartActions(DBus::ControllerProxy::pointer controller) {
-	string pa_location = configuration->getProactive_location();
-	string java_bin = configuration->getJava_home() + DEFAULT_JAVA_BIN;
+	string pa_location = configuration->GetPALocation();
+	string java_bin = configuration->GetJavaHome() + DEFAULT_JAVA_BIN;
 	string java_security = DEFAULT_DJAVA_SECURITY_OPTION + pa_location
 			+ DEFAULT_DJAVA_SECURITY_FILE;
 	string log4j_configuration = DEFAULT_DLOG4J_OPTION + pa_location
@@ -325,10 +325,10 @@ void Runner::StartActions(DBus::ControllerProxy::pointer controller) {
 			pa_home_option<< "] [" <<
 			configuration->GetClasspath()<< "] [" <<
 			java_bin << "]");
-	vector<AdvertAction*> advert_actions = configuration->getAdvert_actions();
-	vector<RMAction*> rm_actions = configuration->getRm_actions();
-	vector<P2PAction*> p2p_actions = configuration->getP_actions();
-	vector<CustomAction*> custom_actions = configuration->getCustom_actions();
+	vector<AdvertAction*> advert_actions = configuration->GetAdvertActions();
+	vector<RMAction*> rm_actions = configuration->GetRMActions();
+	vector<P2PAction*> p2p_actions = configuration->GetP2PActions();
+	vector<CustomAction*> custom_actions = configuration->GetCustomActions();
 
 	int pid;
 	AdvertAction *advert;

@@ -154,36 +154,36 @@ void ConfigHandler::endElement(const XMLCh* const uri,
 	//configuration values are unique in the document, should be safe to do this
 	if (processing_config) {
 		if (name == PROACTIVE_LOCATION) {
-			config->setProactive_location(element_data);
+			config->SetPALocation(element_data);
 			LOG4CXX_TRACE(logger, "Set ProActive location to " + element_data);
 		} else if (name == JAVA_HOME) {
-			config->setJava_home(element_data);
+			config->SetJavaHome(element_data);
 			LOG4CXX_TRACE(logger, "Set Java home location to " + element_data);
 		} else if (name == JAVA_PARAMS) {
-			config->setJvm_params(element_data);
+			config->SetJVMParams(element_data);
 			LOG4CXX_TRACE(logger, "Set JVM parameters to " + element_data);
 		} else if (name == ENABLE_MEMORY_MNGMT) {
-			config->setEnable_memory_management(false);
+			config->setMemoryManagement(false);
 			if (element_data == ENABLED)
-				config->setEnable_memory_management(true);
+				config->setMemoryManagement(true);
 			LOG4CXX_TRACE(logger, "Set Memory management " + element_data);
 		} else if (name == JAVA_MEMORY) {
-			config->setJava_memory(stoint(element_data));
+			config->SetJavaMemory(stoint(element_data));
 			LOG4CXX_TRACE(logger, "Set Java memory " + element_data);
 		} else if (name == NATIVE_MEMORY) {
-			config->setNative_memory(stoint(element_data));
+			config->SetNativeMemory(stoint(element_data));
 			LOG4CXX_TRACE(logger, "Set native memory " + element_data);
 		} else if (name == NO_PROCESSES) {
-			config->setNo_processes(stoint(element_data));
+			config->SetNoProcesses(stoint(element_data));
 			LOG4CXX_TRACE(logger, "Set no of processes " + element_data);
 		} else if (name == USE_ALL_CPUS) {
-			config->setUse_all_cpus(stobool(element_data));
+			config->SetUseAllCPUs(stobool(element_data));
 			LOG4CXX_TRACE(logger, "Set use all cpus to " + element_data);
 		} else if (name == CONFIG_PROTOCOL) {
-			config->setConfig_protocol(element_data);
+			config->SetConfigProtocol(element_data);
 			LOG4CXX_TRACE(logger, "Set protocol to " + element_data);
 		} else if (name == PORT_INITIAL_VALUE) {
-			config->setPort_initial_value(stoint(element_data));
+			config->SetPortInitialValue(stoint(element_data));
 			LOG4CXX_TRACE(logger, "Set port initial value to " + element_data);
 		}
 	}

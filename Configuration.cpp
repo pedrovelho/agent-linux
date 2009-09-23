@@ -84,6 +84,136 @@ string Configuration::GetClasspath() {
 	return classpath;
 }
 
+
+vector<CalendarEvent*> Configuration::GetCalendarEvents() const {
+	return calendar_events;
+}
+
+void Configuration::SetCalendarEvents(vector<CalendarEvent*> calendar_events) {
+	this->calendar_events = calendar_events;
+}
+
+vector<IdlenessEvent*> Configuration::GetIdleEvents() const {
+	return idle_events;
+}
+
+void Configuration::SetIdleEvents(vector<IdlenessEvent*> idle_events) {
+	this->idle_events = idle_events;
+}
+
+vector<P2PAction*> Configuration::GetP2PActions() const {
+	return p2p_actions;
+}
+
+void Configuration::SetP2Actions(vector<P2PAction*> p2p_actions) {
+	this->p2p_actions = p2p_actions;
+}
+
+vector<RMAction*> Configuration::GetRMActions() const {
+	return rm_actions;
+}
+
+void Configuration::SetRMActions(vector<RMAction*> rm_actions) {
+	this->rm_actions = rm_actions;
+}
+
+vector<AdvertAction*> Configuration::GetAdvertActions() const {
+	return advert_actions;
+}
+
+void Configuration::SetAdvertActions(vector<AdvertAction*> advert_actions) {
+	this->advert_actions = advert_actions;
+}
+
+vector<CustomAction*> Configuration::GetCustomActions() const {
+	return custom_actions;
+}
+
+void Configuration::SetCustomActions(vector<CustomAction*> custom_actions) {
+	this->custom_actions = custom_actions;
+}
+
+string Configuration::GetPALocation() const {
+	return proactive_location;
+}
+
+void Configuration::SetPALocation(string proactive_location) {
+	this->proactive_location = proactive_location;
+}
+
+string Configuration::GetJavaHome() const {
+	return java_home;
+}
+
+void Configuration::SetJavaHome(string java_home) {
+	this->java_home = java_home;
+}
+
+string Configuration::GetJVMParams() const {
+	return jvm_params;
+}
+
+void Configuration::SetJVMParams(string jvm_params) {
+	this->jvm_params = jvm_params;
+}
+
+bool Configuration::isMemoryManaged() const {
+	return enable_memory_management;
+}
+
+void Configuration::setMemoryManagement(bool enable_memory_management) {
+	this->enable_memory_management = enable_memory_management;
+}
+
+int Configuration::GetJavaMemory() const {
+	return java_memory;
+}
+
+void Configuration::SetJavaMemory(int java_memory) {
+	this->java_memory = java_memory;
+}
+
+int Configuration::GetNativeMemory() const {
+	return native_memory;
+}
+
+void Configuration::SetNativeMemory(int native_memory) {
+	this->native_memory = native_memory;
+}
+
+int Configuration::GetNoProcesses() const {
+	return no_processes;
+}
+
+void Configuration::SetNoProcesses(int no_processes) {
+	this->no_processes = no_processes;
+}
+
+bool Configuration::UseAllCPUs() const {
+	return use_all_cpus;
+}
+
+void Configuration::SetUseAllCPUs(bool use_all_cpus) {
+	this->use_all_cpus = use_all_cpus;
+}
+
+string Configuration::GetConfigProtocol() const {
+	return config_protocol;
+}
+
+void Configuration::SetConfigProtocol(string config_protocol) {
+	this->config_protocol = config_protocol;
+}
+
+unsigned int Configuration::GetPortInitialValue() const {
+	return port_initial_value;
+}
+
+void Configuration::SetPortInitialValue(unsigned int port_initial_value) {
+	this->port_initial_value = port_initial_value;
+}
+
+
 //static int get_ncpu() {
 //	int ncpu = -1;
 //#ifdef _SC_NPROCESSORS_ONLN
