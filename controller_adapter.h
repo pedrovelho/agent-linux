@@ -46,8 +46,8 @@ namespace DBus {
         temp_method->set_arg_name( 1, "name" );
         temp_method->set_arg_name( 2, "java_class" );
         temp_method->set_arg_name( 3, "arguments" );
-        temp_method = this->create_method<int32_t,int32_t>( "proactive.agent.controller", "StopNode", sigc::mem_fun(*this, &ControllerAdapter::StopNode_adapter_stub_ii) );
-        temp_method->set_arg_name( 0, "breaks_without" );
+        temp_method = this->create_method<bool,int32_t>( "proactive.agent.controller", "StopNode", sigc::mem_fun(*this, &ControllerAdapter::StopNode_adapter_stub_bi) );
+        temp_method->set_arg_name( 0, "dead" );
         temp_method->set_arg_name( 1, "pid" );
       }
 
@@ -81,7 +81,7 @@ namespace DBus {
       int32_t StartRMNode_adapter_stub_isssss( std::string name, std::string java_class, std::string user, std::string password, std::string url ) { this->check_adaptee(); return m_adaptee->StartRMNode( name, java_class, user, password, url); }
       int32_t StartP2PNode_adapter_stub_isss( std::string name, std::string java_class, std::string contact ) { this->check_adaptee(); return m_adaptee->StartP2PNode( name, java_class, contact); }
       int32_t StartCustomNode_adapter_stub_isss( std::string name, std::string java_class, std::string arguments ) { this->check_adaptee(); return m_adaptee->StartCustomNode( name, java_class, arguments); }
-      int32_t StopNode_adapter_stub_ii( int32_t pid ) { this->check_adaptee(); return m_adaptee->StopNode( pid); }
+      bool StopNode_adapter_stub_bi( int32_t pid ) { this->check_adaptee(); return m_adaptee->StopNode( pid); }
 
 
   };

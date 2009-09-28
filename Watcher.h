@@ -69,6 +69,7 @@ private:
 	string contact;
 	string arguments;
 	string java_class;
+	int cpu_max;
 public:
 
 	//named constructors for different types of action restarts
@@ -105,6 +106,8 @@ public:
 	void SetRMValues(string user, string password, string url);
 	void SetP2PValues(string contact);
 	void SetCustomValues(string arguments);
+	void limit(int limit);
+	string GetName() const;
 private:
 	int RestartNode(ActionType action);
 };

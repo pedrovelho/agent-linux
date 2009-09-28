@@ -351,6 +351,7 @@ void Runner::StartActions(DBus::ControllerProxy::pointer controller) {
 			//			//FIXME check the node has been actually started !!!
 			LOG4CXX_TRACE(logger, "Advert node started " << advert->GetNodeName() );
 			watcher->start();
+			watcher->limit(3);
 			watchers.push_back(watcher);
 
 		}
@@ -440,7 +441,9 @@ void Runner::StopActions(DBus::ControllerProxy::pointer controller) {
 		watcher = watchers.at(i);
 		pid = watcher->GetPid();
 		watcher->StopWatcher();
-		//		controller->StopNode(pid);
+		watcher->join();
+		LOG4CXX_TRACE(logger, "Found a watcher for node " << watcher->getName() << " with PID " << pid);
+		cout << controller->StopNode(pid) << endl;
 	}
 }
 

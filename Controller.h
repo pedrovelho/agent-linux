@@ -103,7 +103,7 @@ public:
 	//contact ? WTF
 	int StartP2PNode(string name, string java_class, string contact);
 	int StartCustomNode(string name, string java_class, string arguments);
-	int StopNode(int pid);
+	bool StopNode(int pid);
 
 	/**
 	 * Stops the Node with the give name.

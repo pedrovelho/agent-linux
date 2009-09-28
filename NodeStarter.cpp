@@ -29,7 +29,6 @@
  */
 
 #include "NodeStarter.h"
-#include <iostream>
 
 NodeStarter::NodeStarter(string name, string java_class,
 		string security_policy, string log4j_file, string proactive_home,

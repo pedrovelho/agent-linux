@@ -15,16 +15,16 @@
 	</internalConfig>
 	<events>
 		<event xsi:type="CalendarEvent">
-			<startDay>wed</startDay>
-			<startHour>10</startHour>
-			<startMinute>53</startMinute>
-			<startSecond>00</startSecond>
+			<startDay>mon</startDay>
+			<startHour>13</startHour>
+			<startMinute>29</startMinute>
+			<startSecond>50</startSecond>
 			<durationDays>0</durationDays>
 			<durationHours>0</durationHours>
 			<durationMinutes>0</durationMinutes>
-			<durationSeconds>3</durationSeconds>
+			<durationSeconds>30</durationSeconds>
 			<processPriority>Normal</processPriority>
-			<maxCpuUsage>100</maxCpuUsage>
+			<maxCpuUsage>3</maxCpuUsage>
 		</event>
 		<event xsi:type="IdlenessEvent">
 			<beginSecs>10</beginSecs>

@@ -75,7 +75,7 @@ const string PROACTIVE_EXAMPLES_JAR("/dist/lib/ProActive_examples.jar");
 const string PROACTIVE_UTILS_JAR("/dist/lib/ProActive_utils.jar");
 
 /** Time to wait for the JVM to stop when stopping nodes. */
-const int SLEEP_TIME_AFTER_KILL = 1;
+const int SLEEP_TIME_AFTER_KILL = 5;
 /** Time interval between node checks for watchers. */
 const int DEFAULT_TICK = 1000;
 

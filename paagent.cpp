@@ -100,7 +100,7 @@ int main(int argc, char** argv) {
 		string log4cxx_file = log4cxxFileArg.getValue();
 
 		//arguments logic
-		LoggerPtr logger = log4cxx::Logger::getRootLogger();
+		LoggerPtr logger = log4cxx::Logger::getLogger("paagent");
 		//if log4cxx_file is set try to load, else do a basic config
 		if (log4cxxFileArg.isSet()) {
 			PropertyConfigurator::configure(log4cxx_file);

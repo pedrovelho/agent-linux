@@ -21,7 +21,7 @@ namespace DBus {
         m_method_StartRMNode_isssss = this->create_method< int32_t,std::string,std::string,std::string,std::string,std::string >( "proactive.agent.controller", "StartRMNode" );
         m_method_StartP2PNode_isss = this->create_method< int32_t,std::string,std::string,std::string >( "proactive.agent.controller", "StartP2PNode" );
         m_method_StartCustomNode_isss = this->create_method< int32_t,std::string,std::string,std::string >( "proactive.agent.controller", "StartCustomNode" );
-        m_method_StopNode_ii = this->create_method< int32_t,int32_t >( "proactive.agent.controller", "StopNode" );
+        m_method_StopNode_bi = this->create_method< bool,int32_t >( "proactive.agent.controller", "StopNode" );
       }
 
     public:
@@ -45,7 +45,7 @@ namespace DBus {
 
       int32_t StartCustomNode( std::string name, std::string java_class, std::string arguments ) { return (*m_method_StartCustomNode_isss)( name, java_class, arguments); }
 
-      int32_t StopNode( int32_t pid ) { return (*m_method_StopNode_ii)( pid); }
+      bool StopNode( int32_t pid ) { return (*m_method_StopNode_bi)( pid); }
 
 
     protected:
@@ -56,7 +56,7 @@ namespace DBus {
       ::DBus::MethodProxy<int32_t,std::string,std::string,std::string,std::string,std::string>::pointer m_method_StartRMNode_isssss;
       ::DBus::MethodProxy<int32_t,std::string,std::string,std::string>::pointer m_method_StartP2PNode_isss;
       ::DBus::MethodProxy<int32_t,std::string,std::string,std::string>::pointer m_method_StartCustomNode_isss;
-      ::DBus::MethodProxy<int32_t,int32_t>::pointer m_method_StopNode_ii;
+      ::DBus::MethodProxy<bool,int32_t>::pointer m_method_StopNode_bi;
 
 
   };

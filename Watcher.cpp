@@ -109,18 +109,12 @@ void Watcher::run() {
 			//			returns the pid to check
 			pid = RestartNode(action_select);
 			LOG4CXX_DEBUG(logger, "Restarted the node with PID " << pid);
-			//restart_delay is in milliseconds
-
-			//stop = true;
-
+			limit(cpu_max);
 		} else {
 			LOG4CXX_TRACE(logger, "Node " << node_name << " is alive");
 		}
 	}
-	//FIXME why does one method work and the other doesn't ?
-	controller->StartNode(node_name, java_class);
 	LOG4CXX_TRACE(logger, "Watcher loop has finished.");
-	//	controller->StopNode(pid);
 }
 long Watcher::GetRestartDelay() {
 	return restart_delay;
@@ -169,4 +163,78 @@ int Watcher::GetPid() {
 }
 void Watcher::StopWatcher() {
 	stop = true;
+}
+
+void Watcher::limit(int limit) {
+	//intialize cpu_max
+	cpu_max = limit;
+	//	Usage: cpulimit TARGET [OPTIONS...]
+	//	   TARGET must be exactly one of these:
+	//	      -p, --pid=N        pid of the process
+	//	      -e, --exe=FILE     name of the executable program file
+	//	      -P, --path=PATH    absolute path name of the executable program file
+	//	   OPTIONS
+	//	      -l, --limit=N      percentage of cpu allowed from 0 to 100 (mandatory)
+	//	      -v, --verbose      show control statistics
+	//	      -z, --lazy         exit if there is no suitable target process, or if it dies
+	//	      -h, --help         display this help and exit
+
+	/* prevent zombie process */
+	if (signal(SIGCHLD, SIG_IGN) == SIG_ERR)
+		LOG4CXX_ERROR(logger,
+				"Unable to ignore SIGCHILD");
+	pid_t sid, fork_pid;
+	//Fork parent process
+	LOG4CXX_DEBUG(logger, "Befor fork ------------------------------");
+	fork_pid = fork();
+	LOG4CXX_DEBUG(logger, "After fork ------------------------------");
+
+	//If the fork was successful execute child code
+	if (fork_pid == 0) {
+		// Running in child process
+		//Decouple from parent (controller) environment
+		/*Change the file mode process to:
+		 * umask value   User  Group Others
+		 *
+		 * 0000       all   all   all
+		 * 0007       all   all   none
+		 * 0027       all   r/w   none
+		 */
+		umask(27);
+		// Create a new SID for the child process,
+		sid = setsid();
+		if (sid < 0) {
+			LOG4CXX_ERROR(logger, "setsid() call failed");
+		}
+		/* Change the current working directory to prevent the current
+		 directory from being locked and not being able to remove it. */
+		chdir("/");
+
+		std::stringstream out;
+		out << pid;
+		string process_pid = out.str();
+
+		std::stringstream out1;
+
+		out1 << limit;
+		string max = out1.str();
+
+		LOG4CXX_TRACE(logger, "Running command for " << process_pid << " with limit " << max);
+		execlp("cpulimit", " ", "-p", process_pid.c_str(), "-l",
+				max.c_str(), "-z", (char*) 0);
+		//if we reach this, exec  has failed
+		LOG4CXX_ERROR(logger, "Error running cpulimit, execl has failed");
+		//		exit(1);
+	}
+	//failed to fork
+	else if (fork_pid < 0) {
+		LOG4CXX_ERROR(logger, "Failed to fork ");
+	} else {
+		LOG4CXX_DEBUG(logger, "Returning from parent");
+		return;
+	}
+}
+
+string Watcher::GetName() const {
+	return node_name;
 }

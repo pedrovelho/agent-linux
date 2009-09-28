@@ -95,7 +95,7 @@ public:
 	/** Adds an Event to one of the Event vectors. The Event
 	 * is added to the vectors depending on the type.
 	 *
-	 * @param action a pointer to an Event
+	 * @param event a pointer to an Event
 	 * */
 	void AddEvent(Event* event);
 	virtual ~Configuration();

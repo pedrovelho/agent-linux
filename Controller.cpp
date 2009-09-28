@@ -81,22 +81,21 @@ int Controller::StartCustomNode(string name, string java_class,
 	return starter.getPid();
 }
 
-int Controller::StopNode(int pid) {
+bool Controller::StopNode(int pid) {
 	//try to stop
 
 	kill(pid, SIGTERM);
 	//wait for the JVM to stop
-	//	sleep(SLEEP_TIME_AFTER_KILL);
+	sleep(SLEEP_TIME_AFTER_KILL);
 	bool dead = false;
 	//return check for stop,
 	//kill(pid, 0) returns -1 if the process does not exist
 	int stop = kill(pid, 0);
-	LOG4CXX_DEBUG(logger, "Kill command return after trying to stop the node " << stop);
+	LOG4CXX_DEBUG(logger, "Sent SIGTERM message to node with PID " << pid);
 	if (stop != 0) {
 		dead = true;
 	}
-	//	return dead;
-	return 0;
+	return dead;
 }
 
 bool Controller::StopNode(string name) {

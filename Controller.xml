@@ -59,7 +59,7 @@
 
 		<method name="StopNode">
 			<arg type="i" name="pid" direction="in" />
-			<arg type="i" name="breaks_without" direction="out" />
+			<arg type="b" name="dead" direction="out" />
 
 		</method>
 
