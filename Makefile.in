@@ -53,8 +53,7 @@ CONFIG_CLEAN_FILES =
 CONFIG_CLEAN_VPATH_FILES =
 am__installdirs = "$(DESTDIR)$(bindir)"
 PROGRAMS = $(bin_PROGRAMS)
-am_paagent_OBJECTS = paagent-CPULimiter.$(OBJEXT) \
-	paagent-P2PNodeStarter.$(OBJEXT) \
+am_paagent_OBJECTS = paagent-P2PNodeStarter.$(OBJEXT) \
 	paagent-CustomNodeStarter.$(OBJEXT) \
 	paagent-RMNodeStarter.$(OBJEXT) paagent-Runner.$(OBJEXT) \
 	paagent-AdvertAction.$(OBJEXT) paagent-CustomAction.$(OBJEXT) \
@@ -81,8 +80,7 @@ paagent_server_OBJECTS = $(am_paagent_server_OBJECTS)
 paagent_server_DEPENDENCIES =
 paagent_server_LINK = $(CXXLD) $(paagent_server_CXXFLAGS) $(CXXFLAGS) \
 	$(paagent_server_LDFLAGS) $(LDFLAGS) -o $@
-am_paagent_tests_OBJECTS = paagent_tests-CPULimiter.$(OBJEXT) \
-	paagent_tests-P2PNodeStarter.$(OBJEXT) \
+am_paagent_tests_OBJECTS = paagent_tests-P2PNodeStarter.$(OBJEXT) \
 	paagent_tests-CustomNodeStarter.$(OBJEXT) \
 	paagent_tests-RMNodeStarter.$(OBJEXT) \
 	paagent_tests-Runner.$(OBJEXT) \
@@ -233,11 +231,11 @@ paagent_server_SOURCES = P2PNodeStarter.cpp CustomNodeStarter.cpp RMNodeStarter.
 paagent_server_LDADD = -llog4cxx -lccext2 -lccgnu2 -lz -ldl -lrt -ldbus-1 -lgthread-2.0  -ldbus-glib-1 -lglibmm-2.4  -lsigc-2.0 -ldbus-cxx
 paagent_server_LDFLAGS = -pthread   -I/usr/include/dbus-1.0 -I/usr/lib/dbus-1.0/include -D_GNU_SOURCE 
 paagent_server_CXXFLAGS = -I/usr/include/glibmm-2.4 -I/usr/lib/glibmm-2.4/include -I/usr/include/sigc++-2.0 -I/usr/lib/sigc++-2.0/include -I/usr/local/include/dbus-cxx-0.4 -I/usr/include/dbus-1.0 -I/usr/lib/dbus-1.0/include -I/usr/include/sigc++-2.0 -I/usr/lib/sigc++-2.0/include -std=c++0x -std=gnu++0x
-paagent_tests_SOURCES = CPULimiter.cpp P2PNodeStarter.cpp CustomNodeStarter.cpp RMNodeStarter.cpp  Runner.cpp ConfigParserTest.cpp AdvertAction.cpp CustomAction.cpp RMAction.cpp P2PAction.cpp Action.cpp Event.cpp CalendarEvent.cpp IdlenessEvent.cpp Configuration.cpp ConfigParser.cpp ConfigHandler.cpp paagent_tests.cpp PAAgentTest.cpp ControllerTest.cpp  PAAgent.cpp  Controller.cpp NodeStarter.cpp  Watcher.cpp 
+paagent_tests_SOURCES = P2PNodeStarter.cpp CustomNodeStarter.cpp RMNodeStarter.cpp  Runner.cpp ConfigParserTest.cpp AdvertAction.cpp CustomAction.cpp RMAction.cpp P2PAction.cpp Action.cpp Event.cpp CalendarEvent.cpp IdlenessEvent.cpp Configuration.cpp ConfigParser.cpp ConfigHandler.cpp paagent_tests.cpp PAAgentTest.cpp ControllerTest.cpp  PAAgent.cpp  Controller.cpp NodeStarter.cpp  Watcher.cpp 
 paagent_tests_LDADD = -lxerces-c-3.0 -lgtest -llog4cxx -lccext2 -lccgnu2 -lz -ldl -lrt -ldbus-1 -lgthread-2.0  -ldbus-glib-1 -lglibmm-2.4  -lsigc-2.0 -ldbus-cxx
 paagent_tests_LDFLAGS = -pthread   -I/usr/include/dbus-1.0 -I/usr/lib/dbus-1.0/include -D_GNU_SOURCE 
 paagent_tests_CXXFLAGS = -I/usr/include/gtest -I/usr/include/glibmm-2.4 -I/usr/lib/glibmm-2.4/include -I/usr/include/sigc++-2.0 -I/usr/lib/sigc++-2.0/include -I/usr/local/include/dbus-cxx-0.4 -I/usr/include/dbus-1.0 -I/usr/lib/dbus-1.0/include -I/usr/include/sigc++-2.0 -I/usr/lib/sigc++-2.0/include -std=c++0x -std=gnu++0x
-paagent_SOURCES = CPULimiter.cpp P2PNodeStarter.cpp CustomNodeStarter.cpp RMNodeStarter.cpp Runner.cpp AdvertAction.cpp CustomAction.cpp RMAction.cpp P2PAction.cpp Action.cpp Event.cpp CalendarEvent.cpp IdlenessEvent.cpp Configuration.cpp ConfigParser.cpp ConfigHandler.cpp PAAgent.cpp paagent.cpp Controller.cpp NodeStarter.cpp  Watcher.cpp
+paagent_SOURCES = P2PNodeStarter.cpp CustomNodeStarter.cpp RMNodeStarter.cpp Runner.cpp AdvertAction.cpp CustomAction.cpp RMAction.cpp P2PAction.cpp Action.cpp Event.cpp CalendarEvent.cpp IdlenessEvent.cpp Configuration.cpp ConfigParser.cpp ConfigHandler.cpp PAAgent.cpp paagent.cpp Controller.cpp NodeStarter.cpp  Watcher.cpp
 paagent_LDADD = -lxerces-c-3.0 -llog4cxx -lccext2 -lccgnu2 -lz -ldl -lrt -ldbus-1 -lgthread-2.0  -ldbus-glib-1 -lglibmm-2.4  -lsigc-2.0 -ldbus-cxx
 paagent_LDFLAGS = -pthread   -I/usr/include/dbus-1.0 -I/usr/lib/dbus-1.0/include -D_GNU_SOURCE 
 paagent_CXXFLAGS = -I/usr/include/tclap -I/usr/include/glibmm-2.4 -I/usr/lib/glibmm-2.4/include -I/usr/include/sigc++-2.0 -I/usr/lib/sigc++-2.0/include -I/usr/local/include/dbus-cxx-0.4 -I/usr/include/dbus-1.0 -I/usr/lib/dbus-1.0/include -I/usr/include/sigc++-2.0 -I/usr/lib/sigc++-2.0/include -std=c++0x -std=gnu++0x
@@ -355,7 +353,6 @@ distclean-compile:
 
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/paagent-Action.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/paagent-AdvertAction.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/paagent-CPULimiter.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/paagent-CalendarEvent.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/paagent-ConfigHandler.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/paagent-ConfigParser.Po@am__quote@
@@ -383,7 +380,6 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/paagent_server-paagent_server.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/paagent_tests-Action.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/paagent_tests-AdvertAction.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/paagent_tests-CPULimiter.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/paagent_tests-CalendarEvent.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/paagent_tests-ConfigHandler.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/paagent_tests-ConfigParser.Po@am__quote@
@@ -419,20 +415,6 @@ distclean-compile:
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$<' object='$@' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXXCOMPILE) -c -o $@ `$(CYGPATH_W) '$<'`
-
-paagent-CPULimiter.o: CPULimiter.cpp
-@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(paagent_CXXFLAGS) $(CXXFLAGS) -MT paagent-CPULimiter.o -MD -MP -MF $(DEPDIR)/paagent-CPULimiter.Tpo -c -o paagent-CPULimiter.o `test -f 'CPULimiter.cpp' || echo '$(srcdir)/'`CPULimiter.cpp
-@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/paagent-CPULimiter.Tpo $(DEPDIR)/paagent-CPULimiter.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='CPULimiter.cpp' object='paagent-CPULimiter.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(paagent_CXXFLAGS) $(CXXFLAGS) -c -o paagent-CPULimiter.o `test -f 'CPULimiter.cpp' || echo '$(srcdir)/'`CPULimiter.cpp
-
-paagent-CPULimiter.obj: CPULimiter.cpp
-@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(paagent_CXXFLAGS) $(CXXFLAGS) -MT paagent-CPULimiter.obj -MD -MP -MF $(DEPDIR)/paagent-CPULimiter.Tpo -c -o paagent-CPULimiter.obj `if test -f 'CPULimiter.cpp'; then $(CYGPATH_W) 'CPULimiter.cpp'; else $(CYGPATH_W) '$(srcdir)/CPULimiter.cpp'; fi`
-@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/paagent-CPULimiter.Tpo $(DEPDIR)/paagent-CPULimiter.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='CPULimiter.cpp' object='paagent-CPULimiter.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(paagent_CXXFLAGS) $(CXXFLAGS) -c -o paagent-CPULimiter.obj `if test -f 'CPULimiter.cpp'; then $(CYGPATH_W) 'CPULimiter.cpp'; else $(CYGPATH_W) '$(srcdir)/CPULimiter.cpp'; fi`
 
 paagent-P2PNodeStarter.o: P2PNodeStarter.cpp
 @am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(paagent_CXXFLAGS) $(CXXFLAGS) -MT paagent-P2PNodeStarter.o -MD -MP -MF $(DEPDIR)/paagent-P2PNodeStarter.Tpo -c -o paagent-P2PNodeStarter.o `test -f 'P2PNodeStarter.cpp' || echo '$(srcdir)/'`P2PNodeStarter.cpp
@@ -811,20 +793,6 @@ paagent_server-NodeStarter.obj: NodeStarter.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='NodeStarter.cpp' object='paagent_server-NodeStarter.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(paagent_server_CXXFLAGS) $(CXXFLAGS) -c -o paagent_server-NodeStarter.obj `if test -f 'NodeStarter.cpp'; then $(CYGPATH_W) 'NodeStarter.cpp'; else $(CYGPATH_W) '$(srcdir)/NodeStarter.cpp'; fi`
-
-paagent_tests-CPULimiter.o: CPULimiter.cpp
-@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(paagent_tests_CXXFLAGS) $(CXXFLAGS) -MT paagent_tests-CPULimiter.o -MD -MP -MF $(DEPDIR)/paagent_tests-CPULimiter.Tpo -c -o paagent_tests-CPULimiter.o `test -f 'CPULimiter.cpp' || echo '$(srcdir)/'`CPULimiter.cpp
-@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/paagent_tests-CPULimiter.Tpo $(DEPDIR)/paagent_tests-CPULimiter.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='CPULimiter.cpp' object='paagent_tests-CPULimiter.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(paagent_tests_CXXFLAGS) $(CXXFLAGS) -c -o paagent_tests-CPULimiter.o `test -f 'CPULimiter.cpp' || echo '$(srcdir)/'`CPULimiter.cpp
-
-paagent_tests-CPULimiter.obj: CPULimiter.cpp
-@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(paagent_tests_CXXFLAGS) $(CXXFLAGS) -MT paagent_tests-CPULimiter.obj -MD -MP -MF $(DEPDIR)/paagent_tests-CPULimiter.Tpo -c -o paagent_tests-CPULimiter.obj `if test -f 'CPULimiter.cpp'; then $(CYGPATH_W) 'CPULimiter.cpp'; else $(CYGPATH_W) '$(srcdir)/CPULimiter.cpp'; fi`
-@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/paagent_tests-CPULimiter.Tpo $(DEPDIR)/paagent_tests-CPULimiter.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='CPULimiter.cpp' object='paagent_tests-CPULimiter.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(paagent_tests_CXXFLAGS) $(CXXFLAGS) -c -o paagent_tests-CPULimiter.obj `if test -f 'CPULimiter.cpp'; then $(CYGPATH_W) 'CPULimiter.cpp'; else $(CYGPATH_W) '$(srcdir)/CPULimiter.cpp'; fi`
 
 paagent_tests-P2PNodeStarter.o: P2PNodeStarter.cpp
 @am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(paagent_tests_CXXFLAGS) $(CXXFLAGS) -MT paagent_tests-P2PNodeStarter.o -MD -MP -MF $(DEPDIR)/paagent_tests-P2PNodeStarter.Tpo -c -o paagent_tests-P2PNodeStarter.o `test -f 'P2PNodeStarter.cpp' || echo '$(srcdir)/'`P2PNodeStarter.cpp
