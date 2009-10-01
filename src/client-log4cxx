@@ -3,23 +3,23 @@
 
 # The default logging level is INFO
 
-#log4j.rootLogger=INFO,CLIENT_FILE
+log4j.rootLogger=INFO,CLIENT_FILE
  
-log4j.logger.Action = INFO, CLIENT_FILE
-log4j.logger.AdvertAction = INFO, CLIENT_FILE
-log4j.logger.CalendarEvent = INFO, CLIENT_FILE
-log4j.logger.ConfigHandler = DEBUG, CONSOLE
-log4j.logger.ConfigParser = DEBUG, CONSOLE
-log4j.logger.Configuration = INFO, CLIENT_FILE
-log4j.logger.CustomAction = INFO, CLIENT_FILE
-log4j.logger.Event = INFO, CLIENT_FILE
-log4j.logger.IdlenessEvent = INFO, CLIENT_FILE
-log4j.logger.IdlenessRunner = INFO, CLIENT_FILE
-log4j.logger.P2PAction = INFO, CLIENT_FILE
-log4j.logger.RMAction = INFO, CLIENT_FILE
-log4j.logger.Runner = INFO, CLIENT_FILE
-log4j.logger.Watcher = INFO, CLIENT_FILE
-log4j.logger.paagent = INFO, CLIENT_FILE
+log4j.logger.Action = INFO
+log4j.logger.AdvertAction = INFO
+log4j.logger.CalendarEvent = INFO
+log4j.logger.ConfigHandler = INFO
+log4j.logger.ConfigParser = INFO
+log4j.logger.Configuration = INFO
+log4j.logger.CustomAction = INFO
+log4j.logger.Event = INFO
+log4j.logger.IdlenessEvent = INFO
+log4j.logger.IdlenessRunner = INFO
+log4j.logger.P2PAction = INFO
+log4j.logger.RMAction = INFO
+log4j.logger.Runner = INFO
+log4j.logger.Watcher = INFO
+log4j.logger.paagent = INFO
  
 ################ Appenders ####################
 #
