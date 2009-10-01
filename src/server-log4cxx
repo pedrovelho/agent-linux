@@ -1,17 +1,19 @@
 # This file represents is the log4cxx config file for the ProActive linux agent.
 # It is given as a command line argument when starting the agent
 
+log4j.logger.additivity = false
+
 # The default logging level is INFO
 
 log4j.rootLogger=INFO, SERVER_FILE
 
-log4j.logger.Controller = INFO, SERVER_FILE
-log4j.logger.P2PNodeStarter = INFO, SERVER_FILE
-log4j.logger.RMNodeStarter = INFO, SERVER_FILE
-log4j.logger.CustomNodeStarter = INFO, SERVER_FILE
-log4j.logger.NodeStarter = INFO, SERVER_FILE
-log4j.logger.PAAgent = INFO, SERVER_FILE
-log4j.logger.paagent_server = INFO, SERVER_FILE
+log4j.logger.Controller = INFO
+log4j.logger.P2PNodeStarter = INFO
+log4j.logger.RMNodeStarter = INFO
+log4j.logger.CustomNodeStarter = INFO
+log4j.logger.NodeStarter = INFO
+log4j.logger.PAAgent = INFO
+log4j.logger.paagent_server = INFO
 
  
 ################ Appenders ####################
