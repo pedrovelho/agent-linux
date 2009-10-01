@@ -3,29 +3,26 @@
 /* Define to 1 if you have the `fork' function. */
 #undef HAVE_FORK
 
-/* Define to 1 if you have the <glib.h> header file. */
-#undef HAVE_GLIB_H
-
 /* Define to 1 if you have the <inttypes.h> header file. */
 #undef HAVE_INTTYPES_H
-
-/* Define to 1 if you have the `ccext2' library (-lccext2). */
-#undef HAVE_LIBCCEXT2
 
 /* Define to 1 if you have the `ccgnu2' library (-lccgnu2). */
 #undef HAVE_LIBCCGNU2
 
+/* Define to 1 if you have the `dbus-cxx' library (-ldbus-cxx). */
+#undef HAVE_LIBDBUS_CXX
+
 /* Define to 1 if you have the `dl' library (-ldl). */
 #undef HAVE_LIBDL
-
-/* Define to 1 if you have the `glib' library (-lglib). */
-#undef HAVE_LIBGLIB
 
 /* Define to 1 if you have the `log4cxx' library (-llog4cxx). */
 #undef HAVE_LIBLOG4CXX
 
 /* Define to 1 if you have the `rt' library (-lrt). */
 #undef HAVE_LIBRT
+
+/* Define to 1 if you have the `xerces-c-3.0' library (-lxerces-c-3.0). */
+#undef HAVE_LIBXERCES_C_3_0
 
 /* Define to 1 if you have the `z' library (-lz). */
 #undef HAVE_LIBZ

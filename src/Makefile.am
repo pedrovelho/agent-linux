@@ -1,5 +1,5 @@
 #paagent paagent_server
-
+#dependencies
 bin_PROGRAMS = paagent paagent_server
 bin_SCRIPTS = 
 noinst_PROGRAMS = paagent_tests
@@ -8,12 +8,9 @@ paagent_server_SOURCES= P2PNodeStarter.cpp CustomNodeStarter.cpp RMNodeStarter.c
 					    PAAgent.cpp paagent_server.cpp Controller.cpp NodeStarter.cpp \
 					    P2PNodeStarter.h CustomNodeStarter.h RMNodeStarter.h  \
 					    PAAgent.h Controller.h NodeStarter.h Constants.h controller_adapter.h
-paagent_server_LDADD = -llog4cxx -lccext2 -lccgnu2 -lrt \
-                       -ldl -lsigc-2.0 -ldbus-cxx
-paagent_server_LDFLAGS = -pthread  -D_GNU_SOURCE 
-paagent_server_CXXFLAGS = -I/usr/include/sigc++-2.0 -I/usr/lib/sigc++-2.0/include \
-						  -I/usr/local/include/dbus-cxx-0.4 -I/usr/include/sigc++-2.0 \
-						  -I/usr/lib/sigc++-2.0/include -std=c++0x -std=gnu++0x
+paagent_server_LDADD = $(GNUCXX_LIBS) $(DBUS_CXX_LIBS) $(LOG4CXX_LIBS)
+paagent_server_CXXFLAGS = -I/usr/include/tclap $(DBUS_CXX_CFLAGS) $(LOG4CXX_CFLAGS)\
+				 		 $(GNUCXX_CFLAGS) -std=c++0x -std=gnu++0x
 
 paagent_tests_SOURCES = P2PNodeStarter.cpp CustomNodeStarter.cpp RMNodeStarter.cpp  \
 						Runner.cpp ConfigParserTest.cpp AdvertAction.cpp CustomAction.cpp \
@@ -28,13 +25,9 @@ paagent_tests_SOURCES = P2PNodeStarter.cpp CustomNodeStarter.cpp RMNodeStarter.c
 						PAAgentTest.h ControllerTest.h  PAAgent.h controller_proxy.h \
 						Controller.h NodeStarter.h  Watcher.h Constants.h XMLDefs.h
 						 
-paagent_tests_LDADD = -lgtest -lxerces-c-3.0 -llog4cxx  -lccgnu2   -lrt \
-					  -ldl -lsigc-2.0 -ldbus-cxx
-paagent_tests_LDFLAGS = -pthread -D_GNU_SOURCE 
-paagent_tests_CXXFLAGS = -I/usr/include/gtest -I/usr/include/sigc++-2.0 \
-                         -I/usr/lib/sigc++-2.0/include -I/usr/local/include/dbus-cxx-0.4 \
-                         -I/usr/include/sigc++-2.0 -I/usr/lib/sigc++-2.0/include \
-                         -std=c++0x -std=gnu++0x
+paagent_tests_LDADD = -lgtest $(XERC_LIBS) $(GNUCXX_LIBS) $(DBUS_CXX_LIBS) $(LOG4CXX_LIBS) 
+paagent_tests_CXXFLAGS = -I/usr/include/gtest $(DBUS_CXX_CFLAGS) $(LOG4CXX_CFLAGS)\
+				 $(GNUCXX_CFLAGS) -std=c++0x -std=gnu++0x
 
 paagent_SOURCES = P2PNodeStarter.cpp CustomNodeStarter.cpp RMNodeStarter.cpp Runner.cpp \
 				  AdvertAction.cpp CustomAction.cpp RMAction.cpp P2PAction.cpp Action.cpp \
@@ -47,13 +40,9 @@ paagent_SOURCES = P2PNodeStarter.cpp CustomNodeStarter.cpp RMNodeStarter.cpp Run
 				  ConfigParser.h ConfigHandler.h PAAgent.h \
 				  Controller.h NodeStarter.h  Watcher.h Constants.h XMLDefs.h
 				  
-paagent_LDADD = -lxerces-c-3.0 -llog4cxx  -lccgnu2 -lrt \
-				-ldl -lsigc-2.0 -ldbus-cxx
-paagent_LDFLAGS = -pthread  -D_GNU_SOURCE 
-paagent_CXXFLAGS = -I/usr/include/tclap -I/usr/include/sigc++-2.0 \
-				   -I/usr/lib/sigc++-2.0/include -I/usr/local/include/dbus-cxx-0.4 \
-				   -I/usr/include/sigc++-2.0 \
-				   -I/usr/lib/sigc++-2.0/include -std=c++0x -std=gnu++0x
+paagent_LDADD = $(XERC_LIBS)  $(GNUCXX_LIBS) $(DBUS_CXX_LIBS) $(LOG4CXX_LIBS)
+paagent_CXXFLAGS = -I/usr/include/tclap $(DBUS_CXX_CFLAGS) $(LOG4CXX_CFLAGS)\
+				 $(XERC_CFLAGS) $(GNUCXX_CFLAGS) -std=c++0x -std=gnu++0x
 
 
 #dbus-cxx-xml2cpp --xml Controller.xml --adapter -f
@@ -73,3 +62,5 @@ interface_xml = Controller.xml
 checkxml: $(interface_xml)
 	@xmllint --valid --noout $<
 	@echo $< checks out ok
+
+	

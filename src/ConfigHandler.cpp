@@ -215,31 +215,31 @@ void ConfigHandler::processEvent(string name, string value) {
 	if (name == START_DAY) {
 		((CalendarEvent*) currentEvent)->SetStartDay(value);
 	} else if (name == START_HOUR) {
-		((CalendarEvent*) currentEvent)->SetStartHour(stoi(value));
+		((CalendarEvent*) currentEvent)->SetStartHour(stoint(value));
 	} else if (name == START_MINUTE) {
-		((CalendarEvent*) currentEvent)->SetStartMinute(stoi(value));
+		((CalendarEvent*) currentEvent)->SetStartMinute(stoint(value));
 	} else if (name == START_SECOND) {
-		((CalendarEvent*) currentEvent)->SetStartSecond(stoi(value));
+		((CalendarEvent*) currentEvent)->SetStartSecond(stoint(value));
 	} else if (name == DURATION_DAYS) {
-		((CalendarEvent*) currentEvent)->SetDurationDays(stoi(value));
+		((CalendarEvent*) currentEvent)->SetDurationDays(stoint(value));
 	} else if (name == DURATION_HOURS) {
-		((CalendarEvent*) currentEvent)->SetDurationHours(stoi(value));
+		((CalendarEvent*) currentEvent)->SetDurationHours(stoint(value));
 	} else if (name == DURATION_MINUTES) {
-		((CalendarEvent*) currentEvent)->SetDurationMinutes(stoi(value));
+		((CalendarEvent*) currentEvent)->SetDurationMinutes(stoint(value));
 	} else if (name == DURATION_SECONDS) {
-		((CalendarEvent*) currentEvent)->SetDurationSeconds(stoi(value));
+		((CalendarEvent*) currentEvent)->SetDurationSeconds(stoint(value));
 	} else if (name == BEGIN_SECONDS) {
-		((IdlenessEvent*) currentEvent)->SetBeginSeconds(stoi(value));
+		((IdlenessEvent*) currentEvent)->SetBeginSeconds(stoint(value));
 	} else if (name == END_SECONDS) {
-		((IdlenessEvent*) currentEvent)->SetEndSeconds(stoi(value));
+		((IdlenessEvent*) currentEvent)->SetEndSeconds(stoint(value));
 	} else if (name == BEGIN_THRESHOLD) {
-		((IdlenessEvent*) currentEvent)->SetBeginThreshold(stoi(value));
+		((IdlenessEvent*) currentEvent)->SetBeginThreshold(stoint(value));
 	} else if (name == END_THRESHOLD) {
-		((IdlenessEvent*) currentEvent)->SetEndThreshold(stoi(value));
+		((IdlenessEvent*) currentEvent)->SetEndThreshold(stoint(value));
 	} else if (name == PROCESS_PRIORITY) {
 		currentEvent->SetProcessPriority(value);
 	} else if (name == MAX_CPU_USAGE) {
-		currentEvent->SetMaxCPUUsage(stoi(value));
+		currentEvent->SetMaxCPUUsage(stoint(value));
 		//found end of an event, copying object to
 		//the event vectors and destroying object
 	} else if (name == EVENT) {
@@ -252,7 +252,7 @@ void ConfigHandler::processEvent(string name, string value) {
 }
 void ConfigHandler::processAction(string name, string value) {
 	if (name == INITIAL_RESTART_DELAY) {
-		currentAction->SetRestartDelay(stoi(value));
+		currentAction->SetRestartDelay(stoint(value));
 	} else if (name == JAVA_STARTER_CLASS) {
 		currentAction->SetStarterClass(value);
 	} else if (name == IS_ENABLED) {

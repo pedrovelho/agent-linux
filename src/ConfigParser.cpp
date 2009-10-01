@@ -29,12 +29,6 @@
  */
 
 #include "ConfigParser.h"
-#include <xercesc/sax2/XMLReaderFactory.hpp>
-#include <xercesc/sax2/DefaultHandler.hpp>
-#include <xercesc/util/XMLString.hpp>
-#include <iostream>
-using namespace xercesc;
-using namespace std;
 
 ConfigParser::ConfigParser(std::string xmlFile) {
 	logger = log4cxx::Logger::getLogger("ConfigParser");

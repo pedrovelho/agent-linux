@@ -594,10 +594,14 @@ ac_includes_default="\
 ac_subst_vars='am__EXEEXT_FALSE
 am__EXEEXT_TRUE
 LTLIBOBJS
-GLIB_GENMARSHAL
-DBUSBINDINGTOOL
-PROG_LIBS
-PROG_CFLAGS
+XERC_LIBS
+XERC_CFLAGS
+GNUCXX_LIBS
+GNUCXX_CFLAGS
+LOG4CXX_LIBS
+LOG4CXX_CFLAGS
+DBUS_CXX_LIBS
+DBUS_CXX_CFLAGS
 PKG_CONFIG
 LIBOBJS
 EGREP
@@ -704,8 +708,14 @@ CC
 CFLAGS
 CPP
 PKG_CONFIG
-PROG_CFLAGS
-PROG_LIBS'
+DBUS_CXX_CFLAGS
+DBUS_CXX_LIBS
+LOG4CXX_CFLAGS
+LOG4CXX_LIBS
+GNUCXX_CFLAGS
+GNUCXX_LIBS
+XERC_CFLAGS
+XERC_LIBS'
 
 
 # Initialize some variables set by options.
@@ -1336,8 +1346,19 @@ Some influential environment variables:
   CFLAGS      C compiler flags
   CPP         C preprocessor
   PKG_CONFIG  path to pkg-config utility
-  PROG_CFLAGS C compiler flags for PROG, overriding pkg-config
-  PROG_LIBS   linker flags for PROG, overriding pkg-config
+  DBUS_CXX_CFLAGS
+              C compiler flags for DBUS_CXX, overriding pkg-config
+  DBUS_CXX_LIBS
+              linker flags for DBUS_CXX, overriding pkg-config
+  LOG4CXX_CFLAGS
+              C compiler flags for LOG4CXX, overriding pkg-config
+  LOG4CXX_LIBS
+              linker flags for LOG4CXX, overriding pkg-config
+  GNUCXX_CFLAGS
+              C compiler flags for GNUCXX, overriding pkg-config
+  GNUCXX_LIBS linker flags for GNUCXX, overriding pkg-config
+  XERC_CFLAGS C compiler flags for XERC, overriding pkg-config
+  XERC_LIBS   linker flags for XERC, overriding pkg-config
 
 Use these variables to override the choices made by `configure' or to help
 it to find libraries and programs with nonstandard names/locations.
@@ -2787,6 +2808,7 @@ am__tar='${AMTAR} chof - "$$tardir"'; am__untar='${AMTAR} xf -'
 
 
 
+#AM_INIT_AUTOMAKE([subdir-objects])
 
 ac_config_headers="$ac_config_headers config.h"
 
@@ -4137,48 +4159,7 @@ fi
 
 
 # Checks for libraries.
-# FIXME: Replace `main' with a function in `-lccext2':
 
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for main in -lccext2" >&5
-$as_echo_n "checking for main in -lccext2... " >&6; }
-if test "${ac_cv_lib_ccext2_main+set}" = set; then :
-  $as_echo_n "(cached) " >&6
-else
-  ac_check_lib_save_LIBS=$LIBS
-LIBS="-lccext2  $LIBS"
-cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
-
-
-int
-main ()
-{
-return main ();
-  ;
-  return 0;
-}
-_ACEOF
-if ac_fn_c_try_link "$LINENO"; then :
-  ac_cv_lib_ccext2_main=yes
-else
-  ac_cv_lib_ccext2_main=no
-fi
-rm -f core conftest.err conftest.$ac_objext \
-    conftest$ac_exeext conftest.$ac_ext
-LIBS=$ac_check_lib_save_LIBS
-fi
-{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_ccext2_main" >&5
-$as_echo "$ac_cv_lib_ccext2_main" >&6; }
-if test "x$ac_cv_lib_ccext2_main" = x""yes; then :
-  cat >>confdefs.h <<_ACEOF
-#define HAVE_LIBCCEXT2 1
-_ACEOF
-
-  LIBS="-lccext2 $LIBS"
-
-fi
-
-# FIXME: Replace `main' with a function in `-lccgnu2':
 { $as_echo "$as_me:${as_lineno-$LINENO}: checking for main in -lccgnu2" >&5
 $as_echo_n "checking for main in -lccgnu2... " >&6; }
 if test "${ac_cv_lib_ccgnu2_main+set}" = set; then :
@@ -4218,7 +4199,6 @@ _ACEOF
 
 fi
 
-# FIXME: Replace `main' with a function in `-ldl':
 { $as_echo "$as_me:${as_lineno-$LINENO}: checking for main in -ldl" >&5
 $as_echo_n "checking for main in -ldl... " >&6; }
 if test "${ac_cv_lib_dl_main+set}" = set; then :
@@ -4258,47 +4238,6 @@ _ACEOF
 
 fi
 
-# FIXME: Replace `main' with a function in `-lglib':
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for main in -lglib" >&5
-$as_echo_n "checking for main in -lglib... " >&6; }
-if test "${ac_cv_lib_glib_main+set}" = set; then :
-  $as_echo_n "(cached) " >&6
-else
-  ac_check_lib_save_LIBS=$LIBS
-LIBS="-lglib  $LIBS"
-cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
-
-
-int
-main ()
-{
-return main ();
-  ;
-  return 0;
-}
-_ACEOF
-if ac_fn_c_try_link "$LINENO"; then :
-  ac_cv_lib_glib_main=yes
-else
-  ac_cv_lib_glib_main=no
-fi
-rm -f core conftest.err conftest.$ac_objext \
-    conftest$ac_exeext conftest.$ac_ext
-LIBS=$ac_check_lib_save_LIBS
-fi
-{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_glib_main" >&5
-$as_echo "$ac_cv_lib_glib_main" >&6; }
-if test "x$ac_cv_lib_glib_main" = x""yes; then :
-  cat >>confdefs.h <<_ACEOF
-#define HAVE_LIBGLIB 1
-_ACEOF
-
-  LIBS="-lglib $LIBS"
-
-fi
-
-# FIXME: Replace `main' with a function in `-llog4cxx':
 { $as_echo "$as_me:${as_lineno-$LINENO}: checking for main in -llog4cxx" >&5
 $as_echo_n "checking for main in -llog4cxx... " >&6; }
 if test "${ac_cv_lib_log4cxx_main+set}" = set; then :
@@ -4338,7 +4277,6 @@ _ACEOF
 
 fi
 
-# FIXME: Replace `main' with a function in `-lrt':
 { $as_echo "$as_me:${as_lineno-$LINENO}: checking for main in -lrt" >&5
 $as_echo_n "checking for main in -lrt... " >&6; }
 if test "${ac_cv_lib_rt_main+set}" = set; then :
@@ -4378,7 +4316,6 @@ _ACEOF
 
 fi
 
-# FIXME: Replace `main' with a function in `-lz':
 { $as_echo "$as_me:${as_lineno-$LINENO}: checking for main in -lz" >&5
 $as_echo_n "checking for main in -lz... " >&6; }
 if test "${ac_cv_lib_z_main+set}" = set; then :
@@ -4415,6 +4352,84 @@ if test "x$ac_cv_lib_z_main" = x""yes; then :
 _ACEOF
 
   LIBS="-lz $LIBS"
+
+fi
+
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for main in -lxerces-c-3.0" >&5
+$as_echo_n "checking for main in -lxerces-c-3.0... " >&6; }
+if test "${ac_cv_lib_xerces_c_3_0_main+set}" = set; then :
+  $as_echo_n "(cached) " >&6
+else
+  ac_check_lib_save_LIBS=$LIBS
+LIBS="-lxerces-c-3.0  $LIBS"
+cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+
+int
+main ()
+{
+return main ();
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_c_try_link "$LINENO"; then :
+  ac_cv_lib_xerces_c_3_0_main=yes
+else
+  ac_cv_lib_xerces_c_3_0_main=no
+fi
+rm -f core conftest.err conftest.$ac_objext \
+    conftest$ac_exeext conftest.$ac_ext
+LIBS=$ac_check_lib_save_LIBS
+fi
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_xerces_c_3_0_main" >&5
+$as_echo "$ac_cv_lib_xerces_c_3_0_main" >&6; }
+if test "x$ac_cv_lib_xerces_c_3_0_main" = x""yes; then :
+  cat >>confdefs.h <<_ACEOF
+#define HAVE_LIBXERCES_C_3_0 1
+_ACEOF
+
+  LIBS="-lxerces-c-3.0 $LIBS"
+
+fi
+
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for main in -ldbus-cxx" >&5
+$as_echo_n "checking for main in -ldbus-cxx... " >&6; }
+if test "${ac_cv_lib_dbus_cxx_main+set}" = set; then :
+  $as_echo_n "(cached) " >&6
+else
+  ac_check_lib_save_LIBS=$LIBS
+LIBS="-ldbus-cxx  $LIBS"
+cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+
+int
+main ()
+{
+return main ();
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_c_try_link "$LINENO"; then :
+  ac_cv_lib_dbus_cxx_main=yes
+else
+  ac_cv_lib_dbus_cxx_main=no
+fi
+rm -f core conftest.err conftest.$ac_objext \
+    conftest$ac_exeext conftest.$ac_ext
+LIBS=$ac_check_lib_save_LIBS
+fi
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_dbus_cxx_main" >&5
+$as_echo "$ac_cv_lib_dbus_cxx_main" >&6; }
+if test "x$ac_cv_lib_dbus_cxx_main" = x""yes; then :
+  cat >>confdefs.h <<_ACEOF
+#define HAVE_LIBDBUS_CXX 1
+_ACEOF
+
+  LIBS="-ldbus-cxx $LIBS"
 
 fi
 
@@ -4818,7 +4833,7 @@ fi
 done
 
 
-for ac_header in stdlib.h unistd.h glib.h
+for ac_header in stdlib.h unistd.h
 do :
   as_ac_Header=`$as_echo "ac_cv_header_$ac_header" | $as_tr_sh`
 ac_fn_c_check_header_mongrel "$LINENO" "$ac_header" "$as_ac_Header" "$ac_includes_default"
@@ -5230,8 +5245,7 @@ esac
 fi
 
 
-DBUS_REQUIRED=0.60
-
+#ubuntu
 
 
 if test "x$ac_cv_env_PKG_CONFIG_set" != "xset"; then
@@ -5350,26 +5364,20 @@ $as_echo "no" >&6; }
 fi
 
 pkg_failed=no
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for PROG" >&5
-$as_echo_n "checking for PROG... " >&6; }
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for DBUS_CXX" >&5
+$as_echo_n "checking for DBUS_CXX... " >&6; }
 
 if test -n "$PKG_CONFIG"; then
-    if test -n "$PROG_CFLAGS"; then
-        pkg_cv_PROG_CFLAGS="$PROG_CFLAGS"
+    if test -n "$DBUS_CXX_CFLAGS"; then
+        pkg_cv_DBUS_CXX_CFLAGS="$DBUS_CXX_CFLAGS"
     else
         if test -n "$PKG_CONFIG" && \
-    { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"glib-2.0 gthread-2.0
-        dbus-1 >= \$DBUS_REQUIRED
-        dbus-glib-1 >= \$DBUS_REQUIRED\""; } >&5
-  ($PKG_CONFIG --exists --print-errors "glib-2.0 gthread-2.0
-        dbus-1 >= $DBUS_REQUIRED
-        dbus-glib-1 >= $DBUS_REQUIRED") 2>&5
+    { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"dbus-cxx-1.0\""; } >&5
+  ($PKG_CONFIG --exists --print-errors "dbus-cxx-1.0") 2>&5
   ac_status=$?
   $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
   test $ac_status = 0; }; then
-  pkg_cv_PROG_CFLAGS=`$PKG_CONFIG --cflags "glib-2.0 gthread-2.0
-        dbus-1 >= $DBUS_REQUIRED
-        dbus-glib-1 >= $DBUS_REQUIRED" 2>/dev/null`
+  pkg_cv_DBUS_CXX_CFLAGS=`$PKG_CONFIG --cflags "dbus-cxx-1.0" 2>/dev/null`
 else
   pkg_failed=yes
 fi
@@ -5378,22 +5386,16 @@ else
 	pkg_failed=untried
 fi
 if test -n "$PKG_CONFIG"; then
-    if test -n "$PROG_LIBS"; then
-        pkg_cv_PROG_LIBS="$PROG_LIBS"
+    if test -n "$DBUS_CXX_LIBS"; then
+        pkg_cv_DBUS_CXX_LIBS="$DBUS_CXX_LIBS"
     else
         if test -n "$PKG_CONFIG" && \
-    { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"glib-2.0 gthread-2.0
-        dbus-1 >= \$DBUS_REQUIRED
-        dbus-glib-1 >= \$DBUS_REQUIRED\""; } >&5
-  ($PKG_CONFIG --exists --print-errors "glib-2.0 gthread-2.0
-        dbus-1 >= $DBUS_REQUIRED
-        dbus-glib-1 >= $DBUS_REQUIRED") 2>&5
+    { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"dbus-cxx-1.0\""; } >&5
+  ($PKG_CONFIG --exists --print-errors "dbus-cxx-1.0") 2>&5
   ac_status=$?
   $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
   test $ac_status = 0; }; then
-  pkg_cv_PROG_LIBS=`$PKG_CONFIG --libs "glib-2.0 gthread-2.0
-        dbus-1 >= $DBUS_REQUIRED
-        dbus-glib-1 >= $DBUS_REQUIRED" 2>/dev/null`
+  pkg_cv_DBUS_CXX_LIBS=`$PKG_CONFIG --libs "dbus-cxx-1.0" 2>/dev/null`
 else
   pkg_failed=yes
 fi
@@ -5412,28 +5414,22 @@ else
         _pkg_short_errors_supported=no
 fi
         if test $_pkg_short_errors_supported = yes; then
-	        PROG_PKG_ERRORS=`$PKG_CONFIG --short-errors --errors-to-stdout --print-errors "glib-2.0 gthread-2.0
-        dbus-1 >= $DBUS_REQUIRED
-        dbus-glib-1 >= $DBUS_REQUIRED"`
+	        DBUS_CXX_PKG_ERRORS=`$PKG_CONFIG --short-errors --errors-to-stdout --print-errors "dbus-cxx-1.0"`
         else
-	        PROG_PKG_ERRORS=`$PKG_CONFIG --errors-to-stdout --print-errors "glib-2.0 gthread-2.0
-        dbus-1 >= $DBUS_REQUIRED
-        dbus-glib-1 >= $DBUS_REQUIRED"`
+	        DBUS_CXX_PKG_ERRORS=`$PKG_CONFIG --errors-to-stdout --print-errors "dbus-cxx-1.0"`
         fi
 	# Put the nasty error message in config.log where it belongs
-	echo "$PROG_PKG_ERRORS" >&5
+	echo "$DBUS_CXX_PKG_ERRORS" >&5
 
-	as_fn_error "Package requirements (glib-2.0 gthread-2.0
-        dbus-1 >= $DBUS_REQUIRED
-        dbus-glib-1 >= $DBUS_REQUIRED) were not met:
+	as_fn_error "Package requirements (dbus-cxx-1.0) were not met:
 
-$PROG_PKG_ERRORS
+$DBUS_CXX_PKG_ERRORS
 
 Consider adjusting the PKG_CONFIG_PATH environment variable if you
 installed software in a non-standard prefix.
 
-Alternatively, you may set the environment variables PROG_CFLAGS
-and PROG_LIBS to avoid the need to call pkg-config.
+Alternatively, you may set the environment variables DBUS_CXX_CFLAGS
+and DBUS_CXX_LIBS to avoid the need to call pkg-config.
 See the pkg-config man page for more details.
 " "$LINENO" 5
 elif test $pkg_failed = untried; then
@@ -5443,66 +5439,291 @@ as_fn_error "The pkg-config script could not be found or is too old.  Make sure 
 is in your PATH or set the PKG_CONFIG environment variable to the full
 path to pkg-config.
 
-Alternatively, you may set the environment variables PROG_CFLAGS
-and PROG_LIBS to avoid the need to call pkg-config.
+Alternatively, you may set the environment variables DBUS_CXX_CFLAGS
+and DBUS_CXX_LIBS to avoid the need to call pkg-config.
 See the pkg-config man page for more details.
 
 To get pkg-config, see <http://pkg-config.freedesktop.org/>.
 See \`config.log' for more details." "$LINENO" 5; }
 else
-	PROG_CFLAGS=$pkg_cv_PROG_CFLAGS
-	PROG_LIBS=$pkg_cv_PROG_LIBS
+	DBUS_CXX_CFLAGS=$pkg_cv_DBUS_CXX_CFLAGS
+	DBUS_CXX_LIBS=$pkg_cv_DBUS_CXX_LIBS
         { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
 $as_echo "yes" >&6; }
 	:
 fi
 
+pkg_failed=no
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for LOG4CXX" >&5
+$as_echo_n "checking for LOG4CXX... " >&6; }
 
-
-# Extract the first word of "dbus-binding-tool", so it can be a program name with args.
-set dummy dbus-binding-tool; ac_word=$2
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for $ac_word" >&5
-$as_echo_n "checking for $ac_word... " >&6; }
-if test "${ac_cv_path_DBUSBINDINGTOOL+set}" = set; then :
-  $as_echo_n "(cached) " >&6
+if test -n "$PKG_CONFIG"; then
+    if test -n "$LOG4CXX_CFLAGS"; then
+        pkg_cv_LOG4CXX_CFLAGS="$LOG4CXX_CFLAGS"
+    else
+        if test -n "$PKG_CONFIG" && \
+    { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"liblog4cxx\""; } >&5
+  ($PKG_CONFIG --exists --print-errors "liblog4cxx") 2>&5
+  ac_status=$?
+  $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
+  test $ac_status = 0; }; then
+  pkg_cv_LOG4CXX_CFLAGS=`$PKG_CONFIG --cflags "liblog4cxx" 2>/dev/null`
 else
-  case $DBUSBINDINGTOOL in
-  [\\/]* | ?:[\\/]*)
-  ac_cv_path_DBUSBINDINGTOOL="$DBUSBINDINGTOOL" # Let the user override the test with a path.
-  ;;
-  *)
-  as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
-for as_dir in $PATH
-do
-  IFS=$as_save_IFS
-  test -z "$as_dir" && as_dir=.
-    for ac_exec_ext in '' $ac_executable_extensions; do
-  if { test -f "$as_dir/$ac_word$ac_exec_ext" && $as_test_x "$as_dir/$ac_word$ac_exec_ext"; }; then
-    ac_cv_path_DBUSBINDINGTOOL="$as_dir/$ac_word$ac_exec_ext"
-    $as_echo "$as_me:${as_lineno-$LINENO}: found $as_dir/$ac_word$ac_exec_ext" >&5
-    break 2
-  fi
-done
-  done
-IFS=$as_save_IFS
-
-  ;;
-esac
+  pkg_failed=yes
 fi
-DBUSBINDINGTOOL=$ac_cv_path_DBUSBINDINGTOOL
-if test -n "$DBUSBINDINGTOOL"; then
-  { $as_echo "$as_me:${as_lineno-$LINENO}: result: $DBUSBINDINGTOOL" >&5
-$as_echo "$DBUSBINDINGTOOL" >&6; }
+    fi
 else
-  { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
-$as_echo "no" >&6; }
+	pkg_failed=untried
+fi
+if test -n "$PKG_CONFIG"; then
+    if test -n "$LOG4CXX_LIBS"; then
+        pkg_cv_LOG4CXX_LIBS="$LOG4CXX_LIBS"
+    else
+        if test -n "$PKG_CONFIG" && \
+    { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"liblog4cxx\""; } >&5
+  ($PKG_CONFIG --exists --print-errors "liblog4cxx") 2>&5
+  ac_status=$?
+  $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
+  test $ac_status = 0; }; then
+  pkg_cv_LOG4CXX_LIBS=`$PKG_CONFIG --libs "liblog4cxx" 2>/dev/null`
+else
+  pkg_failed=yes
+fi
+    fi
+else
+	pkg_failed=untried
 fi
 
 
 
+if test $pkg_failed = yes; then
 
-GLIB_GENMARSHAL=`$PKG_CONFIG glib-2.0 --variable=glib_genmarshal`
+if $PKG_CONFIG --atleast-pkgconfig-version 0.20; then
+        _pkg_short_errors_supported=yes
+else
+        _pkg_short_errors_supported=no
+fi
+        if test $_pkg_short_errors_supported = yes; then
+	        LOG4CXX_PKG_ERRORS=`$PKG_CONFIG --short-errors --errors-to-stdout --print-errors "liblog4cxx"`
+        else
+	        LOG4CXX_PKG_ERRORS=`$PKG_CONFIG --errors-to-stdout --print-errors "liblog4cxx"`
+        fi
+	# Put the nasty error message in config.log where it belongs
+	echo "$LOG4CXX_PKG_ERRORS" >&5
 
+	as_fn_error "Package requirements (liblog4cxx) were not met:
+
+$LOG4CXX_PKG_ERRORS
+
+Consider adjusting the PKG_CONFIG_PATH environment variable if you
+installed software in a non-standard prefix.
+
+Alternatively, you may set the environment variables LOG4CXX_CFLAGS
+and LOG4CXX_LIBS to avoid the need to call pkg-config.
+See the pkg-config man page for more details.
+" "$LINENO" 5
+elif test $pkg_failed = untried; then
+	{ { $as_echo "$as_me:${as_lineno-$LINENO}: error: in \`$ac_pwd':" >&5
+$as_echo "$as_me: error: in \`$ac_pwd':" >&2;}
+as_fn_error "The pkg-config script could not be found or is too old.  Make sure it
+is in your PATH or set the PKG_CONFIG environment variable to the full
+path to pkg-config.
+
+Alternatively, you may set the environment variables LOG4CXX_CFLAGS
+and LOG4CXX_LIBS to avoid the need to call pkg-config.
+See the pkg-config man page for more details.
+
+To get pkg-config, see <http://pkg-config.freedesktop.org/>.
+See \`config.log' for more details." "$LINENO" 5; }
+else
+	LOG4CXX_CFLAGS=$pkg_cv_LOG4CXX_CFLAGS
+	LOG4CXX_LIBS=$pkg_cv_LOG4CXX_LIBS
+        { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+$as_echo "yes" >&6; }
+	:
+fi
+
+pkg_failed=no
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for GNUCXX" >&5
+$as_echo_n "checking for GNUCXX... " >&6; }
+
+if test -n "$PKG_CONFIG"; then
+    if test -n "$GNUCXX_CFLAGS"; then
+        pkg_cv_GNUCXX_CFLAGS="$GNUCXX_CFLAGS"
+    else
+        if test -n "$PKG_CONFIG" && \
+    { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"libccgnu2\""; } >&5
+  ($PKG_CONFIG --exists --print-errors "libccgnu2") 2>&5
+  ac_status=$?
+  $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
+  test $ac_status = 0; }; then
+  pkg_cv_GNUCXX_CFLAGS=`$PKG_CONFIG --cflags "libccgnu2" 2>/dev/null`
+else
+  pkg_failed=yes
+fi
+    fi
+else
+	pkg_failed=untried
+fi
+if test -n "$PKG_CONFIG"; then
+    if test -n "$GNUCXX_LIBS"; then
+        pkg_cv_GNUCXX_LIBS="$GNUCXX_LIBS"
+    else
+        if test -n "$PKG_CONFIG" && \
+    { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"libccgnu2\""; } >&5
+  ($PKG_CONFIG --exists --print-errors "libccgnu2") 2>&5
+  ac_status=$?
+  $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
+  test $ac_status = 0; }; then
+  pkg_cv_GNUCXX_LIBS=`$PKG_CONFIG --libs "libccgnu2" 2>/dev/null`
+else
+  pkg_failed=yes
+fi
+    fi
+else
+	pkg_failed=untried
+fi
+
+
+
+if test $pkg_failed = yes; then
+
+if $PKG_CONFIG --atleast-pkgconfig-version 0.20; then
+        _pkg_short_errors_supported=yes
+else
+        _pkg_short_errors_supported=no
+fi
+        if test $_pkg_short_errors_supported = yes; then
+	        GNUCXX_PKG_ERRORS=`$PKG_CONFIG --short-errors --errors-to-stdout --print-errors "libccgnu2"`
+        else
+	        GNUCXX_PKG_ERRORS=`$PKG_CONFIG --errors-to-stdout --print-errors "libccgnu2"`
+        fi
+	# Put the nasty error message in config.log where it belongs
+	echo "$GNUCXX_PKG_ERRORS" >&5
+
+	as_fn_error "Package requirements (libccgnu2) were not met:
+
+$GNUCXX_PKG_ERRORS
+
+Consider adjusting the PKG_CONFIG_PATH environment variable if you
+installed software in a non-standard prefix.
+
+Alternatively, you may set the environment variables GNUCXX_CFLAGS
+and GNUCXX_LIBS to avoid the need to call pkg-config.
+See the pkg-config man page for more details.
+" "$LINENO" 5
+elif test $pkg_failed = untried; then
+	{ { $as_echo "$as_me:${as_lineno-$LINENO}: error: in \`$ac_pwd':" >&5
+$as_echo "$as_me: error: in \`$ac_pwd':" >&2;}
+as_fn_error "The pkg-config script could not be found or is too old.  Make sure it
+is in your PATH or set the PKG_CONFIG environment variable to the full
+path to pkg-config.
+
+Alternatively, you may set the environment variables GNUCXX_CFLAGS
+and GNUCXX_LIBS to avoid the need to call pkg-config.
+See the pkg-config man page for more details.
+
+To get pkg-config, see <http://pkg-config.freedesktop.org/>.
+See \`config.log' for more details." "$LINENO" 5; }
+else
+	GNUCXX_CFLAGS=$pkg_cv_GNUCXX_CFLAGS
+	GNUCXX_LIBS=$pkg_cv_GNUCXX_LIBS
+        { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+$as_echo "yes" >&6; }
+	:
+fi
+
+pkg_failed=no
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for XERC" >&5
+$as_echo_n "checking for XERC... " >&6; }
+
+if test -n "$PKG_CONFIG"; then
+    if test -n "$XERC_CFLAGS"; then
+        pkg_cv_XERC_CFLAGS="$XERC_CFLAGS"
+    else
+        if test -n "$PKG_CONFIG" && \
+    { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"xerces-c\""; } >&5
+  ($PKG_CONFIG --exists --print-errors "xerces-c") 2>&5
+  ac_status=$?
+  $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
+  test $ac_status = 0; }; then
+  pkg_cv_XERC_CFLAGS=`$PKG_CONFIG --cflags "xerces-c" 2>/dev/null`
+else
+  pkg_failed=yes
+fi
+    fi
+else
+	pkg_failed=untried
+fi
+if test -n "$PKG_CONFIG"; then
+    if test -n "$XERC_LIBS"; then
+        pkg_cv_XERC_LIBS="$XERC_LIBS"
+    else
+        if test -n "$PKG_CONFIG" && \
+    { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"xerces-c\""; } >&5
+  ($PKG_CONFIG --exists --print-errors "xerces-c") 2>&5
+  ac_status=$?
+  $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
+  test $ac_status = 0; }; then
+  pkg_cv_XERC_LIBS=`$PKG_CONFIG --libs "xerces-c" 2>/dev/null`
+else
+  pkg_failed=yes
+fi
+    fi
+else
+	pkg_failed=untried
+fi
+
+
+
+if test $pkg_failed = yes; then
+
+if $PKG_CONFIG --atleast-pkgconfig-version 0.20; then
+        _pkg_short_errors_supported=yes
+else
+        _pkg_short_errors_supported=no
+fi
+        if test $_pkg_short_errors_supported = yes; then
+	        XERC_PKG_ERRORS=`$PKG_CONFIG --short-errors --errors-to-stdout --print-errors "xerces-c"`
+        else
+	        XERC_PKG_ERRORS=`$PKG_CONFIG --errors-to-stdout --print-errors "xerces-c"`
+        fi
+	# Put the nasty error message in config.log where it belongs
+	echo "$XERC_PKG_ERRORS" >&5
+
+	as_fn_error "Package requirements (xerces-c) were not met:
+
+$XERC_PKG_ERRORS
+
+Consider adjusting the PKG_CONFIG_PATH environment variable if you
+installed software in a non-standard prefix.
+
+Alternatively, you may set the environment variables XERC_CFLAGS
+and XERC_LIBS to avoid the need to call pkg-config.
+See the pkg-config man page for more details.
+" "$LINENO" 5
+elif test $pkg_failed = untried; then
+	{ { $as_echo "$as_me:${as_lineno-$LINENO}: error: in \`$ac_pwd':" >&5
+$as_echo "$as_me: error: in \`$ac_pwd':" >&2;}
+as_fn_error "The pkg-config script could not be found or is too old.  Make sure it
+is in your PATH or set the PKG_CONFIG environment variable to the full
+path to pkg-config.
+
+Alternatively, you may set the environment variables XERC_CFLAGS
+and XERC_LIBS to avoid the need to call pkg-config.
+See the pkg-config man page for more details.
+
+To get pkg-config, see <http://pkg-config.freedesktop.org/>.
+See \`config.log' for more details." "$LINENO" 5; }
+else
+	XERC_CFLAGS=$pkg_cv_XERC_CFLAGS
+	XERC_LIBS=$pkg_cv_XERC_LIBS
+        { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+$as_echo "yes" >&6; }
+	:
+fi
+#???
+#PKG_CHECK_MODULES(GTEST, gtest)
 
 #AC_CONFIG_FILES([Makefile])
 ac_config_files="$ac_config_files Makefile src/Makefile"
