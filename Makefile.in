@@ -14,9 +14,6 @@
 # PARTICULAR PURPOSE.
 
 @SET_MAKE@
-
-#Makefile: makefile for paagent.cpp
-
 VPATH = @srcdir@
 pkgdatadir = $(datadir)/@PACKAGE@
 pkgincludedir = $(includedir)/@PACKAGE@
@@ -34,8 +31,6 @@ POST_INSTALL = :
 NORMAL_UNINSTALL = :
 PRE_UNINSTALL = :
 POST_UNINSTALL = :
-bin_PROGRAMS = paagent_tests$(EXEEXT) paagent$(EXEEXT) \
-	paagent_server$(EXEEXT)
 subdir = .
 DIST_COMMON = README $(am__configure_deps) $(srcdir)/Makefile.am \
 	$(srcdir)/Makefile.in $(srcdir)/config.h.in \
@@ -51,76 +46,23 @@ mkinstalldirs = $(install_sh) -d
 CONFIG_HEADER = config.h
 CONFIG_CLEAN_FILES =
 CONFIG_CLEAN_VPATH_FILES =
-am__installdirs = "$(DESTDIR)$(bindir)"
-PROGRAMS = $(bin_PROGRAMS)
-am_paagent_OBJECTS = paagent-P2PNodeStarter.$(OBJEXT) \
-	paagent-CustomNodeStarter.$(OBJEXT) \
-	paagent-RMNodeStarter.$(OBJEXT) paagent-Runner.$(OBJEXT) \
-	paagent-AdvertAction.$(OBJEXT) paagent-CustomAction.$(OBJEXT) \
-	paagent-RMAction.$(OBJEXT) paagent-P2PAction.$(OBJEXT) \
-	paagent-Action.$(OBJEXT) paagent-Event.$(OBJEXT) \
-	paagent-CalendarEvent.$(OBJEXT) \
-	paagent-IdlenessEvent.$(OBJEXT) \
-	paagent-Configuration.$(OBJEXT) paagent-ConfigParser.$(OBJEXT) \
-	paagent-ConfigHandler.$(OBJEXT) paagent-PAAgent.$(OBJEXT) \
-	paagent-paagent.$(OBJEXT) paagent-Controller.$(OBJEXT) \
-	paagent-NodeStarter.$(OBJEXT) paagent-Watcher.$(OBJEXT)
-paagent_OBJECTS = $(am_paagent_OBJECTS)
-paagent_DEPENDENCIES =
-paagent_LINK = $(CXXLD) $(paagent_CXXFLAGS) $(CXXFLAGS) \
-	$(paagent_LDFLAGS) $(LDFLAGS) -o $@
-am_paagent_server_OBJECTS = paagent_server-P2PNodeStarter.$(OBJEXT) \
-	paagent_server-CustomNodeStarter.$(OBJEXT) \
-	paagent_server-RMNodeStarter.$(OBJEXT) \
-	paagent_server-PAAgent.$(OBJEXT) \
-	paagent_server-paagent_server.$(OBJEXT) \
-	paagent_server-Controller.$(OBJEXT) \
-	paagent_server-NodeStarter.$(OBJEXT)
-paagent_server_OBJECTS = $(am_paagent_server_OBJECTS)
-paagent_server_DEPENDENCIES =
-paagent_server_LINK = $(CXXLD) $(paagent_server_CXXFLAGS) $(CXXFLAGS) \
-	$(paagent_server_LDFLAGS) $(LDFLAGS) -o $@
-am_paagent_tests_OBJECTS = paagent_tests-P2PNodeStarter.$(OBJEXT) \
-	paagent_tests-CustomNodeStarter.$(OBJEXT) \
-	paagent_tests-RMNodeStarter.$(OBJEXT) \
-	paagent_tests-Runner.$(OBJEXT) \
-	paagent_tests-ConfigParserTest.$(OBJEXT) \
-	paagent_tests-AdvertAction.$(OBJEXT) \
-	paagent_tests-CustomAction.$(OBJEXT) \
-	paagent_tests-RMAction.$(OBJEXT) \
-	paagent_tests-P2PAction.$(OBJEXT) \
-	paagent_tests-Action.$(OBJEXT) paagent_tests-Event.$(OBJEXT) \
-	paagent_tests-CalendarEvent.$(OBJEXT) \
-	paagent_tests-IdlenessEvent.$(OBJEXT) \
-	paagent_tests-Configuration.$(OBJEXT) \
-	paagent_tests-ConfigParser.$(OBJEXT) \
-	paagent_tests-ConfigHandler.$(OBJEXT) \
-	paagent_tests-paagent_tests.$(OBJEXT) \
-	paagent_tests-PAAgentTest.$(OBJEXT) \
-	paagent_tests-ControllerTest.$(OBJEXT) \
-	paagent_tests-PAAgent.$(OBJEXT) \
-	paagent_tests-Controller.$(OBJEXT) \
-	paagent_tests-NodeStarter.$(OBJEXT) \
-	paagent_tests-Watcher.$(OBJEXT)
-paagent_tests_OBJECTS = $(am_paagent_tests_OBJECTS)
-paagent_tests_DEPENDENCIES =
-paagent_tests_LINK = $(CXXLD) $(paagent_tests_CXXFLAGS) $(CXXFLAGS) \
-	$(paagent_tests_LDFLAGS) $(LDFLAGS) -o $@
-DEFAULT_INCLUDES = -I.@am__isrc@
-depcomp = $(SHELL) $(top_srcdir)/depcomp
-am__depfiles_maybe = depfiles
-am__mv = mv -f
-CXXCOMPILE = $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) \
-	$(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
-CXXLD = $(CXX)
-CXXLINK = $(CXXLD) $(AM_CXXFLAGS) $(CXXFLAGS) $(AM_LDFLAGS) $(LDFLAGS) \
-	-o $@
-SOURCES = $(paagent_SOURCES) $(paagent_server_SOURCES) \
-	$(paagent_tests_SOURCES)
-DIST_SOURCES = $(paagent_SOURCES) $(paagent_server_SOURCES) \
-	$(paagent_tests_SOURCES)
+SOURCES =
+DIST_SOURCES =
+RECURSIVE_TARGETS = all-recursive check-recursive dvi-recursive \
+	html-recursive info-recursive install-data-recursive \
+	install-dvi-recursive install-exec-recursive \
+	install-html-recursive install-info-recursive \
+	install-pdf-recursive install-ps-recursive install-recursive \
+	installcheck-recursive installdirs-recursive pdf-recursive \
+	ps-recursive uninstall-recursive
+RECURSIVE_CLEAN_TARGETS = mostlyclean-recursive clean-recursive	\
+  distclean-recursive maintainer-clean-recursive
+AM_RECURSIVE_TARGETS = $(RECURSIVE_TARGETS:-recursive=) \
+	$(RECURSIVE_CLEAN_TARGETS:-recursive=) tags TAGS ctags CTAGS \
+	distdir dist dist-all distcheck
 ETAGS = etags
 CTAGS = ctags
+DIST_SUBDIRS = $(SUBDIRS)
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
 distdir = $(PACKAGE)-$(VERSION)
 top_distdir = $(distdir)
@@ -128,6 +70,31 @@ am__remove_distdir = \
   { test ! -d "$(distdir)" \
     || { find "$(distdir)" -type d ! -perm -200 -exec chmod u+w {} ';' \
          && rm -fr "$(distdir)"; }; }
+am__relativize = \
+  dir0=`pwd`; \
+  sed_first='s,^\([^/]*\)/.*$$,\1,'; \
+  sed_rest='s,^[^/]*/*,,'; \
+  sed_last='s,^.*/\([^/]*\)$$,\1,'; \
+  sed_butlast='s,/*[^/]*$$,,'; \
+  while test -n "$$dir1"; do \
+    first=`echo "$$dir1" | sed -e "$$sed_first"`; \
+    if test "$$first" != "."; then \
+      if test "$$first" = ".."; then \
+        dir2=`echo "$$dir0" | sed -e "$$sed_last"`/"$$dir2"; \
+        dir0=`echo "$$dir0" | sed -e "$$sed_butlast"`; \
+      else \
+        first2=`echo "$$dir2" | sed -e "$$sed_first"`; \
+        if test "$$first2" = "$$first"; then \
+          dir2=`echo "$$dir2" | sed -e "$$sed_rest"`; \
+        else \
+          dir2="../$$dir2"; \
+        fi; \
+        dir0="$$dir0"/"$$first"; \
+      fi; \
+    fi; \
+    dir1=`echo "$$dir1" | sed -e "$$sed_rest"`; \
+  done; \
+  reldir="$$dir2"
 DIST_ARCHIVES = $(distdir).tar.gz $(distdir).tar.bz2
 GZIP_ENV = --best
 distuninstallcheck_listfiles = find . -type f -print
@@ -227,26 +194,18 @@ target_alias = @target_alias@
 top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
-paagent_server_SOURCES = P2PNodeStarter.cpp CustomNodeStarter.cpp RMNodeStarter.cpp  PAAgent.cpp paagent_server.cpp Controller.cpp NodeStarter.cpp   
-paagent_server_LDADD = -llog4cxx -lccext2 -lccgnu2 -lz -ldl -lrt -ldbus-1 -lgthread-2.0  -ldbus-glib-1 -lglibmm-2.4  -lsigc-2.0 -ldbus-cxx
-paagent_server_LDFLAGS = -pthread   -I/usr/include/dbus-1.0 -I/usr/lib/dbus-1.0/include -D_GNU_SOURCE 
-paagent_server_CXXFLAGS = -I/usr/include/glibmm-2.4 -I/usr/lib/glibmm-2.4/include -I/usr/include/sigc++-2.0 -I/usr/lib/sigc++-2.0/include -I/usr/local/include/dbus-cxx-0.4 -I/usr/include/dbus-1.0 -I/usr/lib/dbus-1.0/include -I/usr/include/sigc++-2.0 -I/usr/lib/sigc++-2.0/include -std=c++0x -std=gnu++0x
-paagent_tests_SOURCES = P2PNodeStarter.cpp CustomNodeStarter.cpp RMNodeStarter.cpp  Runner.cpp ConfigParserTest.cpp AdvertAction.cpp CustomAction.cpp RMAction.cpp P2PAction.cpp Action.cpp Event.cpp CalendarEvent.cpp IdlenessEvent.cpp Configuration.cpp ConfigParser.cpp ConfigHandler.cpp paagent_tests.cpp PAAgentTest.cpp ControllerTest.cpp  PAAgent.cpp  Controller.cpp NodeStarter.cpp  Watcher.cpp 
-paagent_tests_LDADD = -lxerces-c-3.0 -lgtest -llog4cxx -lccext2 -lccgnu2 -lz -ldl -lrt -ldbus-1 -lgthread-2.0  -ldbus-glib-1 -lglibmm-2.4  -lsigc-2.0 -ldbus-cxx
-paagent_tests_LDFLAGS = -pthread   -I/usr/include/dbus-1.0 -I/usr/lib/dbus-1.0/include -D_GNU_SOURCE 
-paagent_tests_CXXFLAGS = -I/usr/include/gtest -I/usr/include/glibmm-2.4 -I/usr/lib/glibmm-2.4/include -I/usr/include/sigc++-2.0 -I/usr/lib/sigc++-2.0/include -I/usr/local/include/dbus-cxx-0.4 -I/usr/include/dbus-1.0 -I/usr/lib/dbus-1.0/include -I/usr/include/sigc++-2.0 -I/usr/lib/sigc++-2.0/include -std=c++0x -std=gnu++0x
-paagent_SOURCES = P2PNodeStarter.cpp CustomNodeStarter.cpp RMNodeStarter.cpp Runner.cpp AdvertAction.cpp CustomAction.cpp RMAction.cpp P2PAction.cpp Action.cpp Event.cpp CalendarEvent.cpp IdlenessEvent.cpp Configuration.cpp ConfigParser.cpp ConfigHandler.cpp PAAgent.cpp paagent.cpp Controller.cpp NodeStarter.cpp  Watcher.cpp
-paagent_LDADD = -lxerces-c-3.0 -llog4cxx -lccext2 -lccgnu2 -lz -ldl -lrt -ldbus-1 -lgthread-2.0  -ldbus-glib-1 -lglibmm-2.4  -lsigc-2.0 -ldbus-cxx
-paagent_LDFLAGS = -pthread   -I/usr/include/dbus-1.0 -I/usr/lib/dbus-1.0/include -D_GNU_SOURCE 
-paagent_CXXFLAGS = -I/usr/include/tclap -I/usr/include/glibmm-2.4 -I/usr/lib/glibmm-2.4/include -I/usr/include/sigc++-2.0 -I/usr/lib/sigc++-2.0/include -I/usr/local/include/dbus-cxx-0.4 -I/usr/include/dbus-1.0 -I/usr/lib/dbus-1.0/include -I/usr/include/sigc++-2.0 -I/usr/lib/sigc++-2.0/include -std=c++0x -std=gnu++0x
 
-# Interface XML name 
-interface_xml = Controller.xml
+#Makefile: makefile for paagent.cpp
+SUBDIRS = src 
+EXTRA_DIST = src/PAAgent-config-planning-night-we.xml src/paac src/paas \
+			src/paagent-log4cxx src/PAAgent-config.xml src/Controller.xml \
+			src/PAAgent-config-planning-day-only.xml Doxyfile images \
+			src/client-log4cxx src/server-log4cxx
+
 all: config.h
-	$(MAKE) $(AM_MAKEFLAGS) all-am
+	$(MAKE) $(AM_MAKEFLAGS) all-recursive
 
 .SUFFIXES:
-.SUFFIXES: .cpp .o .obj
 am--refresh:
 	@:
 $(srcdir)/Makefile.in:  $(srcdir)/Makefile.am  $(am__configure_deps)
@@ -298,823 +257,76 @@ $(srcdir)/config.h.in:  $(am__configure_deps)
 
 distclean-hdr:
 	-rm -f config.h stamp-h1
-install-binPROGRAMS: $(bin_PROGRAMS)
-	@$(NORMAL_INSTALL)
-	test -z "$(bindir)" || $(MKDIR_P) "$(DESTDIR)$(bindir)"
-	@list='$(bin_PROGRAMS)'; test -n "$(bindir)" || list=; \
-	for p in $$list; do echo "$$p $$p"; done | \
-	sed 's/$(EXEEXT)$$//' | \
-	while read p p1; do if test -f $$p; \
-	  then echo "$$p"; echo "$$p"; else :; fi; \
-	done | \
-	sed -e 'p;s,.*/,,;n;h' -e 's|.*|.|' \
-	    -e 'p;x;s,.*/,,;s/$(EXEEXT)$$//;$(transform);s/$$/$(EXEEXT)/' | \
-	sed 'N;N;N;s,\n, ,g' | \
-	$(AWK) 'BEGIN { files["."] = ""; dirs["."] = 1 } \
-	  { d=$$3; if (dirs[d] != 1) { print "d", d; dirs[d] = 1 } \
-	    if ($$2 == $$4) files[d] = files[d] " " $$1; \
-	    else { print "f", $$3 "/" $$4, $$1; } } \
-	  END { for (d in files) print "f", d, files[d] }' | \
-	while read type dir files; do \
-	    if test "$$dir" = .; then dir=; else dir=/$$dir; fi; \
-	    test -z "$$files" || { \
-	      echo " $(INSTALL_PROGRAM_ENV) $(INSTALL_PROGRAM) $$files '$(DESTDIR)$(bindir)$$dir'"; \
-	      $(INSTALL_PROGRAM_ENV) $(INSTALL_PROGRAM) $$files "$(DESTDIR)$(bindir)$$dir" || exit $$?; \
-	    } \
-	; done
 
-uninstall-binPROGRAMS:
-	@$(NORMAL_UNINSTALL)
-	@list='$(bin_PROGRAMS)'; test -n "$(bindir)" || list=; \
-	files=`for p in $$list; do echo "$$p"; done | \
-	  sed -e 'h;s,^.*/,,;s/$(EXEEXT)$$//;$(transform)' \
-	      -e 's/$$/$(EXEEXT)/' `; \
-	test -n "$$list" || exit 0; \
-	echo " ( cd '$(DESTDIR)$(bindir)' && rm -f" $$files ")"; \
-	cd "$(DESTDIR)$(bindir)" && rm -f $$files
-
-clean-binPROGRAMS:
-	-test -z "$(bin_PROGRAMS)" || rm -f $(bin_PROGRAMS)
-paagent$(EXEEXT): $(paagent_OBJECTS) $(paagent_DEPENDENCIES) 
-	@rm -f paagent$(EXEEXT)
-	$(paagent_LINK) $(paagent_OBJECTS) $(paagent_LDADD) $(LIBS)
-paagent_server$(EXEEXT): $(paagent_server_OBJECTS) $(paagent_server_DEPENDENCIES) 
-	@rm -f paagent_server$(EXEEXT)
-	$(paagent_server_LINK) $(paagent_server_OBJECTS) $(paagent_server_LDADD) $(LIBS)
-paagent_tests$(EXEEXT): $(paagent_tests_OBJECTS) $(paagent_tests_DEPENDENCIES) 
-	@rm -f paagent_tests$(EXEEXT)
-	$(paagent_tests_LINK) $(paagent_tests_OBJECTS) $(paagent_tests_LDADD) $(LIBS)
-
-mostlyclean-compile:
-	-rm -f *.$(OBJEXT)
-
-distclean-compile:
-	-rm -f *.tab.c
-
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/paagent-Action.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/paagent-AdvertAction.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/paagent-CalendarEvent.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/paagent-ConfigHandler.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/paagent-ConfigParser.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/paagent-Configuration.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/paagent-Controller.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/paagent-CustomAction.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/paagent-CustomNodeStarter.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/paagent-Event.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/paagent-IdlenessEvent.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/paagent-NodeStarter.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/paagent-P2PAction.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/paagent-P2PNodeStarter.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/paagent-PAAgent.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/paagent-RMAction.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/paagent-RMNodeStarter.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/paagent-Runner.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/paagent-Watcher.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/paagent-paagent.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/paagent_server-Controller.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/paagent_server-CustomNodeStarter.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/paagent_server-NodeStarter.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/paagent_server-P2PNodeStarter.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/paagent_server-PAAgent.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/paagent_server-RMNodeStarter.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/paagent_server-paagent_server.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/paagent_tests-Action.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/paagent_tests-AdvertAction.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/paagent_tests-CalendarEvent.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/paagent_tests-ConfigHandler.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/paagent_tests-ConfigParser.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/paagent_tests-ConfigParserTest.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/paagent_tests-Configuration.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/paagent_tests-Controller.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/paagent_tests-ControllerTest.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/paagent_tests-CustomAction.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/paagent_tests-CustomNodeStarter.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/paagent_tests-Event.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/paagent_tests-IdlenessEvent.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/paagent_tests-NodeStarter.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/paagent_tests-P2PAction.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/paagent_tests-P2PNodeStarter.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/paagent_tests-PAAgent.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/paagent_tests-PAAgentTest.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/paagent_tests-RMAction.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/paagent_tests-RMNodeStarter.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/paagent_tests-Runner.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/paagent_tests-Watcher.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/paagent_tests-paagent_tests.Po@am__quote@
-
-.cpp.o:
-@am__fastdepCXX_TRUE@	$(CXXCOMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<
-@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/$*.Tpo $(DEPDIR)/$*.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$<' object='$@' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXXCOMPILE) -c -o $@ $<
-
-.cpp.obj:
-@am__fastdepCXX_TRUE@	$(CXXCOMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ `$(CYGPATH_W) '$<'`
-@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/$*.Tpo $(DEPDIR)/$*.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$<' object='$@' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXXCOMPILE) -c -o $@ `$(CYGPATH_W) '$<'`
-
-paagent-P2PNodeStarter.o: P2PNodeStarter.cpp
-@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(paagent_CXXFLAGS) $(CXXFLAGS) -MT paagent-P2PNodeStarter.o -MD -MP -MF $(DEPDIR)/paagent-P2PNodeStarter.Tpo -c -o paagent-P2PNodeStarter.o `test -f 'P2PNodeStarter.cpp' || echo '$(srcdir)/'`P2PNodeStarter.cpp
-@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/paagent-P2PNodeStarter.Tpo $(DEPDIR)/paagent-P2PNodeStarter.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='P2PNodeStarter.cpp' object='paagent-P2PNodeStarter.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(paagent_CXXFLAGS) $(CXXFLAGS) -c -o paagent-P2PNodeStarter.o `test -f 'P2PNodeStarter.cpp' || echo '$(srcdir)/'`P2PNodeStarter.cpp
-
-paagent-P2PNodeStarter.obj: P2PNodeStarter.cpp
-@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(paagent_CXXFLAGS) $(CXXFLAGS) -MT paagent-P2PNodeStarter.obj -MD -MP -MF $(DEPDIR)/paagent-P2PNodeStarter.Tpo -c -o paagent-P2PNodeStarter.obj `if test -f 'P2PNodeStarter.cpp'; then $(CYGPATH_W) 'P2PNodeStarter.cpp'; else $(CYGPATH_W) '$(srcdir)/P2PNodeStarter.cpp'; fi`
-@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/paagent-P2PNodeStarter.Tpo $(DEPDIR)/paagent-P2PNodeStarter.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='P2PNodeStarter.cpp' object='paagent-P2PNodeStarter.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(paagent_CXXFLAGS) $(CXXFLAGS) -c -o paagent-P2PNodeStarter.obj `if test -f 'P2PNodeStarter.cpp'; then $(CYGPATH_W) 'P2PNodeStarter.cpp'; else $(CYGPATH_W) '$(srcdir)/P2PNodeStarter.cpp'; fi`
-
-paagent-CustomNodeStarter.o: CustomNodeStarter.cpp
-@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(paagent_CXXFLAGS) $(CXXFLAGS) -MT paagent-CustomNodeStarter.o -MD -MP -MF $(DEPDIR)/paagent-CustomNodeStarter.Tpo -c -o paagent-CustomNodeStarter.o `test -f 'CustomNodeStarter.cpp' || echo '$(srcdir)/'`CustomNodeStarter.cpp
-@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/paagent-CustomNodeStarter.Tpo $(DEPDIR)/paagent-CustomNodeStarter.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='CustomNodeStarter.cpp' object='paagent-CustomNodeStarter.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(paagent_CXXFLAGS) $(CXXFLAGS) -c -o paagent-CustomNodeStarter.o `test -f 'CustomNodeStarter.cpp' || echo '$(srcdir)/'`CustomNodeStarter.cpp
-
-paagent-CustomNodeStarter.obj: CustomNodeStarter.cpp
-@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(paagent_CXXFLAGS) $(CXXFLAGS) -MT paagent-CustomNodeStarter.obj -MD -MP -MF $(DEPDIR)/paagent-CustomNodeStarter.Tpo -c -o paagent-CustomNodeStarter.obj `if test -f 'CustomNodeStarter.cpp'; then $(CYGPATH_W) 'CustomNodeStarter.cpp'; else $(CYGPATH_W) '$(srcdir)/CustomNodeStarter.cpp'; fi`
-@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/paagent-CustomNodeStarter.Tpo $(DEPDIR)/paagent-CustomNodeStarter.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='CustomNodeStarter.cpp' object='paagent-CustomNodeStarter.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(paagent_CXXFLAGS) $(CXXFLAGS) -c -o paagent-CustomNodeStarter.obj `if test -f 'CustomNodeStarter.cpp'; then $(CYGPATH_W) 'CustomNodeStarter.cpp'; else $(CYGPATH_W) '$(srcdir)/CustomNodeStarter.cpp'; fi`
-
-paagent-RMNodeStarter.o: RMNodeStarter.cpp
-@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(paagent_CXXFLAGS) $(CXXFLAGS) -MT paagent-RMNodeStarter.o -MD -MP -MF $(DEPDIR)/paagent-RMNodeStarter.Tpo -c -o paagent-RMNodeStarter.o `test -f 'RMNodeStarter.cpp' || echo '$(srcdir)/'`RMNodeStarter.cpp
-@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/paagent-RMNodeStarter.Tpo $(DEPDIR)/paagent-RMNodeStarter.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='RMNodeStarter.cpp' object='paagent-RMNodeStarter.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(paagent_CXXFLAGS) $(CXXFLAGS) -c -o paagent-RMNodeStarter.o `test -f 'RMNodeStarter.cpp' || echo '$(srcdir)/'`RMNodeStarter.cpp
-
-paagent-RMNodeStarter.obj: RMNodeStarter.cpp
-@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(paagent_CXXFLAGS) $(CXXFLAGS) -MT paagent-RMNodeStarter.obj -MD -MP -MF $(DEPDIR)/paagent-RMNodeStarter.Tpo -c -o paagent-RMNodeStarter.obj `if test -f 'RMNodeStarter.cpp'; then $(CYGPATH_W) 'RMNodeStarter.cpp'; else $(CYGPATH_W) '$(srcdir)/RMNodeStarter.cpp'; fi`
-@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/paagent-RMNodeStarter.Tpo $(DEPDIR)/paagent-RMNodeStarter.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='RMNodeStarter.cpp' object='paagent-RMNodeStarter.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(paagent_CXXFLAGS) $(CXXFLAGS) -c -o paagent-RMNodeStarter.obj `if test -f 'RMNodeStarter.cpp'; then $(CYGPATH_W) 'RMNodeStarter.cpp'; else $(CYGPATH_W) '$(srcdir)/RMNodeStarter.cpp'; fi`
-
-paagent-Runner.o: Runner.cpp
-@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(paagent_CXXFLAGS) $(CXXFLAGS) -MT paagent-Runner.o -MD -MP -MF $(DEPDIR)/paagent-Runner.Tpo -c -o paagent-Runner.o `test -f 'Runner.cpp' || echo '$(srcdir)/'`Runner.cpp
-@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/paagent-Runner.Tpo $(DEPDIR)/paagent-Runner.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='Runner.cpp' object='paagent-Runner.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(paagent_CXXFLAGS) $(CXXFLAGS) -c -o paagent-Runner.o `test -f 'Runner.cpp' || echo '$(srcdir)/'`Runner.cpp
-
-paagent-Runner.obj: Runner.cpp
-@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(paagent_CXXFLAGS) $(CXXFLAGS) -MT paagent-Runner.obj -MD -MP -MF $(DEPDIR)/paagent-Runner.Tpo -c -o paagent-Runner.obj `if test -f 'Runner.cpp'; then $(CYGPATH_W) 'Runner.cpp'; else $(CYGPATH_W) '$(srcdir)/Runner.cpp'; fi`
-@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/paagent-Runner.Tpo $(DEPDIR)/paagent-Runner.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='Runner.cpp' object='paagent-Runner.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(paagent_CXXFLAGS) $(CXXFLAGS) -c -o paagent-Runner.obj `if test -f 'Runner.cpp'; then $(CYGPATH_W) 'Runner.cpp'; else $(CYGPATH_W) '$(srcdir)/Runner.cpp'; fi`
-
-paagent-AdvertAction.o: AdvertAction.cpp
-@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(paagent_CXXFLAGS) $(CXXFLAGS) -MT paagent-AdvertAction.o -MD -MP -MF $(DEPDIR)/paagent-AdvertAction.Tpo -c -o paagent-AdvertAction.o `test -f 'AdvertAction.cpp' || echo '$(srcdir)/'`AdvertAction.cpp
-@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/paagent-AdvertAction.Tpo $(DEPDIR)/paagent-AdvertAction.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='AdvertAction.cpp' object='paagent-AdvertAction.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(paagent_CXXFLAGS) $(CXXFLAGS) -c -o paagent-AdvertAction.o `test -f 'AdvertAction.cpp' || echo '$(srcdir)/'`AdvertAction.cpp
-
-paagent-AdvertAction.obj: AdvertAction.cpp
-@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(paagent_CXXFLAGS) $(CXXFLAGS) -MT paagent-AdvertAction.obj -MD -MP -MF $(DEPDIR)/paagent-AdvertAction.Tpo -c -o paagent-AdvertAction.obj `if test -f 'AdvertAction.cpp'; then $(CYGPATH_W) 'AdvertAction.cpp'; else $(CYGPATH_W) '$(srcdir)/AdvertAction.cpp'; fi`
-@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/paagent-AdvertAction.Tpo $(DEPDIR)/paagent-AdvertAction.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='AdvertAction.cpp' object='paagent-AdvertAction.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(paagent_CXXFLAGS) $(CXXFLAGS) -c -o paagent-AdvertAction.obj `if test -f 'AdvertAction.cpp'; then $(CYGPATH_W) 'AdvertAction.cpp'; else $(CYGPATH_W) '$(srcdir)/AdvertAction.cpp'; fi`
-
-paagent-CustomAction.o: CustomAction.cpp
-@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(paagent_CXXFLAGS) $(CXXFLAGS) -MT paagent-CustomAction.o -MD -MP -MF $(DEPDIR)/paagent-CustomAction.Tpo -c -o paagent-CustomAction.o `test -f 'CustomAction.cpp' || echo '$(srcdir)/'`CustomAction.cpp
-@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/paagent-CustomAction.Tpo $(DEPDIR)/paagent-CustomAction.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='CustomAction.cpp' object='paagent-CustomAction.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(paagent_CXXFLAGS) $(CXXFLAGS) -c -o paagent-CustomAction.o `test -f 'CustomAction.cpp' || echo '$(srcdir)/'`CustomAction.cpp
-
-paagent-CustomAction.obj: CustomAction.cpp
-@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(paagent_CXXFLAGS) $(CXXFLAGS) -MT paagent-CustomAction.obj -MD -MP -MF $(DEPDIR)/paagent-CustomAction.Tpo -c -o paagent-CustomAction.obj `if test -f 'CustomAction.cpp'; then $(CYGPATH_W) 'CustomAction.cpp'; else $(CYGPATH_W) '$(srcdir)/CustomAction.cpp'; fi`
-@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/paagent-CustomAction.Tpo $(DEPDIR)/paagent-CustomAction.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='CustomAction.cpp' object='paagent-CustomAction.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(paagent_CXXFLAGS) $(CXXFLAGS) -c -o paagent-CustomAction.obj `if test -f 'CustomAction.cpp'; then $(CYGPATH_W) 'CustomAction.cpp'; else $(CYGPATH_W) '$(srcdir)/CustomAction.cpp'; fi`
-
-paagent-RMAction.o: RMAction.cpp
-@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(paagent_CXXFLAGS) $(CXXFLAGS) -MT paagent-RMAction.o -MD -MP -MF $(DEPDIR)/paagent-RMAction.Tpo -c -o paagent-RMAction.o `test -f 'RMAction.cpp' || echo '$(srcdir)/'`RMAction.cpp
-@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/paagent-RMAction.Tpo $(DEPDIR)/paagent-RMAction.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='RMAction.cpp' object='paagent-RMAction.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(paagent_CXXFLAGS) $(CXXFLAGS) -c -o paagent-RMAction.o `test -f 'RMAction.cpp' || echo '$(srcdir)/'`RMAction.cpp
-
-paagent-RMAction.obj: RMAction.cpp
-@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(paagent_CXXFLAGS) $(CXXFLAGS) -MT paagent-RMAction.obj -MD -MP -MF $(DEPDIR)/paagent-RMAction.Tpo -c -o paagent-RMAction.obj `if test -f 'RMAction.cpp'; then $(CYGPATH_W) 'RMAction.cpp'; else $(CYGPATH_W) '$(srcdir)/RMAction.cpp'; fi`
-@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/paagent-RMAction.Tpo $(DEPDIR)/paagent-RMAction.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='RMAction.cpp' object='paagent-RMAction.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(paagent_CXXFLAGS) $(CXXFLAGS) -c -o paagent-RMAction.obj `if test -f 'RMAction.cpp'; then $(CYGPATH_W) 'RMAction.cpp'; else $(CYGPATH_W) '$(srcdir)/RMAction.cpp'; fi`
-
-paagent-P2PAction.o: P2PAction.cpp
-@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(paagent_CXXFLAGS) $(CXXFLAGS) -MT paagent-P2PAction.o -MD -MP -MF $(DEPDIR)/paagent-P2PAction.Tpo -c -o paagent-P2PAction.o `test -f 'P2PAction.cpp' || echo '$(srcdir)/'`P2PAction.cpp
-@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/paagent-P2PAction.Tpo $(DEPDIR)/paagent-P2PAction.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='P2PAction.cpp' object='paagent-P2PAction.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(paagent_CXXFLAGS) $(CXXFLAGS) -c -o paagent-P2PAction.o `test -f 'P2PAction.cpp' || echo '$(srcdir)/'`P2PAction.cpp
-
-paagent-P2PAction.obj: P2PAction.cpp
-@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(paagent_CXXFLAGS) $(CXXFLAGS) -MT paagent-P2PAction.obj -MD -MP -MF $(DEPDIR)/paagent-P2PAction.Tpo -c -o paagent-P2PAction.obj `if test -f 'P2PAction.cpp'; then $(CYGPATH_W) 'P2PAction.cpp'; else $(CYGPATH_W) '$(srcdir)/P2PAction.cpp'; fi`
-@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/paagent-P2PAction.Tpo $(DEPDIR)/paagent-P2PAction.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='P2PAction.cpp' object='paagent-P2PAction.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(paagent_CXXFLAGS) $(CXXFLAGS) -c -o paagent-P2PAction.obj `if test -f 'P2PAction.cpp'; then $(CYGPATH_W) 'P2PAction.cpp'; else $(CYGPATH_W) '$(srcdir)/P2PAction.cpp'; fi`
-
-paagent-Action.o: Action.cpp
-@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(paagent_CXXFLAGS) $(CXXFLAGS) -MT paagent-Action.o -MD -MP -MF $(DEPDIR)/paagent-Action.Tpo -c -o paagent-Action.o `test -f 'Action.cpp' || echo '$(srcdir)/'`Action.cpp
-@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/paagent-Action.Tpo $(DEPDIR)/paagent-Action.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='Action.cpp' object='paagent-Action.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(paagent_CXXFLAGS) $(CXXFLAGS) -c -o paagent-Action.o `test -f 'Action.cpp' || echo '$(srcdir)/'`Action.cpp
-
-paagent-Action.obj: Action.cpp
-@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(paagent_CXXFLAGS) $(CXXFLAGS) -MT paagent-Action.obj -MD -MP -MF $(DEPDIR)/paagent-Action.Tpo -c -o paagent-Action.obj `if test -f 'Action.cpp'; then $(CYGPATH_W) 'Action.cpp'; else $(CYGPATH_W) '$(srcdir)/Action.cpp'; fi`
-@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/paagent-Action.Tpo $(DEPDIR)/paagent-Action.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='Action.cpp' object='paagent-Action.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(paagent_CXXFLAGS) $(CXXFLAGS) -c -o paagent-Action.obj `if test -f 'Action.cpp'; then $(CYGPATH_W) 'Action.cpp'; else $(CYGPATH_W) '$(srcdir)/Action.cpp'; fi`
-
-paagent-Event.o: Event.cpp
-@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(paagent_CXXFLAGS) $(CXXFLAGS) -MT paagent-Event.o -MD -MP -MF $(DEPDIR)/paagent-Event.Tpo -c -o paagent-Event.o `test -f 'Event.cpp' || echo '$(srcdir)/'`Event.cpp
-@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/paagent-Event.Tpo $(DEPDIR)/paagent-Event.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='Event.cpp' object='paagent-Event.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(paagent_CXXFLAGS) $(CXXFLAGS) -c -o paagent-Event.o `test -f 'Event.cpp' || echo '$(srcdir)/'`Event.cpp
-
-paagent-Event.obj: Event.cpp
-@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(paagent_CXXFLAGS) $(CXXFLAGS) -MT paagent-Event.obj -MD -MP -MF $(DEPDIR)/paagent-Event.Tpo -c -o paagent-Event.obj `if test -f 'Event.cpp'; then $(CYGPATH_W) 'Event.cpp'; else $(CYGPATH_W) '$(srcdir)/Event.cpp'; fi`
-@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/paagent-Event.Tpo $(DEPDIR)/paagent-Event.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='Event.cpp' object='paagent-Event.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(paagent_CXXFLAGS) $(CXXFLAGS) -c -o paagent-Event.obj `if test -f 'Event.cpp'; then $(CYGPATH_W) 'Event.cpp'; else $(CYGPATH_W) '$(srcdir)/Event.cpp'; fi`
-
-paagent-CalendarEvent.o: CalendarEvent.cpp
-@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(paagent_CXXFLAGS) $(CXXFLAGS) -MT paagent-CalendarEvent.o -MD -MP -MF $(DEPDIR)/paagent-CalendarEvent.Tpo -c -o paagent-CalendarEvent.o `test -f 'CalendarEvent.cpp' || echo '$(srcdir)/'`CalendarEvent.cpp
-@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/paagent-CalendarEvent.Tpo $(DEPDIR)/paagent-CalendarEvent.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='CalendarEvent.cpp' object='paagent-CalendarEvent.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(paagent_CXXFLAGS) $(CXXFLAGS) -c -o paagent-CalendarEvent.o `test -f 'CalendarEvent.cpp' || echo '$(srcdir)/'`CalendarEvent.cpp
-
-paagent-CalendarEvent.obj: CalendarEvent.cpp
-@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(paagent_CXXFLAGS) $(CXXFLAGS) -MT paagent-CalendarEvent.obj -MD -MP -MF $(DEPDIR)/paagent-CalendarEvent.Tpo -c -o paagent-CalendarEvent.obj `if test -f 'CalendarEvent.cpp'; then $(CYGPATH_W) 'CalendarEvent.cpp'; else $(CYGPATH_W) '$(srcdir)/CalendarEvent.cpp'; fi`
-@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/paagent-CalendarEvent.Tpo $(DEPDIR)/paagent-CalendarEvent.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='CalendarEvent.cpp' object='paagent-CalendarEvent.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(paagent_CXXFLAGS) $(CXXFLAGS) -c -o paagent-CalendarEvent.obj `if test -f 'CalendarEvent.cpp'; then $(CYGPATH_W) 'CalendarEvent.cpp'; else $(CYGPATH_W) '$(srcdir)/CalendarEvent.cpp'; fi`
-
-paagent-IdlenessEvent.o: IdlenessEvent.cpp
-@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(paagent_CXXFLAGS) $(CXXFLAGS) -MT paagent-IdlenessEvent.o -MD -MP -MF $(DEPDIR)/paagent-IdlenessEvent.Tpo -c -o paagent-IdlenessEvent.o `test -f 'IdlenessEvent.cpp' || echo '$(srcdir)/'`IdlenessEvent.cpp
-@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/paagent-IdlenessEvent.Tpo $(DEPDIR)/paagent-IdlenessEvent.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='IdlenessEvent.cpp' object='paagent-IdlenessEvent.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(paagent_CXXFLAGS) $(CXXFLAGS) -c -o paagent-IdlenessEvent.o `test -f 'IdlenessEvent.cpp' || echo '$(srcdir)/'`IdlenessEvent.cpp
-
-paagent-IdlenessEvent.obj: IdlenessEvent.cpp
-@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(paagent_CXXFLAGS) $(CXXFLAGS) -MT paagent-IdlenessEvent.obj -MD -MP -MF $(DEPDIR)/paagent-IdlenessEvent.Tpo -c -o paagent-IdlenessEvent.obj `if test -f 'IdlenessEvent.cpp'; then $(CYGPATH_W) 'IdlenessEvent.cpp'; else $(CYGPATH_W) '$(srcdir)/IdlenessEvent.cpp'; fi`
-@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/paagent-IdlenessEvent.Tpo $(DEPDIR)/paagent-IdlenessEvent.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='IdlenessEvent.cpp' object='paagent-IdlenessEvent.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(paagent_CXXFLAGS) $(CXXFLAGS) -c -o paagent-IdlenessEvent.obj `if test -f 'IdlenessEvent.cpp'; then $(CYGPATH_W) 'IdlenessEvent.cpp'; else $(CYGPATH_W) '$(srcdir)/IdlenessEvent.cpp'; fi`
-
-paagent-Configuration.o: Configuration.cpp
-@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(paagent_CXXFLAGS) $(CXXFLAGS) -MT paagent-Configuration.o -MD -MP -MF $(DEPDIR)/paagent-Configuration.Tpo -c -o paagent-Configuration.o `test -f 'Configuration.cpp' || echo '$(srcdir)/'`Configuration.cpp
-@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/paagent-Configuration.Tpo $(DEPDIR)/paagent-Configuration.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='Configuration.cpp' object='paagent-Configuration.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(paagent_CXXFLAGS) $(CXXFLAGS) -c -o paagent-Configuration.o `test -f 'Configuration.cpp' || echo '$(srcdir)/'`Configuration.cpp
-
-paagent-Configuration.obj: Configuration.cpp
-@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(paagent_CXXFLAGS) $(CXXFLAGS) -MT paagent-Configuration.obj -MD -MP -MF $(DEPDIR)/paagent-Configuration.Tpo -c -o paagent-Configuration.obj `if test -f 'Configuration.cpp'; then $(CYGPATH_W) 'Configuration.cpp'; else $(CYGPATH_W) '$(srcdir)/Configuration.cpp'; fi`
-@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/paagent-Configuration.Tpo $(DEPDIR)/paagent-Configuration.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='Configuration.cpp' object='paagent-Configuration.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(paagent_CXXFLAGS) $(CXXFLAGS) -c -o paagent-Configuration.obj `if test -f 'Configuration.cpp'; then $(CYGPATH_W) 'Configuration.cpp'; else $(CYGPATH_W) '$(srcdir)/Configuration.cpp'; fi`
-
-paagent-ConfigParser.o: ConfigParser.cpp
-@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(paagent_CXXFLAGS) $(CXXFLAGS) -MT paagent-ConfigParser.o -MD -MP -MF $(DEPDIR)/paagent-ConfigParser.Tpo -c -o paagent-ConfigParser.o `test -f 'ConfigParser.cpp' || echo '$(srcdir)/'`ConfigParser.cpp
-@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/paagent-ConfigParser.Tpo $(DEPDIR)/paagent-ConfigParser.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='ConfigParser.cpp' object='paagent-ConfigParser.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(paagent_CXXFLAGS) $(CXXFLAGS) -c -o paagent-ConfigParser.o `test -f 'ConfigParser.cpp' || echo '$(srcdir)/'`ConfigParser.cpp
-
-paagent-ConfigParser.obj: ConfigParser.cpp
-@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(paagent_CXXFLAGS) $(CXXFLAGS) -MT paagent-ConfigParser.obj -MD -MP -MF $(DEPDIR)/paagent-ConfigParser.Tpo -c -o paagent-ConfigParser.obj `if test -f 'ConfigParser.cpp'; then $(CYGPATH_W) 'ConfigParser.cpp'; else $(CYGPATH_W) '$(srcdir)/ConfigParser.cpp'; fi`
-@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/paagent-ConfigParser.Tpo $(DEPDIR)/paagent-ConfigParser.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='ConfigParser.cpp' object='paagent-ConfigParser.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(paagent_CXXFLAGS) $(CXXFLAGS) -c -o paagent-ConfigParser.obj `if test -f 'ConfigParser.cpp'; then $(CYGPATH_W) 'ConfigParser.cpp'; else $(CYGPATH_W) '$(srcdir)/ConfigParser.cpp'; fi`
-
-paagent-ConfigHandler.o: ConfigHandler.cpp
-@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(paagent_CXXFLAGS) $(CXXFLAGS) -MT paagent-ConfigHandler.o -MD -MP -MF $(DEPDIR)/paagent-ConfigHandler.Tpo -c -o paagent-ConfigHandler.o `test -f 'ConfigHandler.cpp' || echo '$(srcdir)/'`ConfigHandler.cpp
-@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/paagent-ConfigHandler.Tpo $(DEPDIR)/paagent-ConfigHandler.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='ConfigHandler.cpp' object='paagent-ConfigHandler.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(paagent_CXXFLAGS) $(CXXFLAGS) -c -o paagent-ConfigHandler.o `test -f 'ConfigHandler.cpp' || echo '$(srcdir)/'`ConfigHandler.cpp
-
-paagent-ConfigHandler.obj: ConfigHandler.cpp
-@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(paagent_CXXFLAGS) $(CXXFLAGS) -MT paagent-ConfigHandler.obj -MD -MP -MF $(DEPDIR)/paagent-ConfigHandler.Tpo -c -o paagent-ConfigHandler.obj `if test -f 'ConfigHandler.cpp'; then $(CYGPATH_W) 'ConfigHandler.cpp'; else $(CYGPATH_W) '$(srcdir)/ConfigHandler.cpp'; fi`
-@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/paagent-ConfigHandler.Tpo $(DEPDIR)/paagent-ConfigHandler.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='ConfigHandler.cpp' object='paagent-ConfigHandler.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(paagent_CXXFLAGS) $(CXXFLAGS) -c -o paagent-ConfigHandler.obj `if test -f 'ConfigHandler.cpp'; then $(CYGPATH_W) 'ConfigHandler.cpp'; else $(CYGPATH_W) '$(srcdir)/ConfigHandler.cpp'; fi`
-
-paagent-PAAgent.o: PAAgent.cpp
-@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(paagent_CXXFLAGS) $(CXXFLAGS) -MT paagent-PAAgent.o -MD -MP -MF $(DEPDIR)/paagent-PAAgent.Tpo -c -o paagent-PAAgent.o `test -f 'PAAgent.cpp' || echo '$(srcdir)/'`PAAgent.cpp
-@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/paagent-PAAgent.Tpo $(DEPDIR)/paagent-PAAgent.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='PAAgent.cpp' object='paagent-PAAgent.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(paagent_CXXFLAGS) $(CXXFLAGS) -c -o paagent-PAAgent.o `test -f 'PAAgent.cpp' || echo '$(srcdir)/'`PAAgent.cpp
-
-paagent-PAAgent.obj: PAAgent.cpp
-@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(paagent_CXXFLAGS) $(CXXFLAGS) -MT paagent-PAAgent.obj -MD -MP -MF $(DEPDIR)/paagent-PAAgent.Tpo -c -o paagent-PAAgent.obj `if test -f 'PAAgent.cpp'; then $(CYGPATH_W) 'PAAgent.cpp'; else $(CYGPATH_W) '$(srcdir)/PAAgent.cpp'; fi`
-@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/paagent-PAAgent.Tpo $(DEPDIR)/paagent-PAAgent.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='PAAgent.cpp' object='paagent-PAAgent.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(paagent_CXXFLAGS) $(CXXFLAGS) -c -o paagent-PAAgent.obj `if test -f 'PAAgent.cpp'; then $(CYGPATH_W) 'PAAgent.cpp'; else $(CYGPATH_W) '$(srcdir)/PAAgent.cpp'; fi`
-
-paagent-paagent.o: paagent.cpp
-@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(paagent_CXXFLAGS) $(CXXFLAGS) -MT paagent-paagent.o -MD -MP -MF $(DEPDIR)/paagent-paagent.Tpo -c -o paagent-paagent.o `test -f 'paagent.cpp' || echo '$(srcdir)/'`paagent.cpp
-@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/paagent-paagent.Tpo $(DEPDIR)/paagent-paagent.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='paagent.cpp' object='paagent-paagent.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(paagent_CXXFLAGS) $(CXXFLAGS) -c -o paagent-paagent.o `test -f 'paagent.cpp' || echo '$(srcdir)/'`paagent.cpp
-
-paagent-paagent.obj: paagent.cpp
-@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(paagent_CXXFLAGS) $(CXXFLAGS) -MT paagent-paagent.obj -MD -MP -MF $(DEPDIR)/paagent-paagent.Tpo -c -o paagent-paagent.obj `if test -f 'paagent.cpp'; then $(CYGPATH_W) 'paagent.cpp'; else $(CYGPATH_W) '$(srcdir)/paagent.cpp'; fi`
-@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/paagent-paagent.Tpo $(DEPDIR)/paagent-paagent.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='paagent.cpp' object='paagent-paagent.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(paagent_CXXFLAGS) $(CXXFLAGS) -c -o paagent-paagent.obj `if test -f 'paagent.cpp'; then $(CYGPATH_W) 'paagent.cpp'; else $(CYGPATH_W) '$(srcdir)/paagent.cpp'; fi`
-
-paagent-Controller.o: Controller.cpp
-@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(paagent_CXXFLAGS) $(CXXFLAGS) -MT paagent-Controller.o -MD -MP -MF $(DEPDIR)/paagent-Controller.Tpo -c -o paagent-Controller.o `test -f 'Controller.cpp' || echo '$(srcdir)/'`Controller.cpp
-@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/paagent-Controller.Tpo $(DEPDIR)/paagent-Controller.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='Controller.cpp' object='paagent-Controller.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(paagent_CXXFLAGS) $(CXXFLAGS) -c -o paagent-Controller.o `test -f 'Controller.cpp' || echo '$(srcdir)/'`Controller.cpp
-
-paagent-Controller.obj: Controller.cpp
-@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(paagent_CXXFLAGS) $(CXXFLAGS) -MT paagent-Controller.obj -MD -MP -MF $(DEPDIR)/paagent-Controller.Tpo -c -o paagent-Controller.obj `if test -f 'Controller.cpp'; then $(CYGPATH_W) 'Controller.cpp'; else $(CYGPATH_W) '$(srcdir)/Controller.cpp'; fi`
-@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/paagent-Controller.Tpo $(DEPDIR)/paagent-Controller.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='Controller.cpp' object='paagent-Controller.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(paagent_CXXFLAGS) $(CXXFLAGS) -c -o paagent-Controller.obj `if test -f 'Controller.cpp'; then $(CYGPATH_W) 'Controller.cpp'; else $(CYGPATH_W) '$(srcdir)/Controller.cpp'; fi`
-
-paagent-NodeStarter.o: NodeStarter.cpp
-@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(paagent_CXXFLAGS) $(CXXFLAGS) -MT paagent-NodeStarter.o -MD -MP -MF $(DEPDIR)/paagent-NodeStarter.Tpo -c -o paagent-NodeStarter.o `test -f 'NodeStarter.cpp' || echo '$(srcdir)/'`NodeStarter.cpp
-@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/paagent-NodeStarter.Tpo $(DEPDIR)/paagent-NodeStarter.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='NodeStarter.cpp' object='paagent-NodeStarter.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(paagent_CXXFLAGS) $(CXXFLAGS) -c -o paagent-NodeStarter.o `test -f 'NodeStarter.cpp' || echo '$(srcdir)/'`NodeStarter.cpp
-
-paagent-NodeStarter.obj: NodeStarter.cpp
-@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(paagent_CXXFLAGS) $(CXXFLAGS) -MT paagent-NodeStarter.obj -MD -MP -MF $(DEPDIR)/paagent-NodeStarter.Tpo -c -o paagent-NodeStarter.obj `if test -f 'NodeStarter.cpp'; then $(CYGPATH_W) 'NodeStarter.cpp'; else $(CYGPATH_W) '$(srcdir)/NodeStarter.cpp'; fi`
-@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/paagent-NodeStarter.Tpo $(DEPDIR)/paagent-NodeStarter.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='NodeStarter.cpp' object='paagent-NodeStarter.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(paagent_CXXFLAGS) $(CXXFLAGS) -c -o paagent-NodeStarter.obj `if test -f 'NodeStarter.cpp'; then $(CYGPATH_W) 'NodeStarter.cpp'; else $(CYGPATH_W) '$(srcdir)/NodeStarter.cpp'; fi`
-
-paagent-Watcher.o: Watcher.cpp
-@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(paagent_CXXFLAGS) $(CXXFLAGS) -MT paagent-Watcher.o -MD -MP -MF $(DEPDIR)/paagent-Watcher.Tpo -c -o paagent-Watcher.o `test -f 'Watcher.cpp' || echo '$(srcdir)/'`Watcher.cpp
-@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/paagent-Watcher.Tpo $(DEPDIR)/paagent-Watcher.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='Watcher.cpp' object='paagent-Watcher.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(paagent_CXXFLAGS) $(CXXFLAGS) -c -o paagent-Watcher.o `test -f 'Watcher.cpp' || echo '$(srcdir)/'`Watcher.cpp
-
-paagent-Watcher.obj: Watcher.cpp
-@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(paagent_CXXFLAGS) $(CXXFLAGS) -MT paagent-Watcher.obj -MD -MP -MF $(DEPDIR)/paagent-Watcher.Tpo -c -o paagent-Watcher.obj `if test -f 'Watcher.cpp'; then $(CYGPATH_W) 'Watcher.cpp'; else $(CYGPATH_W) '$(srcdir)/Watcher.cpp'; fi`
-@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/paagent-Watcher.Tpo $(DEPDIR)/paagent-Watcher.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='Watcher.cpp' object='paagent-Watcher.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(paagent_CXXFLAGS) $(CXXFLAGS) -c -o paagent-Watcher.obj `if test -f 'Watcher.cpp'; then $(CYGPATH_W) 'Watcher.cpp'; else $(CYGPATH_W) '$(srcdir)/Watcher.cpp'; fi`
-
-paagent_server-P2PNodeStarter.o: P2PNodeStarter.cpp
-@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(paagent_server_CXXFLAGS) $(CXXFLAGS) -MT paagent_server-P2PNodeStarter.o -MD -MP -MF $(DEPDIR)/paagent_server-P2PNodeStarter.Tpo -c -o paagent_server-P2PNodeStarter.o `test -f 'P2PNodeStarter.cpp' || echo '$(srcdir)/'`P2PNodeStarter.cpp
-@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/paagent_server-P2PNodeStarter.Tpo $(DEPDIR)/paagent_server-P2PNodeStarter.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='P2PNodeStarter.cpp' object='paagent_server-P2PNodeStarter.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(paagent_server_CXXFLAGS) $(CXXFLAGS) -c -o paagent_server-P2PNodeStarter.o `test -f 'P2PNodeStarter.cpp' || echo '$(srcdir)/'`P2PNodeStarter.cpp
-
-paagent_server-P2PNodeStarter.obj: P2PNodeStarter.cpp
-@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(paagent_server_CXXFLAGS) $(CXXFLAGS) -MT paagent_server-P2PNodeStarter.obj -MD -MP -MF $(DEPDIR)/paagent_server-P2PNodeStarter.Tpo -c -o paagent_server-P2PNodeStarter.obj `if test -f 'P2PNodeStarter.cpp'; then $(CYGPATH_W) 'P2PNodeStarter.cpp'; else $(CYGPATH_W) '$(srcdir)/P2PNodeStarter.cpp'; fi`
-@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/paagent_server-P2PNodeStarter.Tpo $(DEPDIR)/paagent_server-P2PNodeStarter.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='P2PNodeStarter.cpp' object='paagent_server-P2PNodeStarter.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(paagent_server_CXXFLAGS) $(CXXFLAGS) -c -o paagent_server-P2PNodeStarter.obj `if test -f 'P2PNodeStarter.cpp'; then $(CYGPATH_W) 'P2PNodeStarter.cpp'; else $(CYGPATH_W) '$(srcdir)/P2PNodeStarter.cpp'; fi`
-
-paagent_server-CustomNodeStarter.o: CustomNodeStarter.cpp
-@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(paagent_server_CXXFLAGS) $(CXXFLAGS) -MT paagent_server-CustomNodeStarter.o -MD -MP -MF $(DEPDIR)/paagent_server-CustomNodeStarter.Tpo -c -o paagent_server-CustomNodeStarter.o `test -f 'CustomNodeStarter.cpp' || echo '$(srcdir)/'`CustomNodeStarter.cpp
-@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/paagent_server-CustomNodeStarter.Tpo $(DEPDIR)/paagent_server-CustomNodeStarter.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='CustomNodeStarter.cpp' object='paagent_server-CustomNodeStarter.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(paagent_server_CXXFLAGS) $(CXXFLAGS) -c -o paagent_server-CustomNodeStarter.o `test -f 'CustomNodeStarter.cpp' || echo '$(srcdir)/'`CustomNodeStarter.cpp
-
-paagent_server-CustomNodeStarter.obj: CustomNodeStarter.cpp
-@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(paagent_server_CXXFLAGS) $(CXXFLAGS) -MT paagent_server-CustomNodeStarter.obj -MD -MP -MF $(DEPDIR)/paagent_server-CustomNodeStarter.Tpo -c -o paagent_server-CustomNodeStarter.obj `if test -f 'CustomNodeStarter.cpp'; then $(CYGPATH_W) 'CustomNodeStarter.cpp'; else $(CYGPATH_W) '$(srcdir)/CustomNodeStarter.cpp'; fi`
-@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/paagent_server-CustomNodeStarter.Tpo $(DEPDIR)/paagent_server-CustomNodeStarter.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='CustomNodeStarter.cpp' object='paagent_server-CustomNodeStarter.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(paagent_server_CXXFLAGS) $(CXXFLAGS) -c -o paagent_server-CustomNodeStarter.obj `if test -f 'CustomNodeStarter.cpp'; then $(CYGPATH_W) 'CustomNodeStarter.cpp'; else $(CYGPATH_W) '$(srcdir)/CustomNodeStarter.cpp'; fi`
-
-paagent_server-RMNodeStarter.o: RMNodeStarter.cpp
-@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(paagent_server_CXXFLAGS) $(CXXFLAGS) -MT paagent_server-RMNodeStarter.o -MD -MP -MF $(DEPDIR)/paagent_server-RMNodeStarter.Tpo -c -o paagent_server-RMNodeStarter.o `test -f 'RMNodeStarter.cpp' || echo '$(srcdir)/'`RMNodeStarter.cpp
-@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/paagent_server-RMNodeStarter.Tpo $(DEPDIR)/paagent_server-RMNodeStarter.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='RMNodeStarter.cpp' object='paagent_server-RMNodeStarter.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(paagent_server_CXXFLAGS) $(CXXFLAGS) -c -o paagent_server-RMNodeStarter.o `test -f 'RMNodeStarter.cpp' || echo '$(srcdir)/'`RMNodeStarter.cpp
-
-paagent_server-RMNodeStarter.obj: RMNodeStarter.cpp
-@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(paagent_server_CXXFLAGS) $(CXXFLAGS) -MT paagent_server-RMNodeStarter.obj -MD -MP -MF $(DEPDIR)/paagent_server-RMNodeStarter.Tpo -c -o paagent_server-RMNodeStarter.obj `if test -f 'RMNodeStarter.cpp'; then $(CYGPATH_W) 'RMNodeStarter.cpp'; else $(CYGPATH_W) '$(srcdir)/RMNodeStarter.cpp'; fi`
-@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/paagent_server-RMNodeStarter.Tpo $(DEPDIR)/paagent_server-RMNodeStarter.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='RMNodeStarter.cpp' object='paagent_server-RMNodeStarter.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(paagent_server_CXXFLAGS) $(CXXFLAGS) -c -o paagent_server-RMNodeStarter.obj `if test -f 'RMNodeStarter.cpp'; then $(CYGPATH_W) 'RMNodeStarter.cpp'; else $(CYGPATH_W) '$(srcdir)/RMNodeStarter.cpp'; fi`
-
-paagent_server-PAAgent.o: PAAgent.cpp
-@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(paagent_server_CXXFLAGS) $(CXXFLAGS) -MT paagent_server-PAAgent.o -MD -MP -MF $(DEPDIR)/paagent_server-PAAgent.Tpo -c -o paagent_server-PAAgent.o `test -f 'PAAgent.cpp' || echo '$(srcdir)/'`PAAgent.cpp
-@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/paagent_server-PAAgent.Tpo $(DEPDIR)/paagent_server-PAAgent.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='PAAgent.cpp' object='paagent_server-PAAgent.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(paagent_server_CXXFLAGS) $(CXXFLAGS) -c -o paagent_server-PAAgent.o `test -f 'PAAgent.cpp' || echo '$(srcdir)/'`PAAgent.cpp
-
-paagent_server-PAAgent.obj: PAAgent.cpp
-@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(paagent_server_CXXFLAGS) $(CXXFLAGS) -MT paagent_server-PAAgent.obj -MD -MP -MF $(DEPDIR)/paagent_server-PAAgent.Tpo -c -o paagent_server-PAAgent.obj `if test -f 'PAAgent.cpp'; then $(CYGPATH_W) 'PAAgent.cpp'; else $(CYGPATH_W) '$(srcdir)/PAAgent.cpp'; fi`
-@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/paagent_server-PAAgent.Tpo $(DEPDIR)/paagent_server-PAAgent.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='PAAgent.cpp' object='paagent_server-PAAgent.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(paagent_server_CXXFLAGS) $(CXXFLAGS) -c -o paagent_server-PAAgent.obj `if test -f 'PAAgent.cpp'; then $(CYGPATH_W) 'PAAgent.cpp'; else $(CYGPATH_W) '$(srcdir)/PAAgent.cpp'; fi`
-
-paagent_server-paagent_server.o: paagent_server.cpp
-@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(paagent_server_CXXFLAGS) $(CXXFLAGS) -MT paagent_server-paagent_server.o -MD -MP -MF $(DEPDIR)/paagent_server-paagent_server.Tpo -c -o paagent_server-paagent_server.o `test -f 'paagent_server.cpp' || echo '$(srcdir)/'`paagent_server.cpp
-@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/paagent_server-paagent_server.Tpo $(DEPDIR)/paagent_server-paagent_server.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='paagent_server.cpp' object='paagent_server-paagent_server.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(paagent_server_CXXFLAGS) $(CXXFLAGS) -c -o paagent_server-paagent_server.o `test -f 'paagent_server.cpp' || echo '$(srcdir)/'`paagent_server.cpp
-
-paagent_server-paagent_server.obj: paagent_server.cpp
-@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(paagent_server_CXXFLAGS) $(CXXFLAGS) -MT paagent_server-paagent_server.obj -MD -MP -MF $(DEPDIR)/paagent_server-paagent_server.Tpo -c -o paagent_server-paagent_server.obj `if test -f 'paagent_server.cpp'; then $(CYGPATH_W) 'paagent_server.cpp'; else $(CYGPATH_W) '$(srcdir)/paagent_server.cpp'; fi`
-@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/paagent_server-paagent_server.Tpo $(DEPDIR)/paagent_server-paagent_server.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='paagent_server.cpp' object='paagent_server-paagent_server.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(paagent_server_CXXFLAGS) $(CXXFLAGS) -c -o paagent_server-paagent_server.obj `if test -f 'paagent_server.cpp'; then $(CYGPATH_W) 'paagent_server.cpp'; else $(CYGPATH_W) '$(srcdir)/paagent_server.cpp'; fi`
-
-paagent_server-Controller.o: Controller.cpp
-@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(paagent_server_CXXFLAGS) $(CXXFLAGS) -MT paagent_server-Controller.o -MD -MP -MF $(DEPDIR)/paagent_server-Controller.Tpo -c -o paagent_server-Controller.o `test -f 'Controller.cpp' || echo '$(srcdir)/'`Controller.cpp
-@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/paagent_server-Controller.Tpo $(DEPDIR)/paagent_server-Controller.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='Controller.cpp' object='paagent_server-Controller.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(paagent_server_CXXFLAGS) $(CXXFLAGS) -c -o paagent_server-Controller.o `test -f 'Controller.cpp' || echo '$(srcdir)/'`Controller.cpp
-
-paagent_server-Controller.obj: Controller.cpp
-@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(paagent_server_CXXFLAGS) $(CXXFLAGS) -MT paagent_server-Controller.obj -MD -MP -MF $(DEPDIR)/paagent_server-Controller.Tpo -c -o paagent_server-Controller.obj `if test -f 'Controller.cpp'; then $(CYGPATH_W) 'Controller.cpp'; else $(CYGPATH_W) '$(srcdir)/Controller.cpp'; fi`
-@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/paagent_server-Controller.Tpo $(DEPDIR)/paagent_server-Controller.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='Controller.cpp' object='paagent_server-Controller.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(paagent_server_CXXFLAGS) $(CXXFLAGS) -c -o paagent_server-Controller.obj `if test -f 'Controller.cpp'; then $(CYGPATH_W) 'Controller.cpp'; else $(CYGPATH_W) '$(srcdir)/Controller.cpp'; fi`
-
-paagent_server-NodeStarter.o: NodeStarter.cpp
-@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(paagent_server_CXXFLAGS) $(CXXFLAGS) -MT paagent_server-NodeStarter.o -MD -MP -MF $(DEPDIR)/paagent_server-NodeStarter.Tpo -c -o paagent_server-NodeStarter.o `test -f 'NodeStarter.cpp' || echo '$(srcdir)/'`NodeStarter.cpp
-@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/paagent_server-NodeStarter.Tpo $(DEPDIR)/paagent_server-NodeStarter.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='NodeStarter.cpp' object='paagent_server-NodeStarter.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(paagent_server_CXXFLAGS) $(CXXFLAGS) -c -o paagent_server-NodeStarter.o `test -f 'NodeStarter.cpp' || echo '$(srcdir)/'`NodeStarter.cpp
-
-paagent_server-NodeStarter.obj: NodeStarter.cpp
-@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(paagent_server_CXXFLAGS) $(CXXFLAGS) -MT paagent_server-NodeStarter.obj -MD -MP -MF $(DEPDIR)/paagent_server-NodeStarter.Tpo -c -o paagent_server-NodeStarter.obj `if test -f 'NodeStarter.cpp'; then $(CYGPATH_W) 'NodeStarter.cpp'; else $(CYGPATH_W) '$(srcdir)/NodeStarter.cpp'; fi`
-@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/paagent_server-NodeStarter.Tpo $(DEPDIR)/paagent_server-NodeStarter.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='NodeStarter.cpp' object='paagent_server-NodeStarter.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(paagent_server_CXXFLAGS) $(CXXFLAGS) -c -o paagent_server-NodeStarter.obj `if test -f 'NodeStarter.cpp'; then $(CYGPATH_W) 'NodeStarter.cpp'; else $(CYGPATH_W) '$(srcdir)/NodeStarter.cpp'; fi`
-
-paagent_tests-P2PNodeStarter.o: P2PNodeStarter.cpp
-@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(paagent_tests_CXXFLAGS) $(CXXFLAGS) -MT paagent_tests-P2PNodeStarter.o -MD -MP -MF $(DEPDIR)/paagent_tests-P2PNodeStarter.Tpo -c -o paagent_tests-P2PNodeStarter.o `test -f 'P2PNodeStarter.cpp' || echo '$(srcdir)/'`P2PNodeStarter.cpp
-@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/paagent_tests-P2PNodeStarter.Tpo $(DEPDIR)/paagent_tests-P2PNodeStarter.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='P2PNodeStarter.cpp' object='paagent_tests-P2PNodeStarter.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(paagent_tests_CXXFLAGS) $(CXXFLAGS) -c -o paagent_tests-P2PNodeStarter.o `test -f 'P2PNodeStarter.cpp' || echo '$(srcdir)/'`P2PNodeStarter.cpp
-
-paagent_tests-P2PNodeStarter.obj: P2PNodeStarter.cpp
-@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(paagent_tests_CXXFLAGS) $(CXXFLAGS) -MT paagent_tests-P2PNodeStarter.obj -MD -MP -MF $(DEPDIR)/paagent_tests-P2PNodeStarter.Tpo -c -o paagent_tests-P2PNodeStarter.obj `if test -f 'P2PNodeStarter.cpp'; then $(CYGPATH_W) 'P2PNodeStarter.cpp'; else $(CYGPATH_W) '$(srcdir)/P2PNodeStarter.cpp'; fi`
-@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/paagent_tests-P2PNodeStarter.Tpo $(DEPDIR)/paagent_tests-P2PNodeStarter.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='P2PNodeStarter.cpp' object='paagent_tests-P2PNodeStarter.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(paagent_tests_CXXFLAGS) $(CXXFLAGS) -c -o paagent_tests-P2PNodeStarter.obj `if test -f 'P2PNodeStarter.cpp'; then $(CYGPATH_W) 'P2PNodeStarter.cpp'; else $(CYGPATH_W) '$(srcdir)/P2PNodeStarter.cpp'; fi`
-
-paagent_tests-CustomNodeStarter.o: CustomNodeStarter.cpp
-@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(paagent_tests_CXXFLAGS) $(CXXFLAGS) -MT paagent_tests-CustomNodeStarter.o -MD -MP -MF $(DEPDIR)/paagent_tests-CustomNodeStarter.Tpo -c -o paagent_tests-CustomNodeStarter.o `test -f 'CustomNodeStarter.cpp' || echo '$(srcdir)/'`CustomNodeStarter.cpp
-@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/paagent_tests-CustomNodeStarter.Tpo $(DEPDIR)/paagent_tests-CustomNodeStarter.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='CustomNodeStarter.cpp' object='paagent_tests-CustomNodeStarter.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(paagent_tests_CXXFLAGS) $(CXXFLAGS) -c -o paagent_tests-CustomNodeStarter.o `test -f 'CustomNodeStarter.cpp' || echo '$(srcdir)/'`CustomNodeStarter.cpp
-
-paagent_tests-CustomNodeStarter.obj: CustomNodeStarter.cpp
-@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(paagent_tests_CXXFLAGS) $(CXXFLAGS) -MT paagent_tests-CustomNodeStarter.obj -MD -MP -MF $(DEPDIR)/paagent_tests-CustomNodeStarter.Tpo -c -o paagent_tests-CustomNodeStarter.obj `if test -f 'CustomNodeStarter.cpp'; then $(CYGPATH_W) 'CustomNodeStarter.cpp'; else $(CYGPATH_W) '$(srcdir)/CustomNodeStarter.cpp'; fi`
-@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/paagent_tests-CustomNodeStarter.Tpo $(DEPDIR)/paagent_tests-CustomNodeStarter.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='CustomNodeStarter.cpp' object='paagent_tests-CustomNodeStarter.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(paagent_tests_CXXFLAGS) $(CXXFLAGS) -c -o paagent_tests-CustomNodeStarter.obj `if test -f 'CustomNodeStarter.cpp'; then $(CYGPATH_W) 'CustomNodeStarter.cpp'; else $(CYGPATH_W) '$(srcdir)/CustomNodeStarter.cpp'; fi`
-
-paagent_tests-RMNodeStarter.o: RMNodeStarter.cpp
-@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(paagent_tests_CXXFLAGS) $(CXXFLAGS) -MT paagent_tests-RMNodeStarter.o -MD -MP -MF $(DEPDIR)/paagent_tests-RMNodeStarter.Tpo -c -o paagent_tests-RMNodeStarter.o `test -f 'RMNodeStarter.cpp' || echo '$(srcdir)/'`RMNodeStarter.cpp
-@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/paagent_tests-RMNodeStarter.Tpo $(DEPDIR)/paagent_tests-RMNodeStarter.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='RMNodeStarter.cpp' object='paagent_tests-RMNodeStarter.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(paagent_tests_CXXFLAGS) $(CXXFLAGS) -c -o paagent_tests-RMNodeStarter.o `test -f 'RMNodeStarter.cpp' || echo '$(srcdir)/'`RMNodeStarter.cpp
-
-paagent_tests-RMNodeStarter.obj: RMNodeStarter.cpp
-@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(paagent_tests_CXXFLAGS) $(CXXFLAGS) -MT paagent_tests-RMNodeStarter.obj -MD -MP -MF $(DEPDIR)/paagent_tests-RMNodeStarter.Tpo -c -o paagent_tests-RMNodeStarter.obj `if test -f 'RMNodeStarter.cpp'; then $(CYGPATH_W) 'RMNodeStarter.cpp'; else $(CYGPATH_W) '$(srcdir)/RMNodeStarter.cpp'; fi`
-@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/paagent_tests-RMNodeStarter.Tpo $(DEPDIR)/paagent_tests-RMNodeStarter.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='RMNodeStarter.cpp' object='paagent_tests-RMNodeStarter.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(paagent_tests_CXXFLAGS) $(CXXFLAGS) -c -o paagent_tests-RMNodeStarter.obj `if test -f 'RMNodeStarter.cpp'; then $(CYGPATH_W) 'RMNodeStarter.cpp'; else $(CYGPATH_W) '$(srcdir)/RMNodeStarter.cpp'; fi`
-
-paagent_tests-Runner.o: Runner.cpp
-@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(paagent_tests_CXXFLAGS) $(CXXFLAGS) -MT paagent_tests-Runner.o -MD -MP -MF $(DEPDIR)/paagent_tests-Runner.Tpo -c -o paagent_tests-Runner.o `test -f 'Runner.cpp' || echo '$(srcdir)/'`Runner.cpp
-@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/paagent_tests-Runner.Tpo $(DEPDIR)/paagent_tests-Runner.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='Runner.cpp' object='paagent_tests-Runner.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(paagent_tests_CXXFLAGS) $(CXXFLAGS) -c -o paagent_tests-Runner.o `test -f 'Runner.cpp' || echo '$(srcdir)/'`Runner.cpp
-
-paagent_tests-Runner.obj: Runner.cpp
-@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(paagent_tests_CXXFLAGS) $(CXXFLAGS) -MT paagent_tests-Runner.obj -MD -MP -MF $(DEPDIR)/paagent_tests-Runner.Tpo -c -o paagent_tests-Runner.obj `if test -f 'Runner.cpp'; then $(CYGPATH_W) 'Runner.cpp'; else $(CYGPATH_W) '$(srcdir)/Runner.cpp'; fi`
-@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/paagent_tests-Runner.Tpo $(DEPDIR)/paagent_tests-Runner.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='Runner.cpp' object='paagent_tests-Runner.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(paagent_tests_CXXFLAGS) $(CXXFLAGS) -c -o paagent_tests-Runner.obj `if test -f 'Runner.cpp'; then $(CYGPATH_W) 'Runner.cpp'; else $(CYGPATH_W) '$(srcdir)/Runner.cpp'; fi`
-
-paagent_tests-ConfigParserTest.o: ConfigParserTest.cpp
-@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(paagent_tests_CXXFLAGS) $(CXXFLAGS) -MT paagent_tests-ConfigParserTest.o -MD -MP -MF $(DEPDIR)/paagent_tests-ConfigParserTest.Tpo -c -o paagent_tests-ConfigParserTest.o `test -f 'ConfigParserTest.cpp' || echo '$(srcdir)/'`ConfigParserTest.cpp
-@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/paagent_tests-ConfigParserTest.Tpo $(DEPDIR)/paagent_tests-ConfigParserTest.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='ConfigParserTest.cpp' object='paagent_tests-ConfigParserTest.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(paagent_tests_CXXFLAGS) $(CXXFLAGS) -c -o paagent_tests-ConfigParserTest.o `test -f 'ConfigParserTest.cpp' || echo '$(srcdir)/'`ConfigParserTest.cpp
-
-paagent_tests-ConfigParserTest.obj: ConfigParserTest.cpp
-@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(paagent_tests_CXXFLAGS) $(CXXFLAGS) -MT paagent_tests-ConfigParserTest.obj -MD -MP -MF $(DEPDIR)/paagent_tests-ConfigParserTest.Tpo -c -o paagent_tests-ConfigParserTest.obj `if test -f 'ConfigParserTest.cpp'; then $(CYGPATH_W) 'ConfigParserTest.cpp'; else $(CYGPATH_W) '$(srcdir)/ConfigParserTest.cpp'; fi`
-@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/paagent_tests-ConfigParserTest.Tpo $(DEPDIR)/paagent_tests-ConfigParserTest.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='ConfigParserTest.cpp' object='paagent_tests-ConfigParserTest.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(paagent_tests_CXXFLAGS) $(CXXFLAGS) -c -o paagent_tests-ConfigParserTest.obj `if test -f 'ConfigParserTest.cpp'; then $(CYGPATH_W) 'ConfigParserTest.cpp'; else $(CYGPATH_W) '$(srcdir)/ConfigParserTest.cpp'; fi`
-
-paagent_tests-AdvertAction.o: AdvertAction.cpp
-@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(paagent_tests_CXXFLAGS) $(CXXFLAGS) -MT paagent_tests-AdvertAction.o -MD -MP -MF $(DEPDIR)/paagent_tests-AdvertAction.Tpo -c -o paagent_tests-AdvertAction.o `test -f 'AdvertAction.cpp' || echo '$(srcdir)/'`AdvertAction.cpp
-@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/paagent_tests-AdvertAction.Tpo $(DEPDIR)/paagent_tests-AdvertAction.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='AdvertAction.cpp' object='paagent_tests-AdvertAction.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(paagent_tests_CXXFLAGS) $(CXXFLAGS) -c -o paagent_tests-AdvertAction.o `test -f 'AdvertAction.cpp' || echo '$(srcdir)/'`AdvertAction.cpp
-
-paagent_tests-AdvertAction.obj: AdvertAction.cpp
-@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(paagent_tests_CXXFLAGS) $(CXXFLAGS) -MT paagent_tests-AdvertAction.obj -MD -MP -MF $(DEPDIR)/paagent_tests-AdvertAction.Tpo -c -o paagent_tests-AdvertAction.obj `if test -f 'AdvertAction.cpp'; then $(CYGPATH_W) 'AdvertAction.cpp'; else $(CYGPATH_W) '$(srcdir)/AdvertAction.cpp'; fi`
-@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/paagent_tests-AdvertAction.Tpo $(DEPDIR)/paagent_tests-AdvertAction.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='AdvertAction.cpp' object='paagent_tests-AdvertAction.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(paagent_tests_CXXFLAGS) $(CXXFLAGS) -c -o paagent_tests-AdvertAction.obj `if test -f 'AdvertAction.cpp'; then $(CYGPATH_W) 'AdvertAction.cpp'; else $(CYGPATH_W) '$(srcdir)/AdvertAction.cpp'; fi`
-
-paagent_tests-CustomAction.o: CustomAction.cpp
-@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(paagent_tests_CXXFLAGS) $(CXXFLAGS) -MT paagent_tests-CustomAction.o -MD -MP -MF $(DEPDIR)/paagent_tests-CustomAction.Tpo -c -o paagent_tests-CustomAction.o `test -f 'CustomAction.cpp' || echo '$(srcdir)/'`CustomAction.cpp
-@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/paagent_tests-CustomAction.Tpo $(DEPDIR)/paagent_tests-CustomAction.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='CustomAction.cpp' object='paagent_tests-CustomAction.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(paagent_tests_CXXFLAGS) $(CXXFLAGS) -c -o paagent_tests-CustomAction.o `test -f 'CustomAction.cpp' || echo '$(srcdir)/'`CustomAction.cpp
-
-paagent_tests-CustomAction.obj: CustomAction.cpp
-@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(paagent_tests_CXXFLAGS) $(CXXFLAGS) -MT paagent_tests-CustomAction.obj -MD -MP -MF $(DEPDIR)/paagent_tests-CustomAction.Tpo -c -o paagent_tests-CustomAction.obj `if test -f 'CustomAction.cpp'; then $(CYGPATH_W) 'CustomAction.cpp'; else $(CYGPATH_W) '$(srcdir)/CustomAction.cpp'; fi`
-@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/paagent_tests-CustomAction.Tpo $(DEPDIR)/paagent_tests-CustomAction.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='CustomAction.cpp' object='paagent_tests-CustomAction.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(paagent_tests_CXXFLAGS) $(CXXFLAGS) -c -o paagent_tests-CustomAction.obj `if test -f 'CustomAction.cpp'; then $(CYGPATH_W) 'CustomAction.cpp'; else $(CYGPATH_W) '$(srcdir)/CustomAction.cpp'; fi`
-
-paagent_tests-RMAction.o: RMAction.cpp
-@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(paagent_tests_CXXFLAGS) $(CXXFLAGS) -MT paagent_tests-RMAction.o -MD -MP -MF $(DEPDIR)/paagent_tests-RMAction.Tpo -c -o paagent_tests-RMAction.o `test -f 'RMAction.cpp' || echo '$(srcdir)/'`RMAction.cpp
-@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/paagent_tests-RMAction.Tpo $(DEPDIR)/paagent_tests-RMAction.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='RMAction.cpp' object='paagent_tests-RMAction.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(paagent_tests_CXXFLAGS) $(CXXFLAGS) -c -o paagent_tests-RMAction.o `test -f 'RMAction.cpp' || echo '$(srcdir)/'`RMAction.cpp
-
-paagent_tests-RMAction.obj: RMAction.cpp
-@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(paagent_tests_CXXFLAGS) $(CXXFLAGS) -MT paagent_tests-RMAction.obj -MD -MP -MF $(DEPDIR)/paagent_tests-RMAction.Tpo -c -o paagent_tests-RMAction.obj `if test -f 'RMAction.cpp'; then $(CYGPATH_W) 'RMAction.cpp'; else $(CYGPATH_W) '$(srcdir)/RMAction.cpp'; fi`
-@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/paagent_tests-RMAction.Tpo $(DEPDIR)/paagent_tests-RMAction.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='RMAction.cpp' object='paagent_tests-RMAction.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(paagent_tests_CXXFLAGS) $(CXXFLAGS) -c -o paagent_tests-RMAction.obj `if test -f 'RMAction.cpp'; then $(CYGPATH_W) 'RMAction.cpp'; else $(CYGPATH_W) '$(srcdir)/RMAction.cpp'; fi`
-
-paagent_tests-P2PAction.o: P2PAction.cpp
-@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(paagent_tests_CXXFLAGS) $(CXXFLAGS) -MT paagent_tests-P2PAction.o -MD -MP -MF $(DEPDIR)/paagent_tests-P2PAction.Tpo -c -o paagent_tests-P2PAction.o `test -f 'P2PAction.cpp' || echo '$(srcdir)/'`P2PAction.cpp
-@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/paagent_tests-P2PAction.Tpo $(DEPDIR)/paagent_tests-P2PAction.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='P2PAction.cpp' object='paagent_tests-P2PAction.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(paagent_tests_CXXFLAGS) $(CXXFLAGS) -c -o paagent_tests-P2PAction.o `test -f 'P2PAction.cpp' || echo '$(srcdir)/'`P2PAction.cpp
-
-paagent_tests-P2PAction.obj: P2PAction.cpp
-@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(paagent_tests_CXXFLAGS) $(CXXFLAGS) -MT paagent_tests-P2PAction.obj -MD -MP -MF $(DEPDIR)/paagent_tests-P2PAction.Tpo -c -o paagent_tests-P2PAction.obj `if test -f 'P2PAction.cpp'; then $(CYGPATH_W) 'P2PAction.cpp'; else $(CYGPATH_W) '$(srcdir)/P2PAction.cpp'; fi`
-@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/paagent_tests-P2PAction.Tpo $(DEPDIR)/paagent_tests-P2PAction.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='P2PAction.cpp' object='paagent_tests-P2PAction.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(paagent_tests_CXXFLAGS) $(CXXFLAGS) -c -o paagent_tests-P2PAction.obj `if test -f 'P2PAction.cpp'; then $(CYGPATH_W) 'P2PAction.cpp'; else $(CYGPATH_W) '$(srcdir)/P2PAction.cpp'; fi`
-
-paagent_tests-Action.o: Action.cpp
-@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(paagent_tests_CXXFLAGS) $(CXXFLAGS) -MT paagent_tests-Action.o -MD -MP -MF $(DEPDIR)/paagent_tests-Action.Tpo -c -o paagent_tests-Action.o `test -f 'Action.cpp' || echo '$(srcdir)/'`Action.cpp
-@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/paagent_tests-Action.Tpo $(DEPDIR)/paagent_tests-Action.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='Action.cpp' object='paagent_tests-Action.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(paagent_tests_CXXFLAGS) $(CXXFLAGS) -c -o paagent_tests-Action.o `test -f 'Action.cpp' || echo '$(srcdir)/'`Action.cpp
-
-paagent_tests-Action.obj: Action.cpp
-@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(paagent_tests_CXXFLAGS) $(CXXFLAGS) -MT paagent_tests-Action.obj -MD -MP -MF $(DEPDIR)/paagent_tests-Action.Tpo -c -o paagent_tests-Action.obj `if test -f 'Action.cpp'; then $(CYGPATH_W) 'Action.cpp'; else $(CYGPATH_W) '$(srcdir)/Action.cpp'; fi`
-@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/paagent_tests-Action.Tpo $(DEPDIR)/paagent_tests-Action.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='Action.cpp' object='paagent_tests-Action.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(paagent_tests_CXXFLAGS) $(CXXFLAGS) -c -o paagent_tests-Action.obj `if test -f 'Action.cpp'; then $(CYGPATH_W) 'Action.cpp'; else $(CYGPATH_W) '$(srcdir)/Action.cpp'; fi`
-
-paagent_tests-Event.o: Event.cpp
-@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(paagent_tests_CXXFLAGS) $(CXXFLAGS) -MT paagent_tests-Event.o -MD -MP -MF $(DEPDIR)/paagent_tests-Event.Tpo -c -o paagent_tests-Event.o `test -f 'Event.cpp' || echo '$(srcdir)/'`Event.cpp
-@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/paagent_tests-Event.Tpo $(DEPDIR)/paagent_tests-Event.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='Event.cpp' object='paagent_tests-Event.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(paagent_tests_CXXFLAGS) $(CXXFLAGS) -c -o paagent_tests-Event.o `test -f 'Event.cpp' || echo '$(srcdir)/'`Event.cpp
-
-paagent_tests-Event.obj: Event.cpp
-@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(paagent_tests_CXXFLAGS) $(CXXFLAGS) -MT paagent_tests-Event.obj -MD -MP -MF $(DEPDIR)/paagent_tests-Event.Tpo -c -o paagent_tests-Event.obj `if test -f 'Event.cpp'; then $(CYGPATH_W) 'Event.cpp'; else $(CYGPATH_W) '$(srcdir)/Event.cpp'; fi`
-@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/paagent_tests-Event.Tpo $(DEPDIR)/paagent_tests-Event.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='Event.cpp' object='paagent_tests-Event.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(paagent_tests_CXXFLAGS) $(CXXFLAGS) -c -o paagent_tests-Event.obj `if test -f 'Event.cpp'; then $(CYGPATH_W) 'Event.cpp'; else $(CYGPATH_W) '$(srcdir)/Event.cpp'; fi`
-
-paagent_tests-CalendarEvent.o: CalendarEvent.cpp
-@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(paagent_tests_CXXFLAGS) $(CXXFLAGS) -MT paagent_tests-CalendarEvent.o -MD -MP -MF $(DEPDIR)/paagent_tests-CalendarEvent.Tpo -c -o paagent_tests-CalendarEvent.o `test -f 'CalendarEvent.cpp' || echo '$(srcdir)/'`CalendarEvent.cpp
-@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/paagent_tests-CalendarEvent.Tpo $(DEPDIR)/paagent_tests-CalendarEvent.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='CalendarEvent.cpp' object='paagent_tests-CalendarEvent.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(paagent_tests_CXXFLAGS) $(CXXFLAGS) -c -o paagent_tests-CalendarEvent.o `test -f 'CalendarEvent.cpp' || echo '$(srcdir)/'`CalendarEvent.cpp
-
-paagent_tests-CalendarEvent.obj: CalendarEvent.cpp
-@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(paagent_tests_CXXFLAGS) $(CXXFLAGS) -MT paagent_tests-CalendarEvent.obj -MD -MP -MF $(DEPDIR)/paagent_tests-CalendarEvent.Tpo -c -o paagent_tests-CalendarEvent.obj `if test -f 'CalendarEvent.cpp'; then $(CYGPATH_W) 'CalendarEvent.cpp'; else $(CYGPATH_W) '$(srcdir)/CalendarEvent.cpp'; fi`
-@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/paagent_tests-CalendarEvent.Tpo $(DEPDIR)/paagent_tests-CalendarEvent.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='CalendarEvent.cpp' object='paagent_tests-CalendarEvent.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(paagent_tests_CXXFLAGS) $(CXXFLAGS) -c -o paagent_tests-CalendarEvent.obj `if test -f 'CalendarEvent.cpp'; then $(CYGPATH_W) 'CalendarEvent.cpp'; else $(CYGPATH_W) '$(srcdir)/CalendarEvent.cpp'; fi`
-
-paagent_tests-IdlenessEvent.o: IdlenessEvent.cpp
-@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(paagent_tests_CXXFLAGS) $(CXXFLAGS) -MT paagent_tests-IdlenessEvent.o -MD -MP -MF $(DEPDIR)/paagent_tests-IdlenessEvent.Tpo -c -o paagent_tests-IdlenessEvent.o `test -f 'IdlenessEvent.cpp' || echo '$(srcdir)/'`IdlenessEvent.cpp
-@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/paagent_tests-IdlenessEvent.Tpo $(DEPDIR)/paagent_tests-IdlenessEvent.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='IdlenessEvent.cpp' object='paagent_tests-IdlenessEvent.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(paagent_tests_CXXFLAGS) $(CXXFLAGS) -c -o paagent_tests-IdlenessEvent.o `test -f 'IdlenessEvent.cpp' || echo '$(srcdir)/'`IdlenessEvent.cpp
-
-paagent_tests-IdlenessEvent.obj: IdlenessEvent.cpp
-@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(paagent_tests_CXXFLAGS) $(CXXFLAGS) -MT paagent_tests-IdlenessEvent.obj -MD -MP -MF $(DEPDIR)/paagent_tests-IdlenessEvent.Tpo -c -o paagent_tests-IdlenessEvent.obj `if test -f 'IdlenessEvent.cpp'; then $(CYGPATH_W) 'IdlenessEvent.cpp'; else $(CYGPATH_W) '$(srcdir)/IdlenessEvent.cpp'; fi`
-@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/paagent_tests-IdlenessEvent.Tpo $(DEPDIR)/paagent_tests-IdlenessEvent.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='IdlenessEvent.cpp' object='paagent_tests-IdlenessEvent.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(paagent_tests_CXXFLAGS) $(CXXFLAGS) -c -o paagent_tests-IdlenessEvent.obj `if test -f 'IdlenessEvent.cpp'; then $(CYGPATH_W) 'IdlenessEvent.cpp'; else $(CYGPATH_W) '$(srcdir)/IdlenessEvent.cpp'; fi`
-
-paagent_tests-Configuration.o: Configuration.cpp
-@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(paagent_tests_CXXFLAGS) $(CXXFLAGS) -MT paagent_tests-Configuration.o -MD -MP -MF $(DEPDIR)/paagent_tests-Configuration.Tpo -c -o paagent_tests-Configuration.o `test -f 'Configuration.cpp' || echo '$(srcdir)/'`Configuration.cpp
-@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/paagent_tests-Configuration.Tpo $(DEPDIR)/paagent_tests-Configuration.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='Configuration.cpp' object='paagent_tests-Configuration.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(paagent_tests_CXXFLAGS) $(CXXFLAGS) -c -o paagent_tests-Configuration.o `test -f 'Configuration.cpp' || echo '$(srcdir)/'`Configuration.cpp
-
-paagent_tests-Configuration.obj: Configuration.cpp
-@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(paagent_tests_CXXFLAGS) $(CXXFLAGS) -MT paagent_tests-Configuration.obj -MD -MP -MF $(DEPDIR)/paagent_tests-Configuration.Tpo -c -o paagent_tests-Configuration.obj `if test -f 'Configuration.cpp'; then $(CYGPATH_W) 'Configuration.cpp'; else $(CYGPATH_W) '$(srcdir)/Configuration.cpp'; fi`
-@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/paagent_tests-Configuration.Tpo $(DEPDIR)/paagent_tests-Configuration.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='Configuration.cpp' object='paagent_tests-Configuration.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(paagent_tests_CXXFLAGS) $(CXXFLAGS) -c -o paagent_tests-Configuration.obj `if test -f 'Configuration.cpp'; then $(CYGPATH_W) 'Configuration.cpp'; else $(CYGPATH_W) '$(srcdir)/Configuration.cpp'; fi`
-
-paagent_tests-ConfigParser.o: ConfigParser.cpp
-@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(paagent_tests_CXXFLAGS) $(CXXFLAGS) -MT paagent_tests-ConfigParser.o -MD -MP -MF $(DEPDIR)/paagent_tests-ConfigParser.Tpo -c -o paagent_tests-ConfigParser.o `test -f 'ConfigParser.cpp' || echo '$(srcdir)/'`ConfigParser.cpp
-@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/paagent_tests-ConfigParser.Tpo $(DEPDIR)/paagent_tests-ConfigParser.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='ConfigParser.cpp' object='paagent_tests-ConfigParser.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(paagent_tests_CXXFLAGS) $(CXXFLAGS) -c -o paagent_tests-ConfigParser.o `test -f 'ConfigParser.cpp' || echo '$(srcdir)/'`ConfigParser.cpp
-
-paagent_tests-ConfigParser.obj: ConfigParser.cpp
-@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(paagent_tests_CXXFLAGS) $(CXXFLAGS) -MT paagent_tests-ConfigParser.obj -MD -MP -MF $(DEPDIR)/paagent_tests-ConfigParser.Tpo -c -o paagent_tests-ConfigParser.obj `if test -f 'ConfigParser.cpp'; then $(CYGPATH_W) 'ConfigParser.cpp'; else $(CYGPATH_W) '$(srcdir)/ConfigParser.cpp'; fi`
-@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/paagent_tests-ConfigParser.Tpo $(DEPDIR)/paagent_tests-ConfigParser.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='ConfigParser.cpp' object='paagent_tests-ConfigParser.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(paagent_tests_CXXFLAGS) $(CXXFLAGS) -c -o paagent_tests-ConfigParser.obj `if test -f 'ConfigParser.cpp'; then $(CYGPATH_W) 'ConfigParser.cpp'; else $(CYGPATH_W) '$(srcdir)/ConfigParser.cpp'; fi`
-
-paagent_tests-ConfigHandler.o: ConfigHandler.cpp
-@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(paagent_tests_CXXFLAGS) $(CXXFLAGS) -MT paagent_tests-ConfigHandler.o -MD -MP -MF $(DEPDIR)/paagent_tests-ConfigHandler.Tpo -c -o paagent_tests-ConfigHandler.o `test -f 'ConfigHandler.cpp' || echo '$(srcdir)/'`ConfigHandler.cpp
-@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/paagent_tests-ConfigHandler.Tpo $(DEPDIR)/paagent_tests-ConfigHandler.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='ConfigHandler.cpp' object='paagent_tests-ConfigHandler.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(paagent_tests_CXXFLAGS) $(CXXFLAGS) -c -o paagent_tests-ConfigHandler.o `test -f 'ConfigHandler.cpp' || echo '$(srcdir)/'`ConfigHandler.cpp
-
-paagent_tests-ConfigHandler.obj: ConfigHandler.cpp
-@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(paagent_tests_CXXFLAGS) $(CXXFLAGS) -MT paagent_tests-ConfigHandler.obj -MD -MP -MF $(DEPDIR)/paagent_tests-ConfigHandler.Tpo -c -o paagent_tests-ConfigHandler.obj `if test -f 'ConfigHandler.cpp'; then $(CYGPATH_W) 'ConfigHandler.cpp'; else $(CYGPATH_W) '$(srcdir)/ConfigHandler.cpp'; fi`
-@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/paagent_tests-ConfigHandler.Tpo $(DEPDIR)/paagent_tests-ConfigHandler.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='ConfigHandler.cpp' object='paagent_tests-ConfigHandler.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(paagent_tests_CXXFLAGS) $(CXXFLAGS) -c -o paagent_tests-ConfigHandler.obj `if test -f 'ConfigHandler.cpp'; then $(CYGPATH_W) 'ConfigHandler.cpp'; else $(CYGPATH_W) '$(srcdir)/ConfigHandler.cpp'; fi`
-
-paagent_tests-paagent_tests.o: paagent_tests.cpp
-@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(paagent_tests_CXXFLAGS) $(CXXFLAGS) -MT paagent_tests-paagent_tests.o -MD -MP -MF $(DEPDIR)/paagent_tests-paagent_tests.Tpo -c -o paagent_tests-paagent_tests.o `test -f 'paagent_tests.cpp' || echo '$(srcdir)/'`paagent_tests.cpp
-@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/paagent_tests-paagent_tests.Tpo $(DEPDIR)/paagent_tests-paagent_tests.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='paagent_tests.cpp' object='paagent_tests-paagent_tests.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(paagent_tests_CXXFLAGS) $(CXXFLAGS) -c -o paagent_tests-paagent_tests.o `test -f 'paagent_tests.cpp' || echo '$(srcdir)/'`paagent_tests.cpp
-
-paagent_tests-paagent_tests.obj: paagent_tests.cpp
-@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(paagent_tests_CXXFLAGS) $(CXXFLAGS) -MT paagent_tests-paagent_tests.obj -MD -MP -MF $(DEPDIR)/paagent_tests-paagent_tests.Tpo -c -o paagent_tests-paagent_tests.obj `if test -f 'paagent_tests.cpp'; then $(CYGPATH_W) 'paagent_tests.cpp'; else $(CYGPATH_W) '$(srcdir)/paagent_tests.cpp'; fi`
-@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/paagent_tests-paagent_tests.Tpo $(DEPDIR)/paagent_tests-paagent_tests.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='paagent_tests.cpp' object='paagent_tests-paagent_tests.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(paagent_tests_CXXFLAGS) $(CXXFLAGS) -c -o paagent_tests-paagent_tests.obj `if test -f 'paagent_tests.cpp'; then $(CYGPATH_W) 'paagent_tests.cpp'; else $(CYGPATH_W) '$(srcdir)/paagent_tests.cpp'; fi`
-
-paagent_tests-PAAgentTest.o: PAAgentTest.cpp
-@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(paagent_tests_CXXFLAGS) $(CXXFLAGS) -MT paagent_tests-PAAgentTest.o -MD -MP -MF $(DEPDIR)/paagent_tests-PAAgentTest.Tpo -c -o paagent_tests-PAAgentTest.o `test -f 'PAAgentTest.cpp' || echo '$(srcdir)/'`PAAgentTest.cpp
-@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/paagent_tests-PAAgentTest.Tpo $(DEPDIR)/paagent_tests-PAAgentTest.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='PAAgentTest.cpp' object='paagent_tests-PAAgentTest.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(paagent_tests_CXXFLAGS) $(CXXFLAGS) -c -o paagent_tests-PAAgentTest.o `test -f 'PAAgentTest.cpp' || echo '$(srcdir)/'`PAAgentTest.cpp
-
-paagent_tests-PAAgentTest.obj: PAAgentTest.cpp
-@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(paagent_tests_CXXFLAGS) $(CXXFLAGS) -MT paagent_tests-PAAgentTest.obj -MD -MP -MF $(DEPDIR)/paagent_tests-PAAgentTest.Tpo -c -o paagent_tests-PAAgentTest.obj `if test -f 'PAAgentTest.cpp'; then $(CYGPATH_W) 'PAAgentTest.cpp'; else $(CYGPATH_W) '$(srcdir)/PAAgentTest.cpp'; fi`
-@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/paagent_tests-PAAgentTest.Tpo $(DEPDIR)/paagent_tests-PAAgentTest.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='PAAgentTest.cpp' object='paagent_tests-PAAgentTest.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(paagent_tests_CXXFLAGS) $(CXXFLAGS) -c -o paagent_tests-PAAgentTest.obj `if test -f 'PAAgentTest.cpp'; then $(CYGPATH_W) 'PAAgentTest.cpp'; else $(CYGPATH_W) '$(srcdir)/PAAgentTest.cpp'; fi`
-
-paagent_tests-ControllerTest.o: ControllerTest.cpp
-@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(paagent_tests_CXXFLAGS) $(CXXFLAGS) -MT paagent_tests-ControllerTest.o -MD -MP -MF $(DEPDIR)/paagent_tests-ControllerTest.Tpo -c -o paagent_tests-ControllerTest.o `test -f 'ControllerTest.cpp' || echo '$(srcdir)/'`ControllerTest.cpp
-@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/paagent_tests-ControllerTest.Tpo $(DEPDIR)/paagent_tests-ControllerTest.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='ControllerTest.cpp' object='paagent_tests-ControllerTest.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(paagent_tests_CXXFLAGS) $(CXXFLAGS) -c -o paagent_tests-ControllerTest.o `test -f 'ControllerTest.cpp' || echo '$(srcdir)/'`ControllerTest.cpp
-
-paagent_tests-ControllerTest.obj: ControllerTest.cpp
-@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(paagent_tests_CXXFLAGS) $(CXXFLAGS) -MT paagent_tests-ControllerTest.obj -MD -MP -MF $(DEPDIR)/paagent_tests-ControllerTest.Tpo -c -o paagent_tests-ControllerTest.obj `if test -f 'ControllerTest.cpp'; then $(CYGPATH_W) 'ControllerTest.cpp'; else $(CYGPATH_W) '$(srcdir)/ControllerTest.cpp'; fi`
-@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/paagent_tests-ControllerTest.Tpo $(DEPDIR)/paagent_tests-ControllerTest.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='ControllerTest.cpp' object='paagent_tests-ControllerTest.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(paagent_tests_CXXFLAGS) $(CXXFLAGS) -c -o paagent_tests-ControllerTest.obj `if test -f 'ControllerTest.cpp'; then $(CYGPATH_W) 'ControllerTest.cpp'; else $(CYGPATH_W) '$(srcdir)/ControllerTest.cpp'; fi`
-
-paagent_tests-PAAgent.o: PAAgent.cpp
-@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(paagent_tests_CXXFLAGS) $(CXXFLAGS) -MT paagent_tests-PAAgent.o -MD -MP -MF $(DEPDIR)/paagent_tests-PAAgent.Tpo -c -o paagent_tests-PAAgent.o `test -f 'PAAgent.cpp' || echo '$(srcdir)/'`PAAgent.cpp
-@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/paagent_tests-PAAgent.Tpo $(DEPDIR)/paagent_tests-PAAgent.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='PAAgent.cpp' object='paagent_tests-PAAgent.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(paagent_tests_CXXFLAGS) $(CXXFLAGS) -c -o paagent_tests-PAAgent.o `test -f 'PAAgent.cpp' || echo '$(srcdir)/'`PAAgent.cpp
-
-paagent_tests-PAAgent.obj: PAAgent.cpp
-@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(paagent_tests_CXXFLAGS) $(CXXFLAGS) -MT paagent_tests-PAAgent.obj -MD -MP -MF $(DEPDIR)/paagent_tests-PAAgent.Tpo -c -o paagent_tests-PAAgent.obj `if test -f 'PAAgent.cpp'; then $(CYGPATH_W) 'PAAgent.cpp'; else $(CYGPATH_W) '$(srcdir)/PAAgent.cpp'; fi`
-@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/paagent_tests-PAAgent.Tpo $(DEPDIR)/paagent_tests-PAAgent.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='PAAgent.cpp' object='paagent_tests-PAAgent.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(paagent_tests_CXXFLAGS) $(CXXFLAGS) -c -o paagent_tests-PAAgent.obj `if test -f 'PAAgent.cpp'; then $(CYGPATH_W) 'PAAgent.cpp'; else $(CYGPATH_W) '$(srcdir)/PAAgent.cpp'; fi`
-
-paagent_tests-Controller.o: Controller.cpp
-@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(paagent_tests_CXXFLAGS) $(CXXFLAGS) -MT paagent_tests-Controller.o -MD -MP -MF $(DEPDIR)/paagent_tests-Controller.Tpo -c -o paagent_tests-Controller.o `test -f 'Controller.cpp' || echo '$(srcdir)/'`Controller.cpp
-@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/paagent_tests-Controller.Tpo $(DEPDIR)/paagent_tests-Controller.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='Controller.cpp' object='paagent_tests-Controller.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(paagent_tests_CXXFLAGS) $(CXXFLAGS) -c -o paagent_tests-Controller.o `test -f 'Controller.cpp' || echo '$(srcdir)/'`Controller.cpp
-
-paagent_tests-Controller.obj: Controller.cpp
-@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(paagent_tests_CXXFLAGS) $(CXXFLAGS) -MT paagent_tests-Controller.obj -MD -MP -MF $(DEPDIR)/paagent_tests-Controller.Tpo -c -o paagent_tests-Controller.obj `if test -f 'Controller.cpp'; then $(CYGPATH_W) 'Controller.cpp'; else $(CYGPATH_W) '$(srcdir)/Controller.cpp'; fi`
-@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/paagent_tests-Controller.Tpo $(DEPDIR)/paagent_tests-Controller.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='Controller.cpp' object='paagent_tests-Controller.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(paagent_tests_CXXFLAGS) $(CXXFLAGS) -c -o paagent_tests-Controller.obj `if test -f 'Controller.cpp'; then $(CYGPATH_W) 'Controller.cpp'; else $(CYGPATH_W) '$(srcdir)/Controller.cpp'; fi`
-
-paagent_tests-NodeStarter.o: NodeStarter.cpp
-@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(paagent_tests_CXXFLAGS) $(CXXFLAGS) -MT paagent_tests-NodeStarter.o -MD -MP -MF $(DEPDIR)/paagent_tests-NodeStarter.Tpo -c -o paagent_tests-NodeStarter.o `test -f 'NodeStarter.cpp' || echo '$(srcdir)/'`NodeStarter.cpp
-@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/paagent_tests-NodeStarter.Tpo $(DEPDIR)/paagent_tests-NodeStarter.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='NodeStarter.cpp' object='paagent_tests-NodeStarter.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(paagent_tests_CXXFLAGS) $(CXXFLAGS) -c -o paagent_tests-NodeStarter.o `test -f 'NodeStarter.cpp' || echo '$(srcdir)/'`NodeStarter.cpp
-
-paagent_tests-NodeStarter.obj: NodeStarter.cpp
-@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(paagent_tests_CXXFLAGS) $(CXXFLAGS) -MT paagent_tests-NodeStarter.obj -MD -MP -MF $(DEPDIR)/paagent_tests-NodeStarter.Tpo -c -o paagent_tests-NodeStarter.obj `if test -f 'NodeStarter.cpp'; then $(CYGPATH_W) 'NodeStarter.cpp'; else $(CYGPATH_W) '$(srcdir)/NodeStarter.cpp'; fi`
-@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/paagent_tests-NodeStarter.Tpo $(DEPDIR)/paagent_tests-NodeStarter.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='NodeStarter.cpp' object='paagent_tests-NodeStarter.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(paagent_tests_CXXFLAGS) $(CXXFLAGS) -c -o paagent_tests-NodeStarter.obj `if test -f 'NodeStarter.cpp'; then $(CYGPATH_W) 'NodeStarter.cpp'; else $(CYGPATH_W) '$(srcdir)/NodeStarter.cpp'; fi`
-
-paagent_tests-Watcher.o: Watcher.cpp
-@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(paagent_tests_CXXFLAGS) $(CXXFLAGS) -MT paagent_tests-Watcher.o -MD -MP -MF $(DEPDIR)/paagent_tests-Watcher.Tpo -c -o paagent_tests-Watcher.o `test -f 'Watcher.cpp' || echo '$(srcdir)/'`Watcher.cpp
-@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/paagent_tests-Watcher.Tpo $(DEPDIR)/paagent_tests-Watcher.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='Watcher.cpp' object='paagent_tests-Watcher.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(paagent_tests_CXXFLAGS) $(CXXFLAGS) -c -o paagent_tests-Watcher.o `test -f 'Watcher.cpp' || echo '$(srcdir)/'`Watcher.cpp
-
-paagent_tests-Watcher.obj: Watcher.cpp
-@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(paagent_tests_CXXFLAGS) $(CXXFLAGS) -MT paagent_tests-Watcher.obj -MD -MP -MF $(DEPDIR)/paagent_tests-Watcher.Tpo -c -o paagent_tests-Watcher.obj `if test -f 'Watcher.cpp'; then $(CYGPATH_W) 'Watcher.cpp'; else $(CYGPATH_W) '$(srcdir)/Watcher.cpp'; fi`
-@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/paagent_tests-Watcher.Tpo $(DEPDIR)/paagent_tests-Watcher.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='Watcher.cpp' object='paagent_tests-Watcher.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(paagent_tests_CXXFLAGS) $(CXXFLAGS) -c -o paagent_tests-Watcher.obj `if test -f 'Watcher.cpp'; then $(CYGPATH_W) 'Watcher.cpp'; else $(CYGPATH_W) '$(srcdir)/Watcher.cpp'; fi`
+# This directory's subdirectories are mostly independent; you can cd
+# into them and run `make' without going through this Makefile.
+# To change the values of `make' variables: instead of editing Makefiles,
+# (1) if the variable is set in `config.status', edit `config.status'
+#     (which will cause the Makefiles to be regenerated when you run `make');
+# (2) otherwise, pass the desired values on the `make' command line.
+$(RECURSIVE_TARGETS):
+	@failcom='exit 1'; \
+	for f in x $$MAKEFLAGS; do \
+	  case $$f in \
+	    *=* | --[!k]*);; \
+	    *k*) failcom='fail=yes';; \
+	  esac; \
+	done; \
+	dot_seen=no; \
+	target=`echo $@ | sed s/-recursive//`; \
+	list='$(SUBDIRS)'; for subdir in $$list; do \
+	  echo "Making $$target in $$subdir"; \
+	  if test "$$subdir" = "."; then \
+	    dot_seen=yes; \
+	    local_target="$$target-am"; \
+	  else \
+	    local_target="$$target"; \
+	  fi; \
+	  ($(am__cd) $$subdir && $(MAKE) $(AM_MAKEFLAGS) $$local_target) \
+	  || eval $$failcom; \
+	done; \
+	if test "$$dot_seen" = "no"; then \
+	  $(MAKE) $(AM_MAKEFLAGS) "$$target-am" || exit 1; \
+	fi; test -z "$$fail"
+
+$(RECURSIVE_CLEAN_TARGETS):
+	@failcom='exit 1'; \
+	for f in x $$MAKEFLAGS; do \
+	  case $$f in \
+	    *=* | --[!k]*);; \
+	    *k*) failcom='fail=yes';; \
+	  esac; \
+	done; \
+	dot_seen=no; \
+	case "$@" in \
+	  distclean-* | maintainer-clean-*) list='$(DIST_SUBDIRS)' ;; \
+	  *) list='$(SUBDIRS)' ;; \
+	esac; \
+	rev=''; for subdir in $$list; do \
+	  if test "$$subdir" = "."; then :; else \
+	    rev="$$subdir $$rev"; \
+	  fi; \
+	done; \
+	rev="$$rev ."; \
+	target=`echo $@ | sed s/-recursive//`; \
+	for subdir in $$rev; do \
+	  echo "Making $$target in $$subdir"; \
+	  if test "$$subdir" = "."; then \
+	    local_target="$$target-am"; \
+	  else \
+	    local_target="$$target"; \
+	  fi; \
+	  ($(am__cd) $$subdir && $(MAKE) $(AM_MAKEFLAGS) $$local_target) \
+	  || eval $$failcom; \
+	done && test -z "$$fail"
+tags-recursive:
+	list='$(SUBDIRS)'; for subdir in $$list; do \
+	  test "$$subdir" = . || ($(am__cd) $$subdir && $(MAKE) $(AM_MAKEFLAGS) tags); \
+	done
+ctags-recursive:
+	list='$(SUBDIRS)'; for subdir in $$list; do \
+	  test "$$subdir" = . || ($(am__cd) $$subdir && $(MAKE) $(AM_MAKEFLAGS) ctags); \
+	done
 
 ID: $(HEADERS) $(SOURCES) $(LISP) $(TAGS_FILES)
 	list='$(SOURCES) $(HEADERS) $(LISP) $(TAGS_FILES)'; \
@@ -1126,10 +338,23 @@ ID: $(HEADERS) $(SOURCES) $(LISP) $(TAGS_FILES)
 	mkid -fID $$unique
 tags: TAGS
 
-TAGS:  $(HEADERS) $(SOURCES) config.h.in $(TAGS_DEPENDENCIES) \
+TAGS: tags-recursive $(HEADERS) $(SOURCES) config.h.in $(TAGS_DEPENDENCIES) \
 		$(TAGS_FILES) $(LISP)
 	set x; \
 	here=`pwd`; \
+	if ($(ETAGS) --etags-include --version) >/dev/null 2>&1; then \
+	  include_option=--etags-include; \
+	  empty_fix=.; \
+	else \
+	  include_option=--include; \
+	  empty_fix=; \
+	fi; \
+	list='$(SUBDIRS)'; for subdir in $$list; do \
+	  if test "$$subdir" = .; then :; else \
+	    test ! -f $$subdir/TAGS || \
+	      set "$$@" "$$include_option=$$here/$$subdir/TAGS"; \
+	  fi; \
+	done; \
 	list='$(SOURCES) $(HEADERS) config.h.in $(LISP) $(TAGS_FILES)'; \
 	unique=`for i in $$list; do \
 	    if test -f "$$i"; then echo $$i; else echo $(srcdir)/$$i; fi; \
@@ -1148,7 +373,7 @@ TAGS:  $(HEADERS) $(SOURCES) config.h.in $(TAGS_DEPENDENCIES) \
 	  fi; \
 	fi
 ctags: CTAGS
-CTAGS:  $(HEADERS) $(SOURCES) config.h.in $(TAGS_DEPENDENCIES) \
+CTAGS: ctags-recursive $(HEADERS) $(SOURCES) config.h.in $(TAGS_DEPENDENCIES) \
 		$(TAGS_FILES) $(LISP)
 	list='$(SOURCES) $(HEADERS) config.h.in $(LISP) $(TAGS_FILES)'; \
 	unique=`for i in $$list; do \
@@ -1198,6 +423,34 @@ distdir: $(DISTFILES)
 	    test -f "$(distdir)/$$file" \
 	    || cp -p $$d/$$file "$(distdir)/$$file" \
 	    || exit 1; \
+	  fi; \
+	done
+	@list='$(DIST_SUBDIRS)'; for subdir in $$list; do \
+	  if test "$$subdir" = .; then :; else \
+	    test -d "$(distdir)/$$subdir" \
+	    || $(MKDIR_P) "$(distdir)/$$subdir" \
+	    || exit 1; \
+	  fi; \
+	done
+	@list='$(DIST_SUBDIRS)'; for subdir in $$list; do \
+	  if test "$$subdir" = .; then :; else \
+	    dir1=$$subdir; dir2="$(distdir)/$$subdir"; \
+	    $(am__relativize); \
+	    new_distdir=$$reldir; \
+	    dir1=$$subdir; dir2="$(top_distdir)"; \
+	    $(am__relativize); \
+	    new_top_distdir=$$reldir; \
+	    echo " (cd $$subdir && $(MAKE) $(AM_MAKEFLAGS) top_distdir="$$new_top_distdir" distdir="$$new_distdir" \\"; \
+	    echo "     am__remove_distdir=: am__skip_length_check=: am__skip_mode_fix=: distdir)"; \
+	    ($(am__cd) $$subdir && \
+	      $(MAKE) $(AM_MAKEFLAGS) \
+	        top_distdir="$$new_top_distdir" \
+	        distdir="$$new_distdir" \
+		am__remove_distdir=: \
+		am__skip_length_check=: \
+		am__skip_mode_fix=: \
+	        distdir) \
+	      || exit 1; \
 	  fi; \
 	done
 	-test -n "$(am__skip_mode_fix)" \
@@ -1315,21 +568,19 @@ distcleancheck: distclean
 	       $(distcleancheck_listfiles) ; \
 	       exit 1; } >&2
 check-am: all-am
-check: check-am
-all-am: Makefile $(PROGRAMS) config.h
-installdirs:
-	for dir in "$(DESTDIR)$(bindir)"; do \
-	  test -z "$$dir" || $(MKDIR_P) "$$dir"; \
-	done
-install: install-am
-install-exec: install-exec-am
-install-data: install-data-am
-uninstall: uninstall-am
+check: check-recursive
+all-am: Makefile config.h
+installdirs: installdirs-recursive
+installdirs-am:
+install: install-recursive
+install-exec: install-exec-recursive
+install-data: install-data-recursive
+uninstall: uninstall-recursive
 
 install-am: all-am
 	@$(MAKE) $(AM_MAKEFLAGS) install-exec-am install-data-am
 
-installcheck: installcheck-am
+installcheck: installcheck-recursive
 install-strip:
 	$(MAKE) $(AM_MAKEFLAGS) INSTALL_PROGRAM="$(INSTALL_STRIP_PROGRAM)" \
 	  install_sh_PROGRAM="$(INSTALL_STRIP_PROGRAM)" INSTALL_STRIP_FLAG=-s \
@@ -1346,111 +597,132 @@ distclean-generic:
 maintainer-clean-generic:
 	@echo "This command is intended for maintainers to use"
 	@echo "it deletes files that may require special tools to rebuild."
-clean: clean-am
+clean: clean-recursive
 
-clean-am: clean-binPROGRAMS clean-generic mostlyclean-am
+clean-am: clean-generic mostlyclean-am
 
-distclean: distclean-am
+distclean: distclean-recursive
 	-rm -f $(am__CONFIG_DISTCLEAN_FILES)
-	-rm -rf ./$(DEPDIR)
 	-rm -f Makefile
-distclean-am: clean-am distclean-compile distclean-generic \
-	distclean-hdr distclean-tags
+distclean-am: clean-am distclean-generic distclean-hdr distclean-tags
 
-dvi: dvi-am
+dvi: dvi-recursive
 
 dvi-am:
 
-html: html-am
+html: html-recursive
 
 html-am:
 
-info: info-am
+info: info-recursive
 
 info-am:
 
 install-data-am:
 
-install-dvi: install-dvi-am
+install-dvi: install-dvi-recursive
 
 install-dvi-am:
 
-install-exec-am: install-binPROGRAMS
+install-exec-am:
 
-install-html: install-html-am
+install-html: install-html-recursive
 
 install-html-am:
 
-install-info: install-info-am
+install-info: install-info-recursive
 
 install-info-am:
 
 install-man:
 
-install-pdf: install-pdf-am
+install-pdf: install-pdf-recursive
 
 install-pdf-am:
 
-install-ps: install-ps-am
+install-ps: install-ps-recursive
 
 install-ps-am:
 
 installcheck-am:
 
-maintainer-clean: maintainer-clean-am
+maintainer-clean: maintainer-clean-recursive
 	-rm -f $(am__CONFIG_DISTCLEAN_FILES)
 	-rm -rf $(top_srcdir)/autom4te.cache
-	-rm -rf ./$(DEPDIR)
 	-rm -f Makefile
 maintainer-clean-am: distclean-am maintainer-clean-generic
 
-mostlyclean: mostlyclean-am
+mostlyclean: mostlyclean-recursive
 
-mostlyclean-am: mostlyclean-compile mostlyclean-generic
+mostlyclean-am: mostlyclean-generic
 
-pdf: pdf-am
+pdf: pdf-recursive
 
 pdf-am:
 
-ps: ps-am
+ps: ps-recursive
 
 ps-am:
 
-uninstall-am: uninstall-binPROGRAMS
+uninstall-am:
 
-.MAKE: all install-am install-strip
+.MAKE: $(RECURSIVE_CLEAN_TARGETS) $(RECURSIVE_TARGETS) all \
+	ctags-recursive install-am install-strip tags-recursive
 
-.PHONY: CTAGS GTAGS all all-am am--refresh check check-am clean \
-	clean-binPROGRAMS clean-generic ctags dist dist-all dist-bzip2 \
-	dist-gzip dist-lzma dist-shar dist-tarZ dist-xz dist-zip \
-	distcheck distclean distclean-compile distclean-generic \
-	distclean-hdr distclean-tags distcleancheck distdir \
-	distuninstallcheck dvi dvi-am html html-am info info-am \
-	install install-am install-binPROGRAMS install-data \
+.PHONY: $(RECURSIVE_CLEAN_TARGETS) $(RECURSIVE_TARGETS) CTAGS GTAGS \
+	all all-am am--refresh check check-am clean clean-generic \
+	ctags ctags-recursive dist dist-all dist-bzip2 dist-gzip \
+	dist-lzma dist-shar dist-tarZ dist-xz dist-zip distcheck \
+	distclean distclean-generic distclean-hdr distclean-tags \
+	distcleancheck distdir distuninstallcheck dvi dvi-am html \
+	html-am info info-am install install-am install-data \
 	install-data-am install-dvi install-dvi-am install-exec \
 	install-exec-am install-html install-html-am install-info \
 	install-info-am install-man install-pdf install-pdf-am \
 	install-ps install-ps-am install-strip installcheck \
-	installcheck-am installdirs maintainer-clean \
-	maintainer-clean-generic mostlyclean mostlyclean-compile \
-	mostlyclean-generic pdf pdf-am ps ps-am tags uninstall \
-	uninstall-am uninstall-binPROGRAMS
+	installcheck-am installdirs installdirs-am maintainer-clean \
+	maintainer-clean-generic mostlyclean mostlyclean-generic pdf \
+	pdf-am ps ps-am tags tags-recursive uninstall uninstall-am
 
 
-#dbus-cxx-xml2cpp --xml Controller.xml --adapter -f
-controller-server-bindings: $(interface_xml)
-	dbus-cxx-xml2cpp --xml Controller.xml --adapter -f 
+doc: 
+	doxygen Doxyfile
 
-controller-client-bindings: $(interface_xml)
-	dbus-cxx-xml2cpp --xml Controller.xml --proxy -f 
+clean_doc:
+	rm -rf ./doc
 
-bindings: controller-server-bindings controller-client-bindings
+#create config dir in /etc/paagent 
+#create log dir in /var/log 
+#copy config files in /etc/paagent
+#copy scripts
+#make sure they are executable
+#install as sys service
+#start with lowest priority in runlevel 3 and stop before all in shutdown, reboot and single
+install_services: install 
+	mkdir -p /etc/paagent
+	mkdir -p /var/log/paagent
+	cp src/PAAgent-config-planning-day-only.xml /etc/paagent/ 
+	cp src/PAAgent-config-planning-night-we.xml /etc/paagent/
+	cp src/PAAgent-config.xml /etc/paagent/config.xml
+	cp src/server-log4cxx /etc/paagent/
+	cp src/client-log4cxx /etc/paagent/
+	cp src/paas /etc/init.d
+	chmod +x /etc/init.d/paas
+	update-rc.d paas start 98 3 4 5 . stop 2 0 1 6 .
+	cp src/paac /etc/init.d
+	chmod +x /etc/init.d/paac
+	update-rc.d paac start 99 3 4 5 . stop 1 0 1 6 .
 
-# Target for DTD validation on the interface XML. 
-# Run manually because it needs xmllint and Net conectivity
-checkxml: $(interface_xml)
-	@xmllint --valid --noout $<
-	@echo $< checks out ok
+#delete log and configuration folders
+#remove installed system services
+#delete init.d scripts
+remove_services: uninstall
+	rm -rf /etc/paagent
+	rm -rf /var/log/paagent
+	update-rc.d -f paac remove
+	update-rc.d -f paas remove
+	rm -f /etc/init.d/paas
+	rm -f /etc/init.d/paac
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.

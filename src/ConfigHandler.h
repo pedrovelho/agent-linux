@@ -31,7 +31,6 @@
 #ifndef CONFIGHANDLER_H_
 #define CONFIGHANDLER_H_
 
-#include "Helpers.h"
 #include "XMLDefs.h"
 using namespace xmltags;
 #include <log4cxx/logger.h>

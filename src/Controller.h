@@ -42,6 +42,10 @@ using namespace log4cxx;
 using namespace log4cxx::helpers;
 
 #include <signal.h>
+#include "RMNodeStarter.h"
+#include "CustomNodeStarter.h"
+#include "P2PNodeStarter.h"
+#include "NodeStarter.h"
 #include "Constants.h"
 using namespace pa_agent_constants;
 #include <sigc++-2.0/sigc++/sigc++.h>

@@ -100,8 +100,15 @@
 /* Version number of package */
 #define VERSION "0.01"
 
+/* Define to the type of a signed integer type of width exactly 32 bits if
+   such a type exists and the standard includes do not define it. */
+/* #undef int32_t */
+
 /* Define to `int' if <sys/types.h> does not define. */
 /* #undef pid_t */
+
+/* Define to `unsigned int' if <sys/types.h> does not define. */
+/* #undef size_t */
 
 /* Define as `fork' if `vfork' does not work. */
 /* #undef vfork */

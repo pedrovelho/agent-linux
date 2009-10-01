@@ -1,38 +1,45 @@
 #Makefile: makefile for paagent.cpp
- 
-#paagent paagent_server
-bin_PROGRAMS = paagent_tests paagent paagent_server
+SUBDIRS = src 
+EXTRA_DIST = src/PAAgent-config-planning-night-we.xml src/paac src/paas \
+			src/paagent-log4cxx src/PAAgent-config.xml src/Controller.xml \
+			src/PAAgent-config-planning-day-only.xml Doxyfile images \
+			src/client-log4cxx src/server-log4cxx
 
-paagent_server_SOURCES= P2PNodeStarter.cpp CustomNodeStarter.cpp RMNodeStarter.cpp  PAAgent.cpp paagent_server.cpp Controller.cpp NodeStarter.cpp   
-paagent_server_LDADD = -llog4cxx -lccext2 -lccgnu2 -lz -ldl -lrt -ldbus-1 -lgthread-2.0  -ldbus-glib-1 -lglibmm-2.4  -lsigc-2.0 -ldbus-cxx
-paagent_server_LDFLAGS = -pthread   -I/usr/include/dbus-1.0 -I/usr/lib/dbus-1.0/include -D_GNU_SOURCE 
-paagent_server_CXXFLAGS = -I/usr/include/glibmm-2.4 -I/usr/lib/glibmm-2.4/include -I/usr/include/sigc++-2.0 -I/usr/lib/sigc++-2.0/include -I/usr/local/include/dbus-cxx-0.4 -I/usr/include/dbus-1.0 -I/usr/lib/dbus-1.0/include -I/usr/include/sigc++-2.0 -I/usr/lib/sigc++-2.0/include -std=c++0x -std=gnu++0x
+doc: 
+	doxygen Doxyfile
 
+clean_doc:
+	rm -rf ./doc
 
-paagent_tests_SOURCES = P2PNodeStarter.cpp CustomNodeStarter.cpp RMNodeStarter.cpp  Runner.cpp ConfigParserTest.cpp AdvertAction.cpp CustomAction.cpp RMAction.cpp P2PAction.cpp Action.cpp Event.cpp CalendarEvent.cpp IdlenessEvent.cpp Configuration.cpp ConfigParser.cpp ConfigHandler.cpp paagent_tests.cpp PAAgentTest.cpp ControllerTest.cpp  PAAgent.cpp  Controller.cpp NodeStarter.cpp  Watcher.cpp 
-paagent_tests_LDADD = -lxerces-c-3.0 -lgtest -llog4cxx -lccext2 -lccgnu2 -lz -ldl -lrt -ldbus-1 -lgthread-2.0  -ldbus-glib-1 -lglibmm-2.4  -lsigc-2.0 -ldbus-cxx
-paagent_tests_LDFLAGS = -pthread   -I/usr/include/dbus-1.0 -I/usr/lib/dbus-1.0/include -D_GNU_SOURCE 
-paagent_tests_CXXFLAGS = -I/usr/include/gtest -I/usr/include/glibmm-2.4 -I/usr/lib/glibmm-2.4/include -I/usr/include/sigc++-2.0 -I/usr/lib/sigc++-2.0/include -I/usr/local/include/dbus-cxx-0.4 -I/usr/include/dbus-1.0 -I/usr/lib/dbus-1.0/include -I/usr/include/sigc++-2.0 -I/usr/lib/sigc++-2.0/include -std=c++0x -std=gnu++0x
-
-paagent_SOURCES = P2PNodeStarter.cpp CustomNodeStarter.cpp RMNodeStarter.cpp Runner.cpp AdvertAction.cpp CustomAction.cpp RMAction.cpp P2PAction.cpp Action.cpp Event.cpp CalendarEvent.cpp IdlenessEvent.cpp Configuration.cpp ConfigParser.cpp ConfigHandler.cpp PAAgent.cpp paagent.cpp Controller.cpp NodeStarter.cpp  Watcher.cpp
-paagent_LDADD = -lxerces-c-3.0 -llog4cxx -lccext2 -lccgnu2 -lz -ldl -lrt -ldbus-1 -lgthread-2.0  -ldbus-glib-1 -lglibmm-2.4  -lsigc-2.0 -ldbus-cxx
-paagent_LDFLAGS = -pthread   -I/usr/include/dbus-1.0 -I/usr/lib/dbus-1.0/include -D_GNU_SOURCE 
-paagent_CXXFLAGS = -I/usr/include/tclap -I/usr/include/glibmm-2.4 -I/usr/lib/glibmm-2.4/include -I/usr/include/sigc++-2.0 -I/usr/lib/sigc++-2.0/include -I/usr/local/include/dbus-cxx-0.4 -I/usr/include/dbus-1.0 -I/usr/lib/dbus-1.0/include -I/usr/include/sigc++-2.0 -I/usr/lib/sigc++-2.0/include -std=c++0x -std=gnu++0x
-
-#dbus-cxx-xml2cpp --xml Controller.xml --adapter -f
-controller-server-bindings: $(interface_xml)
-	dbus-cxx-xml2cpp --xml Controller.xml --adapter -f 
-
-controller-client-bindings: $(interface_xml)
-	dbus-cxx-xml2cpp --xml Controller.xml --proxy -f 
-
-bindings: controller-server-bindings controller-client-bindings
+#create config dir in /etc/paagent 
+#create log dir in /var/log 
+#copy config files in /etc/paagent
+#copy scripts
+#make sure they are executable
+#install as sys service
+#start with lowest priority in runlevel 3 and stop before all in shutdown, reboot and single
+install_services: install 
+	mkdir -p /etc/paagent
+	mkdir -p /var/log/paagent
+	cp src/PAAgent-config-planning-day-only.xml /etc/paagent/ 
+	cp src/PAAgent-config-planning-night-we.xml /etc/paagent/
+	cp src/PAAgent-config.xml /etc/paagent/config.xml
+	cp src/server-log4cxx /etc/paagent/
+	cp src/client-log4cxx /etc/paagent/
+	cp src/paas /etc/init.d
+	chmod +x /etc/init.d/paas
+	update-rc.d paas start 98 3 4 5 . stop 2 0 1 6 .
+	cp src/paac /etc/init.d
+	chmod +x /etc/init.d/paac
+	update-rc.d paac start 99 3 4 5 . stop 1 0 1 6 .
 	
-# Interface XML name 
-interface_xml = Controller.xml
-
-# Target for DTD validation on the interface XML. 
-# Run manually because it needs xmllint and Net conectivity
-checkxml: $(interface_xml)
-	@xmllint --valid --noout $<
-	@echo $< checks out ok
+#delete log and configuration folders
+#remove installed system services
+#delete init.d scripts
+remove_services: uninstall
+	rm -rf /etc/paagent
+	rm -rf /var/log/paagent
+	update-rc.d -f paac remove
+	update-rc.d -f paas remove
+	rm -f /etc/init.d/paas
+	rm -f /etc/init.d/paac

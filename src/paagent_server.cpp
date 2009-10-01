@@ -65,7 +65,7 @@ int main(int argc, char** argv) {
 
 		// Arguments logic
 
-		LoggerPtr logger = log4cxx::Logger::getRootLogger();
+		LoggerPtr logger = log4cxx::Logger::getLogger("paagent_server");
 		//if log4cxx_file is set try to load, else do a basic config
 		if (log4cxxFileArg.isSet()) {
 			PropertyConfigurator::configure(log4cxx_file);

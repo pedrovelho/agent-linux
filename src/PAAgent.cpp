@@ -39,7 +39,7 @@ PAAgent::~PAAgent() {
 }
 
 void PAAgent::run() {
-	DBus::init();
+	DBus::init(true);
 
 	int ret;
 

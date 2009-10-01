@@ -53,7 +53,7 @@ void NodeStarter::run() {
 				"stopped and the Watchers may malfunction"
 				"depending on the implementation of kill");
 	pid_t sid;
-	LOG4CXX_DEBUG(logger, "Starting the node [" << name
+	LOG4CXX_INFO(logger, "Starting the node [" << name
 			<< "] in a child process. " <<
 			"Name ["<<name << "] " <<
 			"Starter class [" << java_class<< "] "<<
@@ -100,7 +100,6 @@ void NodeStarter::run() {
 		return;
 	}
 	LOG4CXX_DEBUG(logger, "Node [" << name << "] started");
-
 }
 int NodeStarter::getPid() {
 

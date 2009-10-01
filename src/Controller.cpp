@@ -28,12 +28,7 @@
  *      Author: vasile
  */
 
-#include "RMNodeStarter.h"
-#include "CustomNodeStarter.h"
-#include "P2PNodeStarter.h"
-#include "NodeStarter.h"
 #include "Controller.h"
-#include "Constants.h"
 
 Controller::Controller() {
 	logger = log4cxx::Logger::getLogger("Controller");
@@ -50,7 +45,7 @@ int Controller::StartNode(string name, string java_class) {
 	NodeStarter starter(name, java_class, security_policy, log4j_file,
 			proactive_home, classpath, java_bin);
 	starter.run();
-	//	LOG4CXX_DEBUG(logger, "Node started");
+	LOG4CXX_INFO(logger, "Regular node started");
 	return starter.getPid();
 }
 
@@ -60,14 +55,14 @@ int Controller::StartRMNode(string name, string java_class, string user,
 	RMNodeStarter starter(name, java_class, security_policy, log4j_file,
 			proactive_home, classpath, java_bin, user, password, url);
 	starter.run();
-	//	LOG4CXX_DEBUG(logger, "Node started");
+	LOG4CXX_INFO(logger, "Resource Manager node started");
 	return starter.getPid();
 }
 int Controller::StartP2PNode(string name, string java_class, string contact) {
 	P2PNodeStarter starter(name, java_class, security_policy, log4j_file,
 			proactive_home, classpath, java_bin, contact);
 	starter.run();
-	//	LOG4CXX_DEBUG(logger, "Node started");
+	LOG4CXX_INFO(logger, "P2P node started");
 	return starter.getPid();
 
 }
@@ -77,7 +72,7 @@ int Controller::StartCustomNode(string name, string java_class,
 	CustomNodeStarter starter(name, java_class, security_policy, log4j_file,
 			proactive_home, classpath, java_bin, arguments);
 	starter.run();
-	//	LOG4CXX_DEBUG(logger, "Node started");
+	LOG4CXX_INFO(logger, "Custom node started");
 	return starter.getPid();
 }
 
@@ -91,7 +86,7 @@ bool Controller::StopNode(int pid) {
 	//return check for stop,
 	//kill(pid, 0) returns -1 if the process does not exist
 	int stop = kill(pid, 0);
-	LOG4CXX_DEBUG(logger, "Sent SIGTERM message to node with PID " << pid);
+	LOG4CXX_INFO(logger, "Sent SIGTERM message to node with PID " << pid);
 	if (stop != 0) {
 		dead = true;
 	}

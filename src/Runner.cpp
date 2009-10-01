@@ -121,7 +121,7 @@ void Runner::run() {
 			//stop event if the time is up
 			for (int i = 0; i < events_duration.size(); i++) {
 				if (events_duration.at(i) < 1) {
-					LOG4CXX_DEBUG(logger, "++++++++++++STOPPING CALENDAR NOW");
+					LOG4CXX_INFO(logger, "++++++++++++STOPPING CALENDAR NOW");
 					cal_event_on = false;
 					stop_actions = true;
 				} else {
@@ -154,11 +154,10 @@ void Runner::run() {
 					stop_counter.at(i) = idle->GetBeginSeconds();
 				}
 
-				//if start_counter is < 1 start idleness event
+				//if stop_counter is < 1 stop idleness events
 				//because the CPU has been between thresholds for the required time
 				if (stop_counter.at(i) < 1) {
-					//TODO start JVMS
-					LOG4CXX_DEBUG(logger, "++++++++++STOPPING IDLE EVENT");
+					LOG4CXX_INFO(logger, "++++++++++STOPPING IDLE EVENT");
 					idle_event_on = false;
 					stop_actions = true;
 				}
@@ -169,7 +168,7 @@ void Runner::run() {
 		}
 
 		if (stop_actions) {
-			LOG4CXX_DEBUG(logger,"++++++++++++STOPPING ACTIONS");
+			LOG4CXX_INFO(logger,"++++++++++++STOPPING ACTIONS");
 			StopActions(controller);
 		}
 
@@ -182,14 +181,17 @@ void Runner::run() {
 			if (isNow(calendar)) {
 				events_duration.at(i) = calendar->GetTotalDuration();
 				//check if an idle event is on and pass the control to the calendar event
+				//if no idle event is on (no actions have been started) start the actions
 				if (idle_event_on) {
+					LOG4CXX_INFO(logger, "++++++++++SWITCHING FROM IDLE EVENT TO CALENDAR EVENT");
 					idle_event_on = false;
-					//TODO copy settings of idle events started JVMS,etc and pass them to the calendar event
 				}
-				cal_event_on = true;
-				LOG4CXX_DEBUG(logger, "++++++++++STARTING CALENDAR EVENT with duration of "<<
-						events_duration.at(i) << " seconds");
 				StartActions(controller);
+
+				cal_event_on = true;
+				LOG4CXX_INFO(logger, "++++++++++STARTING CALENDAR EVENT with duration of "<<
+						events_duration.at(i) << " seconds");
+
 			}
 		}//for
 
@@ -221,7 +223,7 @@ void Runner::run() {
 				//if start_counter is < 1 start idleness event
 				//because the CPU has been between thresholds for the required time
 				if (start_counter.at(i) < 1) {
-					LOG4CXX_DEBUG(logger,"++++++++++STARTING IDLE EVENT");
+					LOG4CXX_INFO(logger,"++++++++++STARTING IDLE EVENT");
 					idle_event_on = true;
 					StartActions(controller);
 				}
@@ -229,40 +231,26 @@ void Runner::run() {
 		}//if (!cal_event_on || !idle_event_on)
 	}
 }
+/**
+ * Extract parts of the date that are not in the configuration (month,
+ *
+ * weekday,  hour, min, sec
+ * */
 bool Runner::isNow(CalendarEvent *calendar) {
-	//used for easy int->string conversion;
+	time_t rawtime;
+	struct tm * timeinfo;
+	char buffer[15];
+
+	time(&rawtime);
+	timeinfo = localtime(&rawtime);
+
+	strftime(buffer, 15, "%a %X", timeinfo);
 	stringstream out;
-
-	string month;
-	string year;
-	string day_of_month;
-
-	//get time
-	time_t my_time = time(NULL);
-	string now = ctime(&my_time);
-	string now_bkp = now;
-
-	//remove the day of week
-	now = now.substr(now.find_first_of(" ", 0) + 1, now.length());
-
-	//get the month
-	month = now.substr(0, now.find_first_of(" ", 0));
-	//remove the month
-	now = now.substr(now.find_first_of(" ", 0) + 1, now.length());
-	//get the day of the month
-	day_of_month = now.substr(0, now.find_first_of(" ", 0));
-	//get the year
-
-	year = now.substr(now.length() - 5, now.length());
-
-	//first three characters of week day to lowercase
-	//taken from calendarevent time
-
 
 	string calendar_weekday = calendar->GetStartDay();
 	calendar_weekday = calendar_weekday.substr(0, 3);
 
-	out << calendar_weekday << " " << month << " " << day_of_month << " ";
+	out << calendar_weekday << " ";
 	if (calendar->GetStartHour() < 10) {
 		out << "0";
 	}
@@ -274,16 +262,16 @@ bool Runner::isNow(CalendarEvent *calendar) {
 	if (calendar->GetStartSecond() < 10) {
 		out << "0";
 	}
-	out << calendar->GetStartSecond() << " ";
-	out << year;
+	out << calendar->GetStartSecond();
 
 	string calendar_time = out.str();
 	transform(calendar_time.begin(), calendar_time.end(),
 			calendar_time.begin(), ::tolower);
-	transform(now_bkp.begin(), now_bkp.end(), now_bkp.begin(), ::tolower);
+	string now(buffer);
+	transform(now.begin(), now.end(), now.begin(), ::tolower);
 	LOG4CXX_TRACE(logger, "Configuration time is :" << calendar_time);
-	LOG4CXX_TRACE(logger, "Current time is       :" << now_bkp);
-	if (calendar_time == now_bkp) {
+	LOG4CXX_TRACE(logger, "Current time is       :" << now);
+	if (calendar_time == now) {
 		return true;
 	}
 	return false;
