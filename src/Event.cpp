@@ -31,8 +31,7 @@
 #include "Event.h"
 
 Event::Event() {
-	// TODO Auto-generated constructor stub
-
+	logger = log4cxx::Logger::getLogger("Event");
 }
 
 Event::~Event() {
@@ -43,7 +42,13 @@ void Event::SetProcessPriority(string priority) {
 	process_priority = priority;
 }
 void Event::SetMaxCPUUsage(int max) {
-	max_cpu_usage = max;
+	if (max < 100 && max > 0) {
+		max_cpu_usage = max;
+	} else {
+		LOG4CXX_ERROR(logger, "The CPU percentage is out of bounds, setting to 100%."
+				<< "The value passed was " << max);
+		max_cpu_usage = 100;
+	}
 }
 string Event::GetProcessPriority() {
 	return process_priority;

@@ -244,7 +244,6 @@ void ConfigHandler::processEvent(string name, string value) {
 		//the event vectors and destroying object
 	} else if (name == EVENT) {
 		config->AddEvent(currentEvent);
-		//		delete currentEvent;
 		LOG4CXX_DEBUG(logger,
 				"#Added an event to the event vector in configuration");
 		processing_event = false;

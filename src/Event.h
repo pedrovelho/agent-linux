@@ -31,20 +31,47 @@
 #ifndef EVENT_H_
 #define EVENT_H_
 #include <string>
-#include <typeinfo>
-
+#include <log4cxx/logger.h>
+#include <log4cxx/basicconfigurator.h>
+#include <log4cxx/helpers/exception.h>
+using namespace log4cxx;
+using namespace log4cxx::helpers;
 using namespace std;
+/**
+ * Base class for all Event classes.
+ */
 class Event {
 public:
 	Event();
 	virtual ~Event();
+	/**
+	 * Sets the priority of the process (JVM) started by
+	 * this event.
+	 * @param priority the priority of the event
+	 * */
 	void SetProcessPriority(string priority);
+	/**
+	 * Sets the maximum CPU percentage available to the
+	 * process (JVM) started by this event.
+	 * @param max the maximum percentage of CPU used. If the
+	 * max parameter is larger than 100 or less than
+	 * 0 an error is logged and the value is set to 100%.
+	 *
+	 * */
 	void SetMaxCPUUsage(int max);
+	/**
+	 * Gets the process priority. The available values are ?????? TODO
+	 */
 	string GetProcessPriority();
+	/**
+	 * Gets the maximum CPU percentage allowed for
+	 * the processes started by this event.
+	 */
 	int GetMaxCPUUsage();
 private:
 	string process_priority;
 	int max_cpu_usage;
+	LoggerPtr logger;
 };
 
 #endif /* EVENT_H_ */

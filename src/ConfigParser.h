@@ -40,19 +40,25 @@
 using namespace xercesc;
 using namespace std;
 #include "ConfigHandler.h"
-#include "Event.h"
-
-
+/**
+ * Class responsible with parsing the configuration XML file.
+ */
 class ConfigParser {
 public:
+	/**
+	 * Constructor taking as an argument the configuration file.
+	 * @param config_path XML configuration file
+	 * */
 	ConfigParser(std::string config_path);
 	virtual ~ConfigParser();
+	/**
+	 * @return a pointer to Configuration class containing the parsed configuration file.
+	 * */
 	Configuration *GetConfiguration();
 private:
 	std::string xmlFile;
 	SAX2XMLReader* parser;
 	ConfigHandler* defaultHandler;
-	std::vector<Event> events;
 	LoggerPtr logger;
 };
 

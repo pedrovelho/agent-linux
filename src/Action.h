@@ -33,22 +33,58 @@
 #include <string>
 #include <typeinfo>
 using namespace std;
+/**
+ * Base class for all Action classes.
+ * */
 class Action {
 public:
 	Action();
 	virtual ~Action();
+	/** Sets the time to wait in seconds
+	 * before the JVM node for this action is
+	 * restarted by the monitoring Watcher.
+	 * @param delay delay in seconds befor the action is restarted
+	 * */
 	void SetRestartDelay(int delay);
+	/**
+	 * Sets the Java class used to start the JVM node
+	 * for this action.
+	 * @param starter class name used for starting this action
+	 */
 	void SetStarterClass(string starter);
+	/** Sets the node name for the node started by this action
+	 * @param name node name
+	 * */
 	void SetNodeName(string name);
+	/**
+	 * Modifies the enabled value for this action.
+	 * This value is checked before attempting to start the
+	 * JVM node corresponding to this action.
+	 * @param enabled true if the action should be started, false otherwise
+	 */
 	void SetEnabled(bool enabled);
-
+	/**
+	 * @return the wait time in seconds before this action is restarted
+	 */
 	int GetRestartDelay() const;
+	/**
+	 * @return the class name used by this action to start a JVM node
+	 */
 	string GetStarterClass() const;
+	/**
+	 * @return the node name given to the node started by this action
+	 */
 	string GetNodeName() const;
+	/**
+	 * @return true if this action is enabled, false otherwise
+	 */
 	bool IsEnabled() const;
 private:
+	/** Delay in seconds before this action is restarted.*/
 	int restart_delay;
+	/** Java class used to start this action. */
 	string starter_class;
+	/** The name of the node started for this action*/
 	string node_name;
 	bool enabled;
 

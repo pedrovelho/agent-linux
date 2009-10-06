@@ -116,7 +116,7 @@ protected:
 	 *
 	 * \image html run_in_Runner.png
 	 * The method reads the configuration file using a {@link ConfigParser} object, connects to DBus using
-	 * a {@link ControllerProxy} object and starts a loop that checks if a CalendarEvent is due or idleness
+	 * a {@link DBUS::ControllerProxy} object and starts a loop that checks if a CalendarEvent is due or idleness
 	 * thresholds specified in IdlenessEvents have been reached.
 	 *
 	 * To check for idleness /proc/stat is being read at two points in time and the idleness is calculated

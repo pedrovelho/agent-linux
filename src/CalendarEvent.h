@@ -33,6 +33,10 @@
 
 #include "Event.h"
 #include <string>
+using namespace std;
+/**
+ * Class used for storing CalendarEvent data.
+ */
 class CalendarEvent: public Event {
 public:
 	CalendarEvent();
@@ -47,7 +51,7 @@ public:
 	void SetDurationMinutes(int minutes);
 	void SetDurationSeconds(int seconds);
 	//getters
-	std::string GetStartDay();
+	string GetStartDay();
 	int GetStartHour();
 	int GetStartMinute();
 	int GetStartSecond();
@@ -62,7 +66,7 @@ public:
 	long GetTotalDuration();
 
 private:
-	std::string startDay;
+	string startDay;
 
 	int startHour;
 	int startMinute;

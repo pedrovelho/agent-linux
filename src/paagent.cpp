@@ -42,15 +42,15 @@ using namespace std;
  *
  * USAGE:
  *
- * ./paagent  [-l <string>] -c <string> [--] [--version] [-h]
+ * ./paagent  [-l < string >] -c < string > [--] [--version] [-h]
  *
  *
  * Where:
  *
- * -l <string>,  --logging <string>
+ * -l < string >,  --logging < string >
  * Log4CXX configuration file
  *
- * -c <string>,  --configuration <string>
+ * -c < string >,  --configuration < string >
  * (required)  Configuration file
  *
  * --,  --ignore_rest
@@ -67,7 +67,7 @@ using namespace std;
  * configuration file and start and stop nodes according to an event
  * schedule or to idle thresholds.
  *
- * @param arc the name of the program
+ * @param argc the name of the program
  * @param argv the arguments passed to the program, configuration and logging file
  * @see paagent_server.cpp
  * @author vjuresch
