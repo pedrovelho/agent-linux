@@ -11,3 +11,8 @@
 	
 	* added handling for the <jvm_args> option in the configuration xml
 	    - modified the Configuration class and NodeStarter class
+	    
+2009-10-12 Vasile Jureschi  vjuresch@sohia.inria.fr, vasile.jureschi@gmail.com
+	
+	* added string GetJVMParamsString() const; in Configuration class to get 
+	the string of parameters 

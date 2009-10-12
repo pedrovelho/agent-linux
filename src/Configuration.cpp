@@ -153,8 +153,13 @@ vector<string> Configuration::GetJVMParams() const {
 	return jvm_params;
 }
 
+string Configuration::GetJVMParamsString() const {
+	return jvm_params_string;
+}
+
 void Configuration::SetJVMParams(string jvm_params) {
 	//clear vector
+	this->jvm_params_string = jvm_params;
 	this->jvm_params.empty();
 	//separate arguments
 	istringstream iss(jvm_params);

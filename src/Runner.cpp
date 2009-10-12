@@ -302,7 +302,7 @@ void Runner::StartActions(DBus::ControllerProxy::pointer controller, int limit) 
 	controller->SetStartConfiguration(configuration->GetJavaSecurityPolicy(),
 			configuration->GetLog4jFile(), configuration->GetPALocation(),
 			configuration->GetClasspath(), configuration->GetJavaHome()+DEFAULT_JAVA_BIN);
-	controller->SetJVMSettings("", configuration->IsMemoryManaged(),
+	controller->SetJVMSettings(configuration->GetJVMParamsString(), configuration->IsMemoryManaged(),
 			configuration->GetJavaMemory(), configuration->GetNativeMemory(),
 			configuration->GetNoProcesses(), configuration->UseAllCPUs());
 	controller->SetNetworkSettings(configuration->GetPortInitialValue(),

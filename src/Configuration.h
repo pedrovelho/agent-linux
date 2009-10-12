@@ -75,6 +75,7 @@ private:
 	string config_protocol;
 	string classpath;
 	string java_bin;
+	string jvm_params_string;
 	unsigned int port_initial_value;
 	vector<CalendarEvent*> calendar_events;
 	vector<IdlenessEvent*> idle_events;
@@ -146,6 +147,7 @@ public:
 	void SetJavaHome(string java_home);
 
 	vector<string> GetJVMParams() const;
+	string GetJVMParamsString() const;
 	void SetJVMParams(string jvm_params);
 
 	bool IsMemoryManaged() const;
