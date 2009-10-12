@@ -66,6 +66,14 @@ The simplest way to compile this package is:
      for the package's developers.  If you use it, you may have to get
      all sorts of other programs in order to regenerate files that came
      with the distribution.
+     
+  6. Type "make install_services_ubuntu" to install services for Ubuntu
+     and "make install_service_fedora". For now services
+     work on Ubuntu, with Fedora being the next target. Paac and paas
+     services are installed. They take the configuration from /etc/paagent
+     and log messages to /var/log/paagent.
+  7. Type "make remove_services_ubuntu" or "make remove_services_fedora" 
+     to remove everything. 
 
 Compilers and Options
 =====================

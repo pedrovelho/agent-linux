@@ -1,0 +1,13 @@
+2009-10-12 Vasile Jureschi  vjuresch@sohia.inria.fr, vasile.jureschi@gmail.com
+	* added namespace "paagent" to prevent name clashes (e.g. Event class)
+	 
+	* fixed the cpulimiting, as it was not implemented for every action 
+		- modified Runner class 
+	
+	* modified the starter classes (Runner, Controller, NodeStarter 
+	  and derived classes) to use a simpler way of passing arguments. 
+	  In the paagent_server the configuration options are now
+	  passed around using a Configuration singleton class. 
+	
+	* added handling for the <jvm_args> option in the configuration xml
+	    - modified the Configuration class and NodeStarter class
