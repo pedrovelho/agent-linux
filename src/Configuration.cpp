@@ -30,6 +30,7 @@
 
 #include "Configuration.h"
 #include <iostream>
+namespace paagent {
 Configuration* Configuration::instance = NULL;
 
 Configuration* Configuration::Inst() {
@@ -83,7 +84,6 @@ string Configuration::GetClasspath() {
 			+ PROACTIVE_UTILS_JAR;
 	return classpath;
 }
-
 
 vector<CalendarEvent*> Configuration::GetCalendarEvents() const {
 	return calendar_events;
@@ -149,19 +149,24 @@ void Configuration::SetJavaHome(string java_home) {
 	this->java_home = java_home;
 }
 
-string Configuration::GetJVMParams() const {
+vector<string> Configuration::GetJVMParams() const {
 	return jvm_params;
 }
 
 void Configuration::SetJVMParams(string jvm_params) {
-	this->jvm_params = jvm_params;
+	//clear vector
+	this->jvm_params.empty();
+	//separate arguments
+	istringstream iss(jvm_params);
+	copy(istream_iterator<string> (iss), istream_iterator<string> (),
+			back_inserter<vector<string> > (this->jvm_params));
 }
 
-bool Configuration::isMemoryManaged() const {
+bool Configuration::IsMemoryManaged() const {
 	return enable_memory_management;
 }
 
-void Configuration::setMemoryManagement(bool enable_memory_management) {
+void Configuration::SetMemoryManagement(bool enable_memory_management) {
 	this->enable_memory_management = enable_memory_management;
 }
 
@@ -205,14 +210,39 @@ void Configuration::SetConfigProtocol(string config_protocol) {
 	this->config_protocol = config_protocol;
 }
 
-unsigned int Configuration::GetPortInitialValue() const {
+int Configuration::GetPortInitialValue() const {
 	return port_initial_value;
 }
 
-void Configuration::SetPortInitialValue(unsigned int port_initial_value) {
+void Configuration::SetPortInitialValue(int port_initial_value) {
 	this->port_initial_value = port_initial_value;
 }
+void Configuration::SetJavaSecurityPolicy(string policy) {
+	this->security_policy = policy;
+}
+string Configuration::GetJavaSecurityPolicy() const {
+	return security_policy;
+}
+void Configuration::SetLog4jFile(string log4j) {
+	this->log4j_file = log4j;
+}
+string Configuration::GetLog4jFile() const {
+	return log4j_file;
+}
+void Configuration::SetClasspath(string path) {
+	this->classpath = path;
+}
+string Configuration::GetClasspath() const {
+	return classpath;
+}
+void Configuration::SetJavaBin(string bin) {
+	this->java_bin = bin;
+}
+string Configuration::GetJavaBin() const {
+	return java_bin;
+}
 
+} //namespace paagent
 
 //static int get_ncpu() {
 //	int ncpu = -1;

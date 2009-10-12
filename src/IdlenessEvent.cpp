@@ -29,7 +29,7 @@
  */
 
 #include "IdlenessEvent.h"
-
+namespace paagent {
 IdlenessEvent::IdlenessEvent() {
 	// TODO Auto-generated constructor stub
 
@@ -65,3 +65,4 @@ int IdlenessEvent::GetBeginThreshold() const {
 int IdlenessEvent::GetEndThreshold() const {
 	return endThreshold;
 }
+} //namespace paagent

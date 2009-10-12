@@ -29,6 +29,7 @@
  */
 
 #include "ConfigHandler.h"
+namespace paagent {
 ConfigHandler::ConfigHandler() {
 	logger = log4cxx::Logger::getLogger("ConfigHandler");
 	config = Configuration::Inst();
@@ -163,9 +164,9 @@ void ConfigHandler::endElement(const XMLCh* const uri,
 			config->SetJVMParams(element_data);
 			LOG4CXX_TRACE(logger, "Set JVM parameters to " + element_data);
 		} else if (name == ENABLE_MEMORY_MNGMT) {
-			config->setMemoryManagement(false);
+			config->SetMemoryManagement(false);
 			if (element_data == ENABLED)
-				config->setMemoryManagement(true);
+				config->SetMemoryManagement(true);
 			LOG4CXX_TRACE(logger, "Set Memory management " + element_data);
 		} else if (name == JAVA_MEMORY) {
 			config->SetJavaMemory(stoint(element_data));
@@ -281,3 +282,4 @@ void ConfigHandler::processAction(string name, string value) {
 Configuration *ConfigHandler::GetConfiguration() {
 	return config;
 }
+} //namespace paagent

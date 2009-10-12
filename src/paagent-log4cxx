@@ -3,29 +3,29 @@
 
 # The default logging level is INFO
 
-#log4j.rootLogger=INFO,CONSOLE
+log4j.rootLogger=INFO,CONSOLE
  
-log4j.logger.Action = TRACE, CONSOLE
-log4j.logger.AdvertAction = TRACE, CONSOLE
-log4j.logger.CalendarEvent = TRACE, CONSOLE
-log4j.logger.ConfigHandler = DEBUG, CONSOLE
-log4j.logger.ConfigParser = DEBUG, CONSOLE
-log4j.logger.Configuration = TRACE, CONSOLE
-log4j.logger.Controller = TRACE, CONSOLE
-log4j.logger.CustomAction = TRACE, CONSOLE
-log4j.logger.CustomNodeStarter = TRACE, CONSOLE
-log4j.logger.Event = TRACE, CONSOLE
-log4j.logger.IdlenessEvent = TRACE, CONSOLE
-log4j.logger.IdlenessRunner = TRACE, CONSOLE
-log4j.logger.NodeStarter = TRACE, CONSOLE
-log4j.logger.P2PAction = TRACE, CONSOLE
-log4j.logger.P2PNodeStarter = TRACE, CONSOLE
-log4j.logger.paagent = TRACE, CONSOLE
-log4j.logger.PAAgent = TRACE, CONSOLE
-log4j.logger.RMAction = TRACE, CONSOLE
-log4j.logger.RMNodeStarter = TRACE, CONSOLE
+log4j.logger.Action = TRACE
+log4j.logger.AdvertAction = TRACE
+log4j.logger.CalendarEvent = TRACE
+log4j.logger.ConfigHandler = DEBUG
+log4j.logger.ConfigParser = DEBUG
+log4j.logger.Configuration = TRACE
+log4j.logger.Controller = TRACE
+log4j.logger.CustomAction = TRACE
+log4j.logger.CustomNodeStarter = TRACE
+log4j.logger.Event = TRACE
+log4j.logger.IdlenessEvent = TRACE
+log4j.logger.IdlenessRunner = TRACE
+log4j.logger.NodeStarter = TRACE
+log4j.logger.P2PAction = TRACE
+log4j.logger.P2PNodeStarter = TRACE
+log4j.logger.paagent = TRACE
+log4j.logger.PAAgent = TRACE
+log4j.logger.RMAction = TRACE
+log4j.logger.RMNodeStarter = TRACE
 log4j.logger.Runner = TRACE, CONSOLE
-log4j.logger.Watcher = TRACE, CONSOLE
+log4j.logger.Watcher = TRACE
 
 ################ Appenders ####################
 #

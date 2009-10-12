@@ -11,20 +11,29 @@ namespace DBus {
   class ControllerAdapter : public ::DBus::Object
   {
     protected:
-      ControllerAdapter( Controller* adaptee=NULL, const std::string& path="/proactive/agent/Controller"):
+      ControllerAdapter( paagent::Controller* adaptee=NULL, const std::string& path="/proactive/agent/Controller"):
         ::DBus::Object(path),
         m_adaptee(adaptee)
       {
 
         ::DBus::MethodBase::pointer temp_method;
 
-        temp_method = this->create_method<int32_t,std::string,std::string,std::string,std::string,std::string>( "proactive.agent.controller", "SetStartConfiguration", sigc::mem_fun(*this, &ControllerAdapter::SetStartConfiguration_adapter_stub_isssss) );
-        temp_method->set_arg_name( 0, "success" );
+        temp_method = this->create_method<void,std::string,std::string,std::string,std::string,std::string>( "proactive.agent.controller", "SetStartConfiguration", sigc::mem_fun(*this, &ControllerAdapter::SetStartConfiguration_adapter_stub_vsssss) );
         temp_method->set_arg_name( 1, "security_policy" );
         temp_method->set_arg_name( 2, "log4j_file" );
         temp_method->set_arg_name( 3, "proactive_home" );
         temp_method->set_arg_name( 4, "classpath" );
         temp_method->set_arg_name( 5, "java_bin" );
+        temp_method = this->create_method<void,std::string,bool,int32_t,int32_t,int32_t,bool>( "proactive.agent.controller", "SetJVMSettings", sigc::mem_fun(*this, &ControllerAdapter::SetJVMSettings_adapter_stub_vsbiiib) );
+        temp_method->set_arg_name( 1, "jvm_args" );
+        temp_method->set_arg_name( 2, "enable_mem_mngmnt" );
+        temp_method->set_arg_name( 3, "java_memory" );
+        temp_method->set_arg_name( 4, "native_memory" );
+        temp_method->set_arg_name( 5, "no_processes" );
+        temp_method->set_arg_name( 6, "use_all_cpus" );
+        temp_method = this->create_method<void,int32_t,std::string>( "proactive.agent.controller", "SetNetworkSettings", sigc::mem_fun(*this, &ControllerAdapter::SetNetworkSettings_adapter_stub_vis) );
+        temp_method->set_arg_name( 1, "port_value" );
+        temp_method->set_arg_name( 2, "protocol" );
         temp_method = this->create_method<int32_t,std::string,std::string>( "proactive.agent.controller", "StartNode", sigc::mem_fun(*this, &ControllerAdapter::StartNode_adapter_stub_iss) );
         temp_method->set_arg_name( 0, "pid" );
         temp_method->set_arg_name( 1, "name" );
@@ -55,28 +64,30 @@ namespace DBus {
 
       typedef DBusCxxPointer<ControllerAdapter> pointer;
 
-      static pointer create( Controller* adaptee=NULL, const std::string& path="/proactive/agent/Controller")
+      static pointer create( paagent::Controller* adaptee=NULL, const std::string& path="/proactive/agent/Controller")
         { return pointer( new ControllerAdapter(adaptee, path)); }
 
-      Controller* adaptee() { return m_adaptee; }
+      paagent::Controller* adaptee() { return m_adaptee; }
 
-      void set_adaptee( Controller* adaptee ) {
+      void set_adaptee( paagent::Controller* adaptee ) {
         m_adaptee = adaptee;
       }
 
-      void set_adaptee( Controller& adaptee ) {
+      void set_adaptee( paagent::Controller& adaptee ) {
         this->set_adaptee(&adaptee);
       }
 
 
     private:
 
-      Controller* m_adaptee;
+      paagent::Controller* m_adaptee;
 
 
       void check_adaptee() { if ( not m_adaptee) throw ::DBus::ErrorInvalidAdaptee(); }
 
-      int32_t SetStartConfiguration_adapter_stub_isssss( std::string security_policy, std::string log4j_file, std::string proactive_home, std::string classpath, std::string java_bin ) { this->check_adaptee(); return m_adaptee->SetStartConfiguration( security_policy, log4j_file, proactive_home, classpath, java_bin); }
+      void SetStartConfiguration_adapter_stub_vsssss( std::string security_policy, std::string log4j_file, std::string proactive_home, std::string classpath, std::string java_bin ) { this->check_adaptee(); m_adaptee->SetStartConfiguration( security_policy, log4j_file, proactive_home, classpath, java_bin); }
+      void SetJVMSettings_adapter_stub_vsbiiib( std::string jvm_args, bool enable_mem_mngmnt, int32_t java_memory, int32_t native_memory, int32_t no_processes, bool use_all_cpus ) { this->check_adaptee(); m_adaptee->SetJVMSettings( jvm_args, enable_mem_mngmnt, java_memory, native_memory, no_processes, use_all_cpus); }
+      void SetNetworkSettings_adapter_stub_vis( int32_t port_value, std::string protocol ) { this->check_adaptee(); m_adaptee->SetNetworkSettings( port_value, protocol); }
       int32_t StartNode_adapter_stub_iss( std::string name, std::string java_class ) { this->check_adaptee(); return m_adaptee->StartNode( name, java_class); }
       int32_t StartRMNode_adapter_stub_isssss( std::string name, std::string java_class, std::string user, std::string password, std::string url ) { this->check_adaptee(); return m_adaptee->StartRMNode( name, java_class, user, password, url); }
       int32_t StartP2PNode_adapter_stub_isss( std::string name, std::string java_class, std::string contact ) { this->check_adaptee(); return m_adaptee->StartP2PNode( name, java_class, contact); }

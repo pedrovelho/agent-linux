@@ -29,7 +29,7 @@
  */
 
 #include "Watcher.h"
-
+namespace paagent {
 //named constructors for different types of action restarts
 //AdvertAction
 Watcher *Watcher::AdvertWatcher(int jvm_pid, int tick, int restart_delay,
@@ -80,6 +80,7 @@ Watcher::Watcher(int jvm_pid, int tick, int restart_delay, string name,
 	this->controller = controller;
 	this->action_select = action;
 	this->java_class = java_class;
+	cpu_max = 100;
 }
 
 Watcher::~Watcher() {
@@ -166,7 +167,8 @@ void Watcher::StopWatcher() {
 }
 
 void Watcher::limit(int limit) {
-	//intialize cpu_max
+	//intialize cpu_max if limit is called from elsewhere
+	//needed if the node is restarted
 	cpu_max = limit;
 	//	Usage: cpulimit TARGET [OPTIONS...]
 	//	   TARGET must be exactly one of these:
@@ -238,3 +240,4 @@ void Watcher::limit(int limit) {
 string Watcher::GetName() const {
 	return node_name;
 }
+} //namespace paagent

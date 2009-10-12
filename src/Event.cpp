@@ -29,9 +29,11 @@
  */
 
 #include "Event.h"
+namespace paagent {
 
 Event::Event() {
 	logger = log4cxx::Logger::getLogger("Event");
+	max_cpu_usage = 100;
 }
 
 Event::~Event() {
@@ -57,3 +59,4 @@ int Event::GetMaxCPUUsage() {
 	return max_cpu_usage;
 }
 
+} //end paagent

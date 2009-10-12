@@ -29,22 +29,19 @@
  */
 
 #include "NodeStarter.h"
-
-NodeStarter::NodeStarter(string name, string java_class,
-		string security_policy, string log4j_file, string proactive_home,
-		string classpath, string java_bin) {
-	Initialize(name, java_class, security_policy, log4j_file, proactive_home,
-			classpath, java_bin);
-}
-NodeStarter::NodeStarter(const NodeStarter &node) {
-	pid = node.pid;
-	Initialize(node.name, node.java_class, node.security_policy,
-			node.log4j_file, node.proactive_home, node.classpath, node.java_bin);
+namespace paagent {
+NodeStarter::NodeStarter(string name, string java_class) {
+	logger = log4cxx::Logger::getLogger("NodeStarter");
+	this->name = name;
+	this->java_class =java_class;
+	Initialize();
 }
 NodeStarter::~NodeStarter() {
 }
 
 void NodeStarter::run() {
+	Configuration *config = Configuration::Inst();
+
 	/* prevent zombie process when the JVM or shell is killed
 	 * need so the JVM/bash can be checked through kill */
 	if (signal(SIGCHLD, SIG_IGN) == SIG_ERR)
@@ -53,16 +50,6 @@ void NodeStarter::run() {
 				"stopped and the Watchers may malfunction"
 				"depending on the implementation of kill");
 	pid_t sid;
-	LOG4CXX_INFO(logger, "Starting the node [" << name
-			<< "] in a child process. " <<
-			"Name ["<<name << "] " <<
-			"Starter class [" << java_class<< "] "<<
-			"Security policy [" << security_policy<< "] "<<
-			"Log4j files [" << log4j_file<< "] "<<
-			"ProActive home [" << proactive_home<< "] "<<
-			"Classpath [" << classpath<< "] "<<
-			"Java binary [" << java_bin<< "] ");
-
 	//Fork parent process
 	pid = fork();
 	//If the fork was successful execute child code
@@ -89,8 +76,9 @@ void NodeStarter::run() {
 
 		//Decoupling from parent environment done, running command
 		RunCommand();
-		//if we reach this command has failed
+		//if we reach this, command has failed
 		LOG4CXX_ERROR(logger, "Error starting JVM, execl has failed");
+		exit(1);
 	}
 	//failed to fork
 	else if (pid < 0) {
@@ -99,28 +87,47 @@ void NodeStarter::run() {
 		LOG4CXX_DEBUG(logger, "Returning from parent");
 		return;
 	}
-	LOG4CXX_DEBUG(logger, "Node [" << name << "] started");
 }
 int NodeStarter::getPid() {
-
 	return pid;
 }
-void NodeStarter::Initialize(string name, string java_class,
-		string security_policy, string log4j_file, string proactive_home,
-		string classpath, string java_bin) {
-	logger = log4cxx::Logger::getLogger("NodeStarter " + name);
-	this->name = name;
-	this->java_class = java_class;
-	this->security_policy = security_policy;
-	this->log4j_file = log4j_file;
-	this->proactive_home = proactive_home;
-	this->classpath = classpath;
-	this->java_bin = java_bin;
+void NodeStarter::Initialize() {
+	Configuration *config = Configuration::Inst();
+	this->java_bin = config->GetJavaBin();
+	string pa_location = config->GetPALocation();
+	string java_security = DEFAULT_DJAVA_SECURITY_OPTION + pa_location
+			+ DEFAULT_DJAVA_SECURITY_FILE;
+	string log4j_configuration = DEFAULT_DLOG4J_OPTION + pa_location
+			+ DEFAULT_DLOG4J_FILE;
+	string pa_home_option = DEFAULT_DPROACTIVE_OPTION + pa_location;
+	vector<string> arguments = config->GetJVMParams();
+	string dash = "-";
+	for (int i = 0; i < arguments.size(); i++) {
+		exec_arguments.push_back(dash + arguments.at(i));
+	}
+	exec_arguments.push_back(DEFAULT_DSECURITY_MANAGER);
+	exec_arguments.push_back(java_security);
+	exec_arguments.push_back(log4j_configuration);
+	exec_arguments.push_back(pa_home_option);
+	exec_arguments.push_back("-classpath");
+	exec_arguments.push_back(config->GetClasspath());
+	exec_arguments.push_back(java_class);
+	exec_arguments.push_back(name);
 }
 
 int NodeStarter::RunCommand() {
-	return execl(java_bin.c_str(), " ", DEFAULT_DSECURITY_MANAGER.c_str(),
-			security_policy.c_str(), log4j_file.c_str(),
-			proactive_home.c_str(), "-classpath", classpath.c_str(),
-			java_class.c_str(), name.c_str(), (char *) 0);
+	char *argv[exec_arguments.size() + 1];
+	for (int i = 0; i < exec_arguments.size(); i++) {
+		argv[i] = (char *) exec_arguments.at(i).c_str();
+	}
+	argv[exec_arguments.size()] = (char *) 0;
+
+	LOG4CXX_DEBUG(logger,"Starting node with the following parameters");
+	for (int i = 0; i < (exec_arguments.size() + 1); i++) {
+		LOG4CXX_DEBUG(logger, argv[i]);
+	}
+	LOG4CXX_DEBUG(logger, java_bin);
+
+	return execv(java_bin.c_str(), argv);
 }
+} //namespace paagent

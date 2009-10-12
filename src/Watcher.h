@@ -52,7 +52,8 @@ using namespace std;
 
 #include "controller_proxy.h"
 #include "Constants.h"
-using namespace pa_agent_constants;
+using namespace paagent::constants;
+namespace paagent {
 class Watcher: public Thread {
 private:
 	log4cxx::LoggerPtr logger;
@@ -111,5 +112,5 @@ public:
 private:
 	int RestartNode(ActionType action);
 };
-
+} //namespace paagent
 #endif /* WATCHER_H_ */

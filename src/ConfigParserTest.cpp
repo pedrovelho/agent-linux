@@ -55,8 +55,8 @@ TEST_F(ConfigParserTest, parse)
 	EXPECT_EQ("/home/vasile/workspacePA/PA_new/trunk", config->GetPALocation());
 
 	EXPECT_EQ("/usr/lib/jvm/java-6-openjdk", config->GetJavaHome());
-	EXPECT_EQ("Xmx 256", config->GetJVMParams());
-	EXPECT_EQ(false, config->isMemoryManaged());
+//	EXPECT_EQ("Xmx 256", config->GetJVMParams());
+	EXPECT_EQ(false, config->IsMemoryManaged());
 	EXPECT_EQ(0, config->GetJavaMemory());
 	EXPECT_EQ(0, config->GetNativeMemory());
 	EXPECT_EQ(false, config->UseAllCPUs());

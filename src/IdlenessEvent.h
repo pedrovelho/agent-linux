@@ -32,7 +32,7 @@
 #define IDLENESSEVENT_H_
 
 #include "Event.h"
-
+namespace paagent {
 class IdlenessEvent: public Event {
 public:
 	IdlenessEvent();
@@ -53,5 +53,5 @@ private:
 	int beginThreshold;
 	int endThreshold;
 };
-
+} //namespace paagent
 #endif /* IDLENESSEVENT_H_ */

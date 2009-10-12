@@ -30,7 +30,11 @@
 
 #ifndef CONFIGURATION_H_
 #define CONFIGURATION_H_
+#include <iostream>
 #include <string>
+#include <sstream>
+#include <algorithm>
+#include <iterator>
 #include <vector>
 #include "Event.h"
 #include "Action.h"
@@ -41,19 +45,24 @@
 #include "CustomAction.h"
 #include "AdvertAction.h"
 #include "Constants.h"
-using namespace pa_agent_constants;
+using namespace paagent::constants;
 using namespace std;
+namespace paagent {
 /**
  * Singleton container class for configuration read from the
  * XML file.
  * */
 class Configuration {
 private:
+	/** java policy file */
+	string security_policy;
+	/** log4j configuration file */
+	string log4j_file;
 	/** Location of ProActive used in starting nodes */
 	string proactive_location;
 	string java_home;
 	/** General parameters for all JVMs started*/
-	string jvm_params;
+	vector<string> jvm_params;
 	/** Flag for enabling Java and native memory checks*/
 	bool enable_memory_management;
 	/** Maximum Java memory to be used */
@@ -64,6 +73,8 @@ private:
 	int no_processes;
 	bool use_all_cpus;
 	string config_protocol;
+	string classpath;
+	string java_bin;
 	unsigned int port_initial_value;
 	vector<CalendarEvent*> calendar_events;
 	vector<IdlenessEvent*> idle_events;
@@ -134,11 +145,11 @@ public:
 
 	void SetJavaHome(string java_home);
 
-	string GetJVMParams() const;
+	vector<string> GetJVMParams() const;
 	void SetJVMParams(string jvm_params);
 
-	bool isMemoryManaged() const;
-	void setMemoryManagement(bool enable_memory_management);
+	bool IsMemoryManaged() const;
+	void SetMemoryManagement(bool enable_memory_management);
 
 	int GetJavaMemory() const;
 
@@ -160,10 +171,18 @@ public:
 
 	void SetConfigProtocol(string config_protocol);
 
-	unsigned int GetPortInitialValue() const;
+	int GetPortInitialValue() const;
 
-	void SetPortInitialValue(unsigned int port_initial_value);
+	void SetPortInitialValue(int port_initial_value);
+	void SetJavaSecurityPolicy(string policy);
+	string GetJavaSecurityPolicy() const;
+	void SetLog4jFile(string log4j);
+	string GetLog4jFile() const;
+	void SetClasspath(string path);
+	string GetClasspath() const;
+	void SetJavaBin(string bin);
+	string GetJavaBin() const;
 
 };
-
+} //namespace paagent
 #endif /* CONFIGURATION_H_ */

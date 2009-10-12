@@ -19,7 +19,7 @@
 		ret = conn->request_name( dest, DBUS_NAME_FLAG_REPLACE_EXISTING );
 		//dest should have the same value as below
 	-->
-<node gen-namespace="DBus" cppname="Controller" cppinclude="&quot;Controller.h&quot;"
+<node gen-namespace="DBus" orig-namespace="paagent" cppname="Controller" cppinclude="&quot;Controller.h&quot;"
 	dest="proactive.agent.controller" path="/proactive/agent/Controller">
 	<interface name="proactive.agent.controller">
 		<method name="SetStartConfiguration">
@@ -28,8 +28,22 @@
 			<arg type="s" name="proactive_home" direction="in" />
 			<arg type="s" name="classpath" direction="in" />
 			<arg type="s" name="java_bin" direction="in" />
-			<arg type="i" name="success" direction="out" />
 		</method>
+
+		<method name="SetJVMSettings">
+			<arg type="s" name="jvm_args" direction="in" />
+			<arg type="b" name="enable_mem_mngmnt" direction="in" />
+			<arg type="i" name="java_memory" direction="in" />
+			<arg type="i" name="native_memory" direction="in" />
+			<arg type="i" name="no_processes" direction="in" />
+			<arg type="b" name="use_all_cpus" direction="in" />
+		</method>
+		
+		<method name="SetNetworkSettings">
+			<arg type="i" name="port_value" direction="in" />
+			<arg type="s" name="protocol" direction="in" />
+		</method>
+		
 		<method name="StartNode">
 			<arg type="s" name="name" direction="in" />
 			<arg type="s" name="java_class" direction="in" />

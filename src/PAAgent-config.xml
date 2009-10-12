@@ -4,7 +4,7 @@
 	<internalConfig>
 		<proactiveLocation>/home/vasile/workspacePA/PA_new/trunk</proactiveLocation>
 		<java_home>/usr/lib/jvm/java-6-openjdk</java_home>
-		<jvm_params>Xmx 256</jvm_params>
+		<jvm_params>Xmms256</jvm_params>
 		<enable_memory_management>false</enable_memory_management>
 		<java_memory>0</java_memory>
 		<native_memory>0</native_memory>
@@ -15,10 +15,10 @@
 	</internalConfig>
 	<events>
 		<event xsi:type="CalendarEvent">
-			<startDay>thu</startDay>
-			<startHour>2</startHour>
-			<startMinute>54</startMinute>
-			<startSecond>0</startSecond>
+			<startDay>sat</startDay>
+			<startHour>15</startHour>
+			<startMinute>35</startMinute>
+			<startSecond>20</startSecond>
 			<durationDays>0</durationDays>
 			<durationHours>0</durationHours>
 			<durationMinutes>0</durationMinutes>

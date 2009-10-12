@@ -33,7 +33,7 @@
 using namespace log4cxx;
 using namespace log4cxx::helpers;
 using namespace std;
-
+using namespace paagent;
 /**
  * Entry point for the ProActive Linux Agent command line client.
  * The main function parses the command line arguments using the
@@ -100,7 +100,8 @@ int main(int argc, char** argv) {
 		string log4cxx_file = log4cxxFileArg.getValue();
 
 		//arguments logic
-		LoggerPtr logger = log4cxx::Logger::getLogger("paagent");
+		LoggerPtr logger = log4cxx::Logger::getRootLogger();
+		logger->setLevel(log4cxx::Level::getTrace());
 		//if log4cxx_file is set try to load, else do a basic config
 		if (log4cxxFileArg.isSet()) {
 			PropertyConfigurator::configure(log4cxx_file);
@@ -110,7 +111,7 @@ int main(int argc, char** argv) {
 			BasicConfigurator::configure();
 			//setting level to info since not specifying a logging file
 			//means the user is only interested only in basic information
-			logger->setLevel(log4cxx::Level::getInfo());
+//			logger->setLevel(log4cxx::Level::getInfo());
 			LOG4CXX_INFO(logger, "Logging initialized with basic configuration.");
 		}
 

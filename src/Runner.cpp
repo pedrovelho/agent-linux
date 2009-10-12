@@ -22,6 +22,7 @@
  */
 
 #include "Runner.h"
+namespace paagent {
 #define SCANFPATTERN "%4s %lf %lf %lf %lf %lf %lf %lf"
 Runner::Runner(string xml_file) {
 	logger = log4cxx::Logger::getLogger("Runner");
@@ -186,7 +187,7 @@ void Runner::run() {
 					LOG4CXX_INFO(logger, "++++++++++SWITCHING FROM IDLE EVENT TO CALENDAR EVENT");
 					idle_event_on = false;
 				}
-				StartActions(controller);
+				StartActions(controller, calendar->GetMaxCPUUsage());
 
 				cal_event_on = true;
 				LOG4CXX_INFO(logger, "++++++++++STARTING CALENDAR EVENT with duration of "<<
@@ -225,7 +226,7 @@ void Runner::run() {
 				if (start_counter.at(i) < 1) {
 					LOG4CXX_INFO(logger,"++++++++++STARTING IDLE EVENT");
 					idle_event_on = true;
-					StartActions(controller);
+					StartActions(controller, calendar->GetMaxCPUUsage());
 				}
 			}//for
 		}//if (!cal_event_on || !idle_event_on)
@@ -233,7 +234,6 @@ void Runner::run() {
 }
 /**
  * Extract parts of the date that are not in the configuration (month,
- *
  * weekday,  hour, min, sec
  * */
 bool Runner::isNow(CalendarEvent *calendar) {
@@ -297,22 +297,23 @@ Configuration* Runner::getConfiguration() {
  *
  */
 //TODO DRY much ?
-void Runner::StartActions(DBus::ControllerProxy::pointer controller) {
-	string pa_location = configuration->GetPALocation();
-	string java_bin = configuration->GetJavaHome() + DEFAULT_JAVA_BIN;
-	string java_security = DEFAULT_DJAVA_SECURITY_OPTION + pa_location
-			+ DEFAULT_DJAVA_SECURITY_FILE;
-	string log4j_configuration = DEFAULT_DLOG4J_OPTION + pa_location
-			+ DEFAULT_DLOG4J_FILE;
-	string pa_home_option = DEFAULT_DPROACTIVE_OPTION + pa_location;
-	controller->SetStartConfiguration(java_security, log4j_configuration,
-			pa_home_option, configuration->GetClasspath(), java_bin);
-	LOG4CXX_TRACE(logger, "Set start configuration for controller to : [" <<
-			java_security << "] [" <<
-			log4j_configuration<< "] [" <<
-			pa_home_option<< "] [" <<
-			configuration->GetClasspath()<< "] [" <<
-			java_bin << "]");
+void Runner::StartActions(DBus::ControllerProxy::pointer controller, int limit) {
+
+	controller->SetStartConfiguration(configuration->GetJavaSecurityPolicy(),
+			configuration->GetLog4jFile(), configuration->GetPALocation(),
+			configuration->GetClasspath(), configuration->GetJavaHome()+DEFAULT_JAVA_BIN);
+	controller->SetJVMSettings("", configuration->IsMemoryManaged(),
+			configuration->GetJavaMemory(), configuration->GetNativeMemory(),
+			configuration->GetNoProcesses(), configuration->UseAllCPUs());
+	controller->SetNetworkSettings(configuration->GetPortInitialValue(),
+			configuration->GetConfigProtocol());
+
+//	LOG4CXX_TRACE(logger, "Set start configuration for controller to : [" <<
+//			java_security << "] [" <<
+//			log4j_configuration<< "] [" <<
+//			pa_home_option<< "] [" <<
+//			configuration->GetClasspath()<< "] [" <<
+//			java_bin << "]");
 	vector<AdvertAction*> advert_actions = configuration->GetAdvertActions();
 	vector<RMAction*> rm_actions = configuration->GetRMActions();
 	vector<P2PAction*> p2p_actions = configuration->GetP2PActions();
@@ -339,7 +340,7 @@ void Runner::StartActions(DBus::ControllerProxy::pointer controller) {
 			//			//FIXME check the node has been actually started !!!
 			LOG4CXX_TRACE(logger, "Advert node started " << advert->GetNodeName() );
 			watcher->start();
-			watcher->limit(3);
+			watcher->limit(limit);
 			watchers.push_back(watcher);
 
 		}
@@ -367,6 +368,7 @@ void Runner::StartActions(DBus::ControllerProxy::pointer controller) {
 					rm->GetURL());
 			LOG4CXX_TRACE(logger, "RM node started " << rm->GetNodeName() );
 			watcher->start();
+			watcher->limit(limit);
 			watchers.push_back(watcher);
 
 		}
@@ -392,6 +394,7 @@ void Runner::StartActions(DBus::ControllerProxy::pointer controller) {
 			watcher->SetP2PValues(p2p->GetContact());
 			LOG4CXX_TRACE(logger, "P2P node started " << p2p->GetNodeName() );
 			watcher->start();
+			watcher->limit(limit);
 			watchers.push_back(watcher);
 		}
 	}
@@ -416,6 +419,7 @@ void Runner::StartActions(DBus::ControllerProxy::pointer controller) {
 			watcher->SetCustomValues(custom->GetArguments());
 			LOG4CXX_TRACE(logger, "Custom node started " << custom->GetNodeName() );
 			watcher->start();
+			watcher->limit(limit);
 			watchers.push_back(watcher);
 		}
 	}
@@ -438,3 +442,4 @@ void Runner::StopActions(DBus::ControllerProxy::pointer controller) {
 void Runner::SetConfigurationFile(string xml_file) {
 	config_file = xml_file;
 }
+} //namespace paagent

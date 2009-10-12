@@ -34,7 +34,8 @@ using namespace std;
 /**
  * Constants and defaults used by the client and the server.
  */
-namespace pa_agent_constants {
+namespace paagent {
+namespace constants {
 /** The name the agent requests on DBus. This is the same name as the
  * one defined in Controller.xml for the dest attribute. */
 const string PROACTIVE_DBUS_NAME("proactive.agent.controller");
@@ -85,5 +86,6 @@ const int DEFAULT_TICK = 1000;
 enum ActionType {
 	ADVERT, RM, CUSTOM, P2P
 };
-}
+} //namespace constants
+}//namespace paagent
 #endif /* CONSTANTS_H_ */

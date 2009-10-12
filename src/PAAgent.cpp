@@ -30,6 +30,7 @@
 
 #include "PAAgent.h"
 #include "controller_adapter.h"
+namespace paagent {
 PAAgent::PAAgent() {
 	logger = log4cxx::Logger::getLogger("PAAgent");
 }
@@ -67,3 +68,4 @@ void PAAgent::run() {
 		usleep(1000* 1000 );
 	}
 }
+}//namespace paagent

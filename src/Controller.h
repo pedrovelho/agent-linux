@@ -47,18 +47,15 @@ using namespace log4cxx::helpers;
 #include "P2PNodeStarter.h"
 #include "NodeStarter.h"
 #include "Constants.h"
-using namespace pa_agent_constants;
+#include "Configuration.h"
+using namespace paagent::constants;
 #include <sigc++-2.0/sigc++/sigc++.h>
 #include <string>
 #include <cstdint>
+namespace paagent {
 class Controller {
 private:
 	LoggerPtr logger;
-	string security_policy;
-	string log4j_file;
-	string proactive_home;
-	string classpath;
-	string java_bin;
 public:
 	void SendSignal(const string signal, string node_name);
 	Controller();
@@ -117,10 +114,13 @@ public:
 	 *		i.e. node1
 	 */
 	bool StopNode(string node_name);
-
-	int SetStartConfiguration(string security_policy, string log4j_file,
+	void SetStartConfiguration(string security_policy, string log4j_file,
 			string proactive_home, string classpath, string java_bin);
+	void SetJVMSettings(string jvm_params, bool enable_mem_mngmnt,
+			int java_memory, int native_memory, int no_processes,
+			bool use_all_cpus);
+	void SetNetworkSettings(int port_value, string protocol);
 };
-
+}//namespace paagent
 #endif /* CONTROLLER_H_ */
 

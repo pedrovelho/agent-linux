@@ -38,7 +38,8 @@
 #include "controller_proxy.h"
 #include "Constants.h"
 using namespace ost;
-using namespace pa_agent_constants;
+using namespace paagent::constants;
+namespace paagent{
 /**
  * Class containing the logic for starting and stopping actions according to  idle and events  configuration.
  * @author vjuresch
@@ -86,7 +87,7 @@ public:
 	 *
 	 * @param controller a pointer to a ControllerProxy object
 	 */
-	void StartActions(DBus::ControllerProxy::pointer controller);
+	void StartActions(DBus::ControllerProxy::pointer controller, int limit);
 	/**
 	 * Stops all the started actions and watchers.
 	 *
@@ -130,5 +131,5 @@ protected:
 	 * */
 	virtual void run();
 };
-
+} //namespace paagent
 #endif // RUNNER_H

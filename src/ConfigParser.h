@@ -40,6 +40,7 @@
 using namespace xercesc;
 using namespace std;
 #include "ConfigHandler.h"
+namespace paagent {
 /**
  * Class responsible with parsing the configuration XML file.
  */
@@ -61,5 +62,5 @@ private:
 	ConfigHandler* defaultHandler;
 	LoggerPtr logger;
 };
-
+} //namespace paagent
 #endif /* CONFIGPARSER_H_ */

@@ -33,7 +33,7 @@
 
 #include <gtest/gtest.h>
 #include "Controller.h"
-
+using namespace paagent;
 class ControllerTest: public ::testing::Test {
 public:
 	ControllerTest();

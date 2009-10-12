@@ -29,7 +29,7 @@
  */
 
 #include "ConfigParser.h"
-
+namespace paagent {
 ConfigParser::ConfigParser(std::string xmlFile) {
 	logger = log4cxx::Logger::getLogger("ConfigParser");
 	this->xmlFile = xmlFile;
@@ -77,3 +77,4 @@ ConfigParser::~ConfigParser() {
 	delete defaultHandler;
 
 }
+} //namespace paagent

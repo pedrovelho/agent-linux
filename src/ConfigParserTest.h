@@ -33,7 +33,7 @@
 
 #include <gtest/gtest.h>
 #include "ConfigParser.h"
-
+using namespace paagent;
 class ConfigParserTest: public ::testing::Test {
 public:
 	ConfigParserTest();

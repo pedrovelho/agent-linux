@@ -34,6 +34,7 @@
 #include "Event.h"
 #include <string>
 using namespace std;
+namespace paagent {
 /**
  * Class used for storing CalendarEvent data.
  */
@@ -78,5 +79,6 @@ private:
 	int durationSeconds;
 
 };
+} //end paagent
 
 #endif /* CALENDAREVENT_H_ */

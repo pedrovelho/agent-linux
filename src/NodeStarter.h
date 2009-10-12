@@ -35,44 +35,39 @@
 #include <signal.h>
 #include <sys/types.h>
 #include <sys/stat.h>
+#include <string>
 
 #include <log4cxx/logger.h>
 #include <log4cxx/basicconfigurator.h>
 #include <log4cxx/helpers/exception.h>
 
+#include "Configuration.h"
 #include "Constants.h"
-using namespace pa_agent_constants;
+using namespace paagent::constants;
 using namespace log4cxx;
 using namespace log4cxx::helpers;
 using namespace std;
 
 //#include <cc++/thread.h>
 //using namespace ost;
+namespace paagent{
 class NodeStarter {
 public:
-	NodeStarter(string name, string java_class, string security_policy,
-			string log4j_file, string proactive_home, string, string java_bin);
-	NodeStarter(const NodeStarter &node);
+	NodeStarter(string name, string java_class);
 	virtual ~NodeStarter();
-	virtual void run();
+	void run();
 	int getPid();
 	int RunCommand();
 protected:
-	string name;
-	string java_class;
-	string security_policy;
-	string log4j_file;
-	string proactive_home;
-	string classpath;
+	vector <string> exec_arguments;
 	string java_bin;
+	string java_class;
+	string name;
 private:
 	log4cxx::LoggerPtr logger;
 	int pid;
-
-	void Initialize(string name, string java_class, string security_policy,
-			string log4j_file, string proactive_home, string classpath,
-			string java_bin);
+	void Initialize();
 };
-
+} //namespace paagent
 #endif /* NODESTARTER_H_ */
 

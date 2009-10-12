@@ -35,6 +35,7 @@
 #include <log4cxx/logger.h>
 using namespace log4cxx;
 using namespace ost;
+namespace paagent {
 class PAAgent: public Thread {
 public:
 	PAAgent();
@@ -44,4 +45,5 @@ private:
 	LoggerPtr logger;
 
 };
+} //namespace paagent
 #endif /* PAAGENT_H_ */

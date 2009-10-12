@@ -47,6 +47,7 @@ using namespace log4cxx::helpers;
 #include "Configuration.h"
 using namespace xercesc;
 using namespace std;
+namespace paagent {
 /**
  * Standard SAX parser for the configuration file.
  */
@@ -122,5 +123,5 @@ public:
 	Configuration *GetConfiguration();
 
 };
-
+} //namespace paagent
 #endif /* CONFIGHANDLER_H_ */

@@ -37,6 +37,8 @@
 using namespace log4cxx;
 using namespace log4cxx::helpers;
 using namespace std;
+
+namespace paagent {
 /**
  * Base class for all Event classes.
  */
@@ -73,5 +75,5 @@ private:
 	int max_cpu_usage;
 	LoggerPtr logger;
 };
-
+} //end paagent
 #endif /* EVENT_H_ */

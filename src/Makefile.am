@@ -4,9 +4,12 @@ bin_PROGRAMS = paagent paagent_server
 bin_SCRIPTS = 
 noinst_PROGRAMS = paagent_tests
 
-paagent_server_SOURCES= P2PNodeStarter.cpp CustomNodeStarter.cpp RMNodeStarter.cpp  \
+paagent_server_SOURCES= Configuration.cpp P2PNodeStarter.cpp CustomNodeStarter.cpp RMNodeStarter.cpp  \
+					    AdvertAction.cpp CustomAction.cpp RMAction.cpp P2PAction.cpp Action.cpp \
 					    PAAgent.cpp paagent_server.cpp Controller.cpp NodeStarter.cpp \
-					    P2PNodeStarter.h CustomNodeStarter.h RMNodeStarter.h  \
+					    Event.cpp CalendarEvent.cpp IdlenessEvent.cpp \
+					    Event.h CalendarEvent.h IdlenessEvent.h \
+					    Configuration.h P2PNodeStarter.h CustomNodeStarter.h RMNodeStarter.h  \
 					    PAAgent.h Controller.h NodeStarter.h Constants.h controller_adapter.h
 paagent_server_LDADD = $(GNUCXX_LIBS) $(DBUS_CXX_LIBS) $(LOG4CXX_LIBS)
 paagent_server_CXXFLAGS = -I/usr/include/tclap $(DBUS_CXX_CFLAGS) $(LOG4CXX_CFLAGS)\

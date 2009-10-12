@@ -29,6 +29,7 @@
  */
 
 #include "CalendarEvent.h"
+namespace paagent {
 CalendarEvent::CalendarEvent() {
 	// TODO Auto-generated constructor stub
 
@@ -96,4 +97,4 @@ long CalendarEvent::GetTotalDuration() {
 	return durationSeconds + durationMinutes * 60 + durationHours * 3600
 			+ durationDays * 86400;
 }
-
+} //namespace paagent
