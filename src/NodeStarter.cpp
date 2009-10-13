@@ -33,7 +33,7 @@ namespace paagent {
 NodeStarter::NodeStarter(string name, string java_class) {
 	logger = log4cxx::Logger::getLogger("NodeStarter");
 	this->name = name;
-	this->java_class =java_class;
+	this->java_class = java_class;
 	Initialize();
 }
 NodeStarter::~NodeStarter() {
@@ -46,9 +46,7 @@ void NodeStarter::run() {
 	 * need so the JVM/bash can be checked through kill */
 	if (signal(SIGCHLD, SIG_IGN) == SIG_ERR)
 		LOG4CXX_ERROR(logger,
-				"Unable to ignore SIGCHILD, JVM maybe left as zombies when"
-				"stopped and the Watchers may malfunction"
-				"depending on the implementation of kill");
+				"Unable to ignore SIGCHILD");
 	pid_t sid;
 	//Fork parent process
 	pid = fork();
@@ -100,11 +98,32 @@ void NodeStarter::Initialize() {
 	string log4j_configuration = DEFAULT_DLOG4J_OPTION + pa_location
 			+ DEFAULT_DLOG4J_FILE;
 	string pa_home_option = DEFAULT_DPROACTIVE_OPTION + pa_location;
+	//add -native or -green options depending
+	//< use_all_cpus > tag value
+	if (config->UseAllCPUs()) {
+		exec_arguments.push_back("-native");
+	} else {
+		//green is default but we still added
+		//to be sure
+		exec_arguments.push_back("-green");
+	}
+	//add memory management tag < java_memory >
+	if (config->IsMemoryManaged()) {
+		//create the java memory argument
+		std::string java_memory;
+		std::stringstream out;
+		out << config->GetJavaMemory();
+		;
+		java_memory = out.str();
+		exec_arguments.push_back("-Xmx" + java_memory + "M");
+	}
+	//add arguments from < jvm_params > tag
 	vector<string> arguments = config->GetJVMParams();
 	string dash = "-";
 	for (int i = 0; i < arguments.size(); i++) {
 		exec_arguments.push_back(dash + arguments.at(i));
 	}
+	//add regular arguments
 	exec_arguments.push_back(DEFAULT_DSECURITY_MANAGER);
 	exec_arguments.push_back(java_security);
 	exec_arguments.push_back(log4j_configuration);

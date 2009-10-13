@@ -93,5 +93,13 @@ const string PASSWORD("password");
 const string PROTOCOL("protocol");
 const string CONTACT("contact");
 const string URL("url");
+//Realtime, High, Above Normal, Normal, Below, Low
+const string REALTIME("Realtime");
+const string HIGH("High");
+const string ABOVE_NORMAL("Above Normal");
+const string NORMAL("Normal");
+const string BELOW_NORMAL("Below Normal");
+const string LOW("Low");
+
 }
 #endif /* XMLDEFS_H_ */

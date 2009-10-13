@@ -4,26 +4,26 @@
 	<internalConfig>
 		<proactiveLocation>/home/vasile/workspacePA/PA_new/trunk</proactiveLocation>
 		<java_home>/usr/lib/jvm/java-6-openjdk</java_home>
-		<jvm_params>Xmms256</jvm_params>
-		<enable_memory_management>false</enable_memory_management>
-		<java_memory>0</java_memory>
+		<jvm_params>Xms256M</jvm_params>
+		<enable_memory_management>true</enable_memory_management>
+		<java_memory>500</java_memory>
 		<native_memory>0</native_memory>
 		<nb_processes>1</nb_processes>
-		<use_all_cpus>false</use_all_cpus>
+		<use_all_cpus>true</use_all_cpus>
 		<protocol>rmi</protocol>
 		<port_initial_value>1099</port_initial_value>
 	</internalConfig>
 	<events>
 		<event xsi:type="CalendarEvent">
-			<startDay>sat</startDay>
-			<startHour>15</startHour>
-			<startMinute>35</startMinute>
-			<startSecond>20</startSecond>
+			<startDay>tue</startDay>
+			<startHour>16</startHour>
+			<startMinute>21</startMinute>
+			<startSecond>00</startSecond>
 			<durationDays>0</durationDays>
 			<durationHours>0</durationHours>
 			<durationMinutes>0</durationMinutes>
 			<durationSeconds>30</durationSeconds>
-			<processPriority>Normal</processPriority>
+			<processPriority>High</processPriority>
 			<maxCpuUsage>3</maxCpuUsage>
 		</event>
 		<event xsi:type="IdlenessEvent">

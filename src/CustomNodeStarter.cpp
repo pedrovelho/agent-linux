@@ -34,6 +34,12 @@ CustomNodeStarter::CustomNodeStarter(string name, string java_class,
 		string arguments) :
 	NodeStarter(name, java_class) {
 	this->arguments = arguments;
+	//add the parsed arguments to the end of the
+	//vector of exec arguments
+	istringstream iss(arguments);
+	copy(istream_iterator<string> (iss), istream_iterator<string> (),
+			back_inserter<vector<string> > (this->exec_arguments));
+
 }
 
 CustomNodeStarter::~CustomNodeStarter() {

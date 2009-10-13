@@ -86,8 +86,9 @@ public:
 	 * a stop event also stops all the actions.
 	 *
 	 * @param controller a pointer to a ControllerProxy object
+	 * @param event a pointer to an Event object
 	 */
-	void StartActions(DBus::ControllerProxy::pointer controller, int limit);
+	void StartActions(DBus::ControllerProxy::pointer controller, Event* event);
 	/**
 	 * Stops all the started actions and watchers.
 	 *

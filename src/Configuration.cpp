@@ -160,7 +160,7 @@ string Configuration::GetJVMParamsString() const {
 void Configuration::SetJVMParams(string jvm_params) {
 	//clear vector
 	this->jvm_params_string = jvm_params;
-	this->jvm_params.empty();
+	this->jvm_params.clear();
 	//separate arguments
 	istringstream iss(jvm_params);
 	copy(istream_iterator<string> (iss), istream_iterator<string> (),

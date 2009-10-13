@@ -32,55 +32,41 @@
 namespace paagent {
 //named constructors for different types of action restarts
 //AdvertAction
-Watcher *Watcher::AdvertWatcher(int jvm_pid, int tick, int restart_delay,
-		string name, string java_class,
-		DBus::ControllerProxy::pointer controller) {
-	return new Watcher(jvm_pid, tick, restart_delay, name, java_class,
-			controller, ADVERT);
+Watcher *Watcher::AdvertWatcher(int jvm_pid, int tick, AdvertAction *action,
+		Event *event, DBus::ControllerProxy::pointer controller) {
+	return new Watcher(jvm_pid, tick, action, event, controller, ADVERT);
 }
 //RMAction
-Watcher *Watcher::RMWatcher(int jvm_pid, int tick, int restart_delay,
-		string name, string java_class, string user, string password,
-		string url, DBus::ControllerProxy::pointer controller) {
-	Watcher *w = new Watcher(jvm_pid, tick, restart_delay, name, java_class,
-			controller, RM);
-	w->SetRMValues(user, password, url);
+Watcher *Watcher::RMWatcher(int jvm_pid, int tick, RMAction *action,
+		Event *event, DBus::ControllerProxy::pointer controller) {
+	Watcher *w = new Watcher(jvm_pid, tick, action, event, controller, RM);
 	return w;
 
 }
 //P2PAction
-Watcher *Watcher::P2PWatcher(int jvm_pid, int tick, int restart_delay,
-		string name, string java_class, string contact,
-		DBus::ControllerProxy::pointer controller) {
-	Watcher *w = new Watcher(jvm_pid, tick, restart_delay, name, java_class,
-			controller, P2P);
-	w->SetP2PValues(contact);
+Watcher *Watcher::P2PWatcher(int jvm_pid, int tick, P2PAction *action,
+		Event *event, DBus::ControllerProxy::pointer controller) {
+	Watcher *w = new Watcher(jvm_pid, tick, action, event, controller, P2P);
 	return w;
 }
 //CustomAction
-Watcher *Watcher::CustomWatcher(int jvm_pid, int tick, int restart_delay,
-		string name, string java_class, string arguments,
-		DBus::ControllerProxy::pointer controller) {
-	Watcher *w = new Watcher(jvm_pid, tick, restart_delay, name, java_class,
-			controller, CUSTOM);
-	w->SetCustomValues(arguments);
+Watcher *Watcher::CustomWatcher(int jvm_pid, int tick, CustomAction *action,
+		Event *event, DBus::ControllerProxy::pointer controller) {
+	Watcher *w = new Watcher(jvm_pid, tick, action, event, controller, CUSTOM);
 	return w;
 }
 
-Watcher::Watcher(int jvm_pid, int tick, int restart_delay, string name,
-		string java_class, DBus::ControllerProxy::pointer controller,
-		ActionType action) {
+Watcher::Watcher(int jvm_pid, int tick, Action *action, Event *event,
+		DBus::ControllerProxy::pointer controller, ActionType action_type) {
 	//initialize logger
-	logger = log4cxx::Logger::getLogger("Watcher " + name);
+	logger = log4cxx::Logger::getLogger("Watcher");
 	pid = jvm_pid;
-	node_name = name;
 	this->tick = tick;
 	stop = false;
-	this->restart_delay = restart_delay;
 	this->controller = controller;
-	this->action_select = action;
-	this->java_class = java_class;
-	cpu_max = 100;
+	this->action_select = action_type;
+	this->action = action;
+	this->event = event;
 }
 
 Watcher::~Watcher() {
@@ -88,8 +74,10 @@ Watcher::~Watcher() {
 }
 
 void Watcher::run() {
-	LOG4CXX_DEBUG(logger, "Watcher thread started for node " << node_name
-			<< " with JVM PID " << pid);
+	limit(event->GetMaxCPUUsage());
+	renice(event->GetProcessPriority());
+	LOG4CXX_DEBUG(logger, "Watcher thread started for node " <<
+			action->GetNodeName() << " with JVM PID " << pid);
 	while (!stop) {
 		//		usleep takes microseconds, we use milliseconds
 		LOG4CXX_TRACE(logger, "Checking " << pid << " with an interval of "
@@ -99,57 +87,54 @@ void Watcher::run() {
 		// if a signal cannot be sent
 		// notify the Controller which will restart the JVM
 		if (kill(pid, 0) == -1) {
-			LOG4CXX_INFO(logger, "Node [" << node_name << "] with pid [ " << pid
-					<< " has stopped ");
+			LOG4CXX_INFO(logger, "Node [" << action->GetNodeName()
+					<< "] with pid [ " << pid << " has stopped ");
 			LOG4CXX_DEBUG(logger, "Sleeping for the amount in restart delay");
 			//restart_delay is in milliseconds
-			usleep(restart_delay * 1000);
+			usleep(action->GetRestartDelay() * 1000);
 			LOG4CXX_DEBUG(logger, "Signaling the controller...");
 
 			//			method call on Controller asking to start a JVM
 			//			returns the pid to check
 			pid = RestartNode(action_select);
 			LOG4CXX_DEBUG(logger, "Restarted the node with PID " << pid);
-			limit(cpu_max);
+			limit(event->GetMaxCPUUsage());
+			renice(event->GetProcessPriority());
 		} else {
-			LOG4CXX_TRACE(logger, "Node " << node_name << " is alive");
+			LOG4CXX_TRACE(logger, "Node " << action->GetNodeName() << " is alive");
 		}
 	}
 	LOG4CXX_TRACE(logger, "Watcher loop has finished.");
 }
 long Watcher::GetRestartDelay() {
-	return restart_delay;
-}
-void Watcher::SetRMValues(string user, string password, string url) {
-	this->user = user;
-	this->password = password;
-	this->url = url;
+	return action->GetRestartDelay();
 }
 
-void Watcher::SetP2PValues(string contact) {
-	this->contact = contact;
-}
-void Watcher::SetCustomValues(string arguments) {
-	this->arguments = arguments;
-}
-int Watcher::RestartNode(ActionType action) {
-	switch (action) {
+int Watcher::RestartNode(ActionType action_type) {
+	string node_name = action->GetNodeName();
+	string java_class = action->GetStarterClass();
+	switch (action_type) {
 	case ADVERT: {
 		LOG4CXX_TRACE(logger, "Restarting node for Advert action... ");
 		return controller->StartNode(node_name, java_class);
 	}
 	case RM: {
 		LOG4CXX_TRACE(logger, "Restarting node for RM action... ");
-		return controller->StartRMNode(node_name, java_class, user, password,
-				url);
+
+		return controller->StartRMNode(node_name, java_class,
+				dynamic_cast<RMAction*> (action)->GetUsername(),
+				dynamic_cast<RMAction*> (action)->GetPassword(),
+				dynamic_cast<RMAction*> (action)->GetURL());
 	}
 	case P2P: {
 		LOG4CXX_TRACE(logger, "Restarting node for P2P action... ");
-		return controller->StartP2PNode(node_name, java_class, contact);
+		return controller->StartP2PNode(node_name, java_class,
+				dynamic_cast<P2PAction*> (action)->GetContact());
 	}
 	case CUSTOM: {
 		LOG4CXX_TRACE(logger, "Restarting node for Custom action... ");
-		return controller->StartCustomNode(node_name, java_class, arguments);
+		return controller->StartCustomNode(node_name, java_class,
+				dynamic_cast<CustomAction*> (action)->GetArguments());
 	}
 	default: {
 		LOG4CXX_WARN(logger, "Action type not defined, node will not be restarted");
@@ -158,18 +143,16 @@ int Watcher::RestartNode(ActionType action) {
 	}
 	}
 }
-
 int Watcher::GetPid() {
 	return pid;
 }
 void Watcher::StopWatcher() {
 	stop = true;
 }
-
 void Watcher::limit(int limit) {
 	//intialize cpu_max if limit is called from elsewhere
 	//needed if the node is restarted
-	cpu_max = limit;
+	//	cpu_max = limit;
 	//	Usage: cpulimit TARGET [OPTIONS...]
 	//	   TARGET must be exactly one of these:
 	//	      -p, --pid=N        pid of the process
@@ -187,10 +170,7 @@ void Watcher::limit(int limit) {
 				"Unable to ignore SIGCHILD");
 	pid_t sid, fork_pid;
 	//Fork parent process
-	LOG4CXX_DEBUG(logger, "Befor fork ------------------------------");
 	fork_pid = fork();
-	LOG4CXX_DEBUG(logger, "After fork ------------------------------");
-
 	//If the fork was successful execute child code
 	if (fork_pid == 0) {
 		// Running in child process
@@ -222,11 +202,11 @@ void Watcher::limit(int limit) {
 		string max = out1.str();
 
 		LOG4CXX_TRACE(logger, "Running command for " << process_pid << " with limit " << max);
-		execlp("cpulimit", " ", "-p", process_pid.c_str(), "-l",
-				max.c_str(), "-z", (char*) 0);
+		execlp("cpulimit", " ", "-p", process_pid.c_str(), "-l", max.c_str(),
+				"-z", (char*) 0);
 		//if we reach this, exec  has failed
 		LOG4CXX_ERROR(logger, "Error running cpulimit, execl has failed");
-		//		exit(1);
+		std::exit(1);
 	}
 	//failed to fork
 	else if (fork_pid < 0) {
@@ -236,8 +216,64 @@ void Watcher::limit(int limit) {
 		return;
 	}
 }
+void Watcher::renice(string priority){
+	string nice_value = "0";
+	//linux priorities are between -20(high) and 19(low)
+	if(priority == REALTIME) nice_value = "-20";
+	if(priority == HIGH) nice_value = "-14";
+	if(priority == ABOVE_NORMAL) nice_value = "-7";
+	if(priority == NORMAL) nice_value = "0";
+	if(priority == BELOW_NORMAL) nice_value = "10";
+	if(priority == LOW) nice_value = "19";
 
+
+	/* prevent zombie process */
+	if (signal(SIGCHLD, SIG_IGN) == SIG_ERR)
+		LOG4CXX_ERROR(logger,
+				"Unable to ignore SIGCHILD");
+	pid_t sid, fork_pid;
+	//Fork parent process
+	fork_pid = fork();
+	//If the fork was successful execute child code
+	if (fork_pid == 0) {
+		// Running in child process
+		//Decouple from parent (controller) environment
+		/*Change the file mode process to:
+		 * umask value   User  Group Others
+		 *
+		 * 0000       all   all   all
+		 * 0007       all   all   none
+		 * 0027       all   r/w   none
+		 */
+		umask(27);
+		// Create a new SID for the child process,
+		sid = setsid();
+		if (sid < 0) {
+			LOG4CXX_ERROR(logger, "setsid() call failed");
+		}
+		/* Change the current working directory to prevent the current
+		 directory from being locked and not being able to remove it. */
+		chdir("/");
+
+		std::stringstream out;
+		out << pid;
+		string process_pid = out.str();
+
+		LOG4CXX_TRACE(logger, "Reniceing JVM to " << nice_value << " priority");
+		execlp("renice", " ","-n",nice_value.c_str(), "-p", process_pid.c_str(), (char*) 0);
+		//if we reach this, exec  has failed
+		LOG4CXX_ERROR(logger, "Error running renice, execl has failed");
+		std::exit(1);
+	}
+	//failed to fork
+	else if (fork_pid < 0) {
+		LOG4CXX_ERROR(logger, "Failed to fork ");
+	} else {
+		LOG4CXX_DEBUG(logger, "Returning from parent");
+		return;
+	}
+}
 string Watcher::GetName() const {
-	return node_name;
+	return action->GetNodeName();
 }
 } //namespace paagent
