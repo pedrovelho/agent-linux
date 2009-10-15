@@ -15,4 +15,29 @@
 2009-10-12 Vasile Jureschi  vjuresch@sohia.inria.fr, vasile.jureschi@gmail.com
 	
 	* added string GetJVMParamsString() const; in Configuration class to get 
-	the string of parameters 
+	the string of parameters
+
+2009-10-12 Vasile Jureschi  vjuresch@sohia.inria.fr, vasile.jureschi@gmail.com
+
+   * added arguments parsing in CustomNodeStarter constructor by appending the 
+     extra arguments to the exec_arguments vector
+
+2009-10-13 Vasile Jureschi  vjuresch@sohia.inria.fr, vasile.jureschi@gmail.com
+
+   * added <jvm_memory> tag handling in NodeStarter::Initialize by adding it to
+     the exec_arguments vector
+   * changed this->jvm_params.empty()  to this->jvm_params.clear() in 
+     Configuration::SetJVMParams, added the empty() instead of clear() by 
+     mistake
+   * added <use_all_cpus> handling in NodeStarter::Initialize by adding
+     -native or -green to the JVM parameters
+   * added <processPriority> handling in Watcher class through the renice method
+     The named constructors were refactored to accept a pointer to and event and 
+     an action. This was less cumbersome than passing a long list of arguments.  
+
+2009-10-15 Vasile Jureschi  vjuresch@sohia.inria.fr, vasile.jureschi@gmail.com
+
+   * modified the paas_fedora and paac_fedora scripts to be usable on Fedora
+   * changed installation directory from /etc/init.d to /etc/rc.d/init.d for
+     fedora scripts (paas_fedora paac_fedora)
+      - modified: Makefile.am paas_fedora paac_fedora       

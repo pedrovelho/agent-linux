@@ -1,54 +1,85 @@
-#!/bin/sh
-#
+#!/bin/sh                               
+#                                       
 # paagent  This shell script takes care of starting and stopping
-#                  the paagent
+#                  the paagent                                  
+#                                                               
+# chkconfig: 345 99 1                                           
+# description: paagent daemon                                   
+#                                                               
+# processname: paagent                                          
+# config: /etc/paagent/config.xml                               
+# config: /etc/paagent/client-log4cxx                           
+# pidfile: /var/run/paagent.pid                                 
 #
-
-# Source function library
-#. /etc/rc.d/init.d/functions
-. /lib/lsb/init-functions
-
+# https://fedoraproject.org/wiki/Packaging:SysVInitScript#Fedora_SysV_Initscripts
 
 ### BEGIN INIT INFO
 # Provides:          paac
 # Required-Start:    $remote_fs $syslog 
-# Required-Stop:     $remote_fs $syslog
-# Default-Start:     3 4 5
-# Default-Stop:      0 1 6
+# Required-Stop:     $remote_fs $syslog 
+# Default-Start:     3 4 5              
+# Default-Stop:      0 1 6              
 # Short-Description: Start ProActive Linux agent daemon at boot time
 # Description:       Enable service provided by ProActive Linux agent.
-### END INIT INFO
+### END INIT INFO                                                     
 
+# Source function library
+. /etc/rc.d/init.d/functions
 
-# Do preliminary checks here, if any
-#### START of preliminary checks #########
-
-##### END of preliminary checks #######
+RETVAL=0
 
 # Constants
+PAAC_PRG="paagent"
 PAAC_OPTS="-l /etc/paagent/client-log4cxx -c /etc/paagent/config.xml "
-PAAC_PID=/var/run/paac.pid
-PAAC_EXEC=/usr/local/bin/paagent
+PAAC_LOCK=/var/lock/subsys/$PAAC_PRG                                  
+PAAC_PID=/var/run/$PAAC_PRG.pid                                       
+PAAC_EXEC=/usr/local/bin/$PAAC_PRG                                    
+PAAC="$PAAC_EXEC $PAAC_OPTS"                                          
 
 # Handle manual control parameters like start, stop, status, restart, etc.
 
+start () {
+    # Start daemons.
+
+    echo  $"Starting paagent client daemon: "
+    if [ -f $PAAC_LOCK ]; then               
+        echo_failure $"Client already running"
+        echo                                  
+    else                                      
+    daemon $PAAC&
+    pidofproc $PAAC_PRG > $PAAC_PID
+    RETVAL=$?
+    if [ "$RETVAL" = 0 ]; then
+        touch $PAAC_LOCK
+        echo_success $"Paagent client start success"
+        echo
+    else
+       rm -f $PAAC_LOCK
+       echo_failure $"Error starting paagent client"
+       echo
+    fi
+    fi
+    return $RETVAL
+}
+stop () {
+    # Stop daemons.
+     echo -n $"Stopping $PAAC_PRG: "
+     killproc $PAAC_PRG && rm -f $PAAC_LOCK $PAAC_PID
+     RETVAL=$?
+     echo
+     return $RETVAL
+}
+
 case "$1" in
   start)
-    # Start daemons.
-    log_daemon_msg "Starting paagent client daemon: "
-    start-stop-daemon --start --background --quiet --oknodo --make-pidfile --pidfile $PAAC_PID --exec $PAAC_EXEC -- $PAAC_OPTS
+    start
     ;;
   stop)
-    # Stop daemons.
-    log_daemon_msg "Shutting down paagent client: "
-	if start-stop-daemon --stop --quiet --oknodo --pidfile $PAAC_PID; then
-	    log_end_msg 0
-	else
-	    log_end_msg 1
-	fi
+    stop
     ;;
   status)
-	status_of_proc -p $PAAC_PID $PAAC_EXEC paagent && exit 0 || exit $?
+        status $PAAC_PRG
+        RETVAL=$?
     ;;
   restart)
     $0 stop
