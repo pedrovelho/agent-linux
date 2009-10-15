@@ -710,12 +710,12 @@ install_services_fedora: install
 	cp src/PAAgent-config.xml /etc/paagent/config.xml
 	cp src/server-log4cxx /etc/paagent/
 	cp src/client-log4cxx /etc/paagent/
-	cp src/paas_fedora /etc/init.d/paas
+	cp src/paas_fedora /etc/rc.d/init.d/paas
 	chmod +x /etc/init.d/paas
 	chkconfig --add paas
 	chkconfig --level 345 paas  on
 	chkconfig --level 016 paas  off
-	cp src/paac_fedora /etc/init.d/paac
+	cp src/paac_fedora /etc/rc.d/init.d/paac
 	chmod +x /etc/init.d/paac
 	chkconfig --add paac
 	chkconfig --level 345 paac  on
@@ -729,8 +729,8 @@ remove_services_fedora: uninstall
 	rm -rf /var/log/paagent
 	chkconfig --del paac
 	chkconfig --del paas
-	rm -f /etc/init.d/paas
-	rm -f /etc/init.d/paac
+	rm -f /etc/rc.d/init.d/paas
+	rm -f /etc/rc.d//init.d/paac
 
 install_services_ubuntu: install 
 	mkdir -p /etc/paagent
@@ -744,8 +744,8 @@ install_services_ubuntu: install
 	chmod +x /etc/init.d/paas
 	cp src/paac /etc/init.d
 	chmod +x /etc/init.d/paac
-#	update-rc.d paas start 98 3 4 5 . stop 2 0 1 6 .
-#	update-rc.d paac start 99 3 4 5 . stop 1 0 1 6 .
+	update-rc.d paas start 98 3 4 5 . stop 2 0 1 6 .
+	update-rc.d paac start 99 3 4 5 . stop 1 0 1 6 .
 
 #delete log and configuration folders
 #remove installed system services
