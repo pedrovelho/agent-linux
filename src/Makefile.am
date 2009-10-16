@@ -12,7 +12,7 @@ paagent_server_SOURCES= Configuration.cpp P2PNodeStarter.cpp CustomNodeStarter.c
 					    Configuration.h P2PNodeStarter.h CustomNodeStarter.h RMNodeStarter.h  \
 					    PAAgent.h Controller.h NodeStarter.h Constants.h controller_adapter.h
 paagent_server_LDADD = $(GNUCXX_LIBS) $(DBUS_CXX_LIBS) $(LOG4CXX_LIBS)
-paagent_server_CXXFLAGS = -I/usr/include/tclap $(DBUS_CXX_CFLAGS) $(LOG4CXX_CFLAGS)\
+paagent_server_CXXFLAGS = $(DBUS_CXX_CFLAGS) $(LOG4CXX_CFLAGS)\
 				 		 $(GNUCXX_CFLAGS) -std=c++0x -std=gnu++0x
 
 paagent_tests_SOURCES = P2PNodeStarter.cpp CustomNodeStarter.cpp RMNodeStarter.cpp  \
@@ -44,7 +44,7 @@ paagent_SOURCES = P2PNodeStarter.cpp CustomNodeStarter.cpp RMNodeStarter.cpp Run
 				  Controller.h NodeStarter.h  Watcher.h Constants.h XMLDefs.h
 				  
 paagent_LDADD = $(XERC_LIBS)  $(GNUCXX_LIBS) $(DBUS_CXX_LIBS) $(LOG4CXX_LIBS)
-paagent_CXXFLAGS = -I/usr/include/tclap $(DBUS_CXX_CFLAGS) $(LOG4CXX_CFLAGS)\
+paagent_CXXFLAGS = $(DBUS_CXX_CFLAGS) $(LOG4CXX_CFLAGS)\
 				 $(XERC_CFLAGS) $(GNUCXX_CFLAGS) -std=c++0x -std=gnu++0x
 
 

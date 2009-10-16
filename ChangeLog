@@ -40,4 +40,14 @@
    * modified the paas_fedora and paac_fedora scripts to be usable on Fedora
    * changed installation directory from /etc/init.d to /etc/rc.d/init.d for
      fedora scripts (paas_fedora paac_fedora)
-      - modified: Makefile.am paas_fedora paac_fedora       
+      - modified: Makefile.am paas_fedora paac_fedora
+   * added paagent.spec file for building RPMs
+   * modified the Makefile.am to take build parameters from paagent.spec
+   * add make rpm target to the Makefile.am
+
+2009-10-16 Vasile Jureschi  vjuresch@sohia.inria.fr, vasile.jureschi@gmail.com
+ 
+   * rpm building works now 
+   * removed tclap include references from Makefile.am and added the tclap
+     header files in the src folder
+   * regenerated autotools configuration

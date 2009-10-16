@@ -703,34 +703,29 @@ clean_doc:
 #install as sys service
 #start with lowest priority in runlevel 3 and stop before all in shutdown, reboot and single
 install_services_fedora: install 
-	mkdir -p /etc/paagent
-	mkdir -p /var/log/paagent
-	cp src/PAAgent-config-planning-day-only.xml /etc/paagent/ 
-	cp src/PAAgent-config-planning-night-we.xml /etc/paagent/
-	cp src/PAAgent-config.xml /etc/paagent/config.xml
-	cp src/server-log4cxx /etc/paagent/
-	cp src/client-log4cxx /etc/paagent/
-	cp src/paas_fedora /etc/rc.d/init.d/paas
-	chmod +x /etc/init.d/paas
-	chkconfig --add paas
-	chkconfig --level 345 paas  on
-	chkconfig --level 016 paas  off
-	cp src/paac_fedora /etc/rc.d/init.d/paac
-	chmod +x /etc/init.d/paac
-	chkconfig --add paac
-	chkconfig --level 345 paac  on
-	chkconfig --level 016 paac  off
+	mkdir -p $(DESTDIR)/etc/paagent
+	mkdir -p $(DESTDIR)/var/log/paagent
+	cp src/PAAgent-config-planning-day-only.xml $(DESTDIR)/etc/paagent/ 
+	cp src/PAAgent-config-planning-night-we.xml $(DESTDIR)/etc/paagent/
+	cp src/PAAgent-config.xml $(DESTDIR)/etc/paagent/config.xml
+	cp src/server-log4cxx $(DESTDIR)/etc/paagent/
+	cp src/client-log4cxx $(DESTDIR)/etc/paagent/
+	mkdir -p $(DESTDIR)/etc/rc.d/init.d/
+	cp src/paas_fedora $(DESTDIR)/etc/rc.d/init.d/paas
+	chmod +x $(DESTDIR)/etc/rc.d/init.d/paas
+	cp src/paac_fedora $(DESTDIR)/etc/rc.d/init.d/paac
+	chmod +x $(DESTDIR)/etc/rc.d/init.d/paac
 
 #delete log and configuration folders
 #remove installed system services
 #delete init.d scripts
 remove_services_fedora: uninstall
-	rm -rf /etc/paagent
-	rm -rf /var/log/paagent
+	rm -rf BUILDROOT/etc/paagent
+	rm -rf BUILDROOT/var/log/paagent
 	chkconfig --del paac
 	chkconfig --del paas
-	rm -f /etc/rc.d/init.d/paas
-	rm -f /etc/rc.d//init.d/paac
+	rm -f BUILDROOT/etc/rc.d/init.d/paas
+	rm -f BUILDROOT/etc/rc.d//init.d/paac
 
 install_services_ubuntu: install 
 	mkdir -p /etc/paagent
@@ -757,6 +752,19 @@ remove_services_ubuntu: uninstall
 	update-rc.d -f --remove paas
 	rm -f /etc/init.d/paas
 	rm -f /etc/init.d/paac	
+
+#create rpmbuild tree rpmdev-setuptree
+#create paagent dist package	
+#copy paagent dist package to SOURCES
+#set $RPM_BUILD_ROOT
+#run rpbmbuild -ba paagent.spec
+#copy built packages to somewhere visible
+rpm: dist
+	echo "%_topdir %(pwd)/rpmbuild" > ~/.rpmmacros
+	mkdir -p rpmbuild
+	mkdir -p rpmbuild/RPMS rpmbuild/SOURCES rpmbuild/SPECS rpmbuild/SRPMS rpmbuild/BUILD
+	cp $(PACKAGE_NAME)-$(PACKAGE_VERSION).tar.gz rpmbuild/SOURCES
+	rpmbuild -ba paagent.spec
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
