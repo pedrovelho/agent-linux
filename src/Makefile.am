@@ -10,7 +10,8 @@ paagent_server_SOURCES= Configuration.cpp P2PNodeStarter.cpp CustomNodeStarter.c
 					    Event.cpp CalendarEvent.cpp IdlenessEvent.cpp \
 					    Event.h CalendarEvent.h IdlenessEvent.h \
 					    Configuration.h P2PNodeStarter.h CustomNodeStarter.h RMNodeStarter.h  \
-					    PAAgent.h Controller.h NodeStarter.h Constants.h controller_adapter.h
+					    PAAgent.h Controller.h NodeStarter.h Constants.h controller_adapter.h \
+					    tclap/CmdLine.h
 paagent_server_LDADD = $(GNUCXX_LIBS) $(DBUS_CXX_LIBS) $(LOG4CXX_LIBS)
 paagent_server_CXXFLAGS = $(DBUS_CXX_CFLAGS) $(LOG4CXX_CFLAGS)\
 				 		 $(GNUCXX_CFLAGS) -std=c++0x -std=gnu++0x
@@ -26,7 +27,7 @@ paagent_tests_SOURCES = P2PNodeStarter.cpp CustomNodeStarter.cpp RMNodeStarter.c
 						RMAction.h P2PAction.h Action.h Event.h CalendarEvent.h \
 						IdlenessEvent.h Configuration.h ConfigParser.h ConfigHandler.h \
 						PAAgentTest.h ControllerTest.h  PAAgent.h controller_proxy.h \
-						Controller.h NodeStarter.h  Watcher.h Constants.h XMLDefs.h
+						Controller.h NodeStarter.h  Watcher.h Constants.h XMLDefs.h 
 						 
 paagent_tests_LDADD = -lgtest $(XERC_LIBS) $(GNUCXX_LIBS) $(DBUS_CXX_LIBS) $(LOG4CXX_LIBS) 
 paagent_tests_CXXFLAGS = -I/usr/include/gtest $(DBUS_CXX_CFLAGS) $(LOG4CXX_CFLAGS)\
@@ -41,7 +42,15 @@ paagent_SOURCES = P2PNodeStarter.cpp CustomNodeStarter.cpp RMNodeStarter.cpp Run
 				  AdvertAction.h CustomAction.h RMAction.h P2PAction.h Action.h \
 				  Event.h CalendarEvent.h IdlenessEvent.h Configuration.h \
 				  ConfigParser.h ConfigHandler.h PAAgent.h \
-				  Controller.h NodeStarter.h  Watcher.h Constants.h XMLDefs.h
+				  Controller.h NodeStarter.h  Watcher.h Constants.h XMLDefs.h \
+				  tclap/ArgException.h tclap/Arg.h tclap/CmdLine.h \
+				  tclap/CmdLineInterface.h tclap/CmdLineOutput.h tclap/Constraint.h \
+				  tclap/DocBookOutput.h tclap/HelpVisitor.h tclap/IgnoreRestVisitor.h \
+				  tclap/MultiArg.h tclap/MultiSwitchArg.h tclap/OptionalUnlabeledTracker.h \
+				  tclap/StdOutput.h tclap/SwitchArg.h tclap/UnlabeledMultiArg.h \
+				  tclap/UnlabeledValueArg.h tclap/ValueArg.h tclap/ValuesConstraint.h \
+				  tclap/VersionVisitor.h tclap/Visitor.h tclap/XorHandler.h 
+
 				  
 paagent_LDADD = $(XERC_LIBS)  $(GNUCXX_LIBS) $(DBUS_CXX_LIBS) $(LOG4CXX_LIBS)
 paagent_CXXFLAGS = $(DBUS_CXX_CFLAGS) $(LOG4CXX_CFLAGS)\

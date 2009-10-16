@@ -51,3 +51,5 @@
    * removed tclap include references from Makefile.am and added the tclap
      header files in the src folder
    * regenerated autotools configuration
+   * added tclap references in Makefile.am
+   
