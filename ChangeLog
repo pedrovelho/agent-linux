@@ -52,4 +52,15 @@
      header files in the src folder
    * regenerated autotools configuration
    * added tclap references in Makefile.am
+
+2009-10-21 Vasile Jureschi  vjuresch@sohia.inria.fr, vasile.jureschi@gmail.com
    
+   * fixed remove_services_fedora in Makefile.am by replacing BUILDROOT with $(DESTDIR)
+   * modified the install_services_ubuntu target so it can be used with the deb target
+     - added $(DESTDIR) Makefile.am for the paths in the target
+   * modified the install_services_fedora to create and restore a backup of .rpmmacros
+    when building the rpm
+   * added deb target in Makefile.am
+   * modified paas and paac to use /usr/bin instead of /usr/local/bin
+   * added skeleton debian configuration in debian directory
+   * regenerated autotools configuration  

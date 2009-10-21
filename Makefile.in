@@ -206,6 +206,14 @@ EXTRA_DIST = src/PAAgent-config-planning-night-we.xml src/paac src/paas \
 			src/PAAgent-config-planning-day-only.xml Doxyfile images \
 			src/client-log4cxx src/server-log4cxx src/paas_fedora src/paac_fedora
 
+
+#create debuild folder
+#create paagent dist package	
+#copy and rename paagent dist packages
+#unpack the dist package
+#copy the debian settings 
+#run debuild 
+DEBUILD = debuild
 all: config.h
 	$(MAKE) $(AM_MAKEFLAGS) all-recursive
 
@@ -703,6 +711,7 @@ clean_doc:
 #install as sys service
 #start with lowest priority in runlevel 3 and stop before all in shutdown, reboot and single
 install_services_fedora: install 
+	mkdir -p $(DESTDIR)/etc/init.d
 	mkdir -p $(DESTDIR)/etc/paagent
 	mkdir -p $(DESTDIR)/var/log/paagent
 	cp src/PAAgent-config-planning-day-only.xml $(DESTDIR)/etc/paagent/ 
@@ -720,51 +729,60 @@ install_services_fedora: install
 #remove installed system services
 #delete init.d scripts
 remove_services_fedora: uninstall
-	rm -rf BUILDROOT/etc/paagent
-	rm -rf BUILDROOT/var/log/paagent
+	rm -rf $(DESTDIR)/etc/paagent
+	rm -rf $(DESTDIR)/var/log/paagent
 	chkconfig --del paac
 	chkconfig --del paas
-	rm -f BUILDROOT/etc/rc.d/init.d/paas
-	rm -f BUILDROOT/etc/rc.d//init.d/paac
+	rm -f $(DESTDIR)/etc/rc.d/init.d/paas
+	rm -f $(DESTDIR)/etc/rc.d//init.d/paac
 
 install_services_ubuntu: install 
-	mkdir -p /etc/paagent
-	mkdir -p /var/log/paagent
-	cp src/PAAgent-config-planning-day-only.xml /etc/paagent/ 
-	cp src/PAAgent-config-planning-night-we.xml /etc/paagent/
-	cp src/PAAgent-config.xml /etc/paagent/config.xml
-	cp src/server-log4cxx /etc/paagent/
-	cp src/client-log4cxx /etc/paagent/
-	cp src/paas /etc/init.d
-	chmod +x /etc/init.d/paas
-	cp src/paac /etc/init.d
-	chmod +x /etc/init.d/paac
-	update-rc.d paas start 98 3 4 5 . stop 2 0 1 6 .
-	update-rc.d paac start 99 3 4 5 . stop 1 0 1 6 .
+	mkdir -p $(DESTDIR)/etc/init.d
+	mkdir -p $(DESTDIR)/etc/paagent
+	mkdir -p $(DESTDIR)/var/log/paagent
+	cp src/PAAgent-config-planning-day-only.xml $(DESTDIR)/etc/paagent/ 
+	cp src/PAAgent-config-planning-night-we.xml $(DESTDIR)/etc/paagent/
+	cp src/PAAgent-config.xml $(DESTDIR)/etc/paagent/config.xml
+	cp src/server-log4cxx $(DESTDIR)/etc/paagent/
+	cp src/client-log4cxx $(DESTDIR)/etc/paagent/
+	cp src/paas $(DESTDIR)/etc/init.d
+	chmod +x $(DESTDIR)/etc/init.d/paas
+	cp src/paac $(DESTDIR)/etc/init.d
+	chmod +x $(DESTDIR)/etc/init.d/paac
 
 #delete log and configuration folders
 #remove installed system services
 #delete init.d scripts
 remove_services_ubuntu: uninstall
-	rm -rf /etc/paagent
-	rm -rf /var/log/paagent
-	update-rc.d -f --remove paac
-	update-rc.d -f --remove paas
-	rm -f /etc/init.d/paas
-	rm -f /etc/init.d/paac	
+	rm -rf $(DESTDIR)/etc/paagent
+	rm -rf $(DESTDIR)/var/log/paagent
+	rm -f $(DESTDIR)/etc/init.d/paas
+	rm -f $(DESTDIR)/etc/init.d/paac	
 
+#backup .rpmmacros
 #create rpmbuild tree rpmdev-setuptree
 #create paagent dist package	
 #copy paagent dist package to SOURCES
 #set $RPM_BUILD_ROOT
 #run rpbmbuild -ba paagent.spec
 #copy built packages to somewhere visible
+#restore .rpmmacros
 rpm: dist
+	mv ~/.rpmmacros ~/.rpmmacros_paagent_bkp
 	echo "%_topdir %(pwd)/rpmbuild" > ~/.rpmmacros
 	mkdir -p rpmbuild
 	mkdir -p rpmbuild/RPMS rpmbuild/SOURCES rpmbuild/SPECS rpmbuild/SRPMS rpmbuild/BUILD
 	cp $(PACKAGE_NAME)-$(PACKAGE_VERSION).tar.gz rpmbuild/SOURCES
 	rpmbuild -ba paagent.spec
+	mv ~/.rpmmacros_paagent_bkp ~/.rpmmacros
+deb: dist
+	rm -rf $(DEBUILD)
+	mkdir -p $(DEBUILD)
+	tar xvf $(PACKAGE_NAME)-$(PACKAGE_VERSION).tar.gz
+	mv $(PACKAGE_NAME)-$(PACKAGE_VERSION) $(DEBUILD)
+	cp $(PACKAGE_NAME)-$(PACKAGE_VERSION).tar.gz debuild/$(PACKAGE_NAME)_$(PACKAGE_VERSION).orig.tar.gz
+	cp -r debian $(DEBUILD)/$(PACKAGE_NAME)-$(PACKAGE_VERSION)
+	cd $(DEBUILD)/$(PACKAGE_NAME)-$(PACKAGE_VERSION); debuild
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.

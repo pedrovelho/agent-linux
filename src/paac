@@ -49,7 +49,7 @@
 # Constants
 PAAC_OPTS="-l /etc/paagent/client-log4cxx -c /etc/paagent/config.xml "
 PAAC_PID=/var/run/paac.pid
-PAAC_EXEC=/usr/local/bin/paagent
+PAAC_EXEC=/usr/bin/paagent
 
 # Handle manual control parameters like start, stop, status, restart, etc.
 
@@ -75,9 +75,12 @@ case "$1" in
     $0 stop
     $0 start
     ;;
-
+  force-reload)
+    $0 stop
+    $0 start
+    ;;
   *)
-    echo $"Usage: $0 {start|stop|status|restart}"
+    echo $"Usage: $0 {start|stop|status|restart|force-reload}"
     exit 1
 esac
 

@@ -1,0 +1,15 @@
+Source: paagent
+Section: unknown
+Priority: extra
+Maintainer: Vasile Jureschi <vjuresch@sophia.inria.fr>
+Build-Depends: debhelper (>= 7), autotools-dev
+Standards-Version: 3.8.1
+Homepage: https://www.ohloh.net/p/pa_linux_agent
+
+Package: paagent
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Description: An agent for starting ProActive JVM nodes at specified times on a computer.
+ An agent for starting ProActive JVM 
+ nodes at specified times on a computer.
+

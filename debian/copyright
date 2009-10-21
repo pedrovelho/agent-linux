@@ -1,0 +1,41 @@
+This package was debianized by Vasile Jureschi <vjuresch@sophia.inria.fr> on
+Tue, 20 Oct 2009 19:12:50 +0300.
+
+It was downloaded from https://www.ohloh.net/p/pa_linux_agent
+
+Upstream Author(s):
+
+     Vasile Jureschi vjuresch@sophia.inria.fr
+
+Copyright:
+
+    Copyright (C) Vasile Jureschi
+
+License:
+
+  ProActive: The ProActive Linux Agent                                               
+                                                                                     
+  This program is free software; you can redistribute it and/or                      
+  modify it under the terms of the GNU General Public License                        
+  as published by the Free Software Foundation; either version                       
+  2 of the License, or any later version.                                            
+                                                                                     
+  This program is distributed in the hope that it will be useful,                    
+  but WITHOUT ANY WARRANTY; without even the implied warranty of                     
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU                  
+  General Public License for more details.                                           
+                                                                                     
+  You should have received a copy of the GNU General Public License                  
+  along with this library; if not, write to the Free Software                        
+  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307               
+  USA                                                                                
+ 
+The Debian packaging is:
+
+    Copyright (C) 2009 Vasile Jureschi <vjuresch@sophia.inria.fr>
+
+and is licensed under the GPL version 2, 
+see `/usr/share/common-licenses/GPL-2'.
+
+# Please also look if there are files or directories which have a
+# different copyright/license attached and list them here.

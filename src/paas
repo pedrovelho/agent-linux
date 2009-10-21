@@ -49,7 +49,7 @@
 # Constants
 PAAS_OPTS="-l /etc/paagent/server-log4cxx"
 PAAS_PID=/var/run/paas.pid
-PAAS_EXEC=/usr/local/bin/paagent_server
+PAAS_EXEC=/usr/bin/paagent_server
 
 # Handle manual control parameters like start, stop, status, restart, etc.
 
@@ -75,9 +75,12 @@ case "$1" in
     $0 stop
     $0 start
     ;;
-
+  force-reload)
+    $0 stop
+    $0 start
+    ;;
   *)
-    echo $"Usage: $0 {start|stop|status|restart}"
+    echo $"Usage: $0 {start|stop|status|restart|force-reload}"
     exit 1
 esac
 
