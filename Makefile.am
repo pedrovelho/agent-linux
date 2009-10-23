@@ -3,7 +3,7 @@ SUBDIRS = src
 EXTRA_DIST = src/PAAgent-config-planning-night-we.xml src/paac src/paas \
 			src/paagent-log4cxx src/PAAgent-config.xml src/Controller.xml \
 			src/PAAgent-config-planning-day-only.xml Doxyfile images \
-			src/client-log4cxx src/server-log4cxx src/paas_fedora src/paac_fedora
+			src/client-log4cxx src/server-log4cxx src/paas_fedora src/paac_fedora \
 			paagent.spec
 
 doc: 
