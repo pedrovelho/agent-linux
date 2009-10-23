@@ -4,6 +4,7 @@ EXTRA_DIST = src/PAAgent-config-planning-night-we.xml src/paac src/paas \
 			src/paagent-log4cxx src/PAAgent-config.xml src/Controller.xml \
 			src/PAAgent-config-planning-day-only.xml Doxyfile images \
 			src/client-log4cxx src/server-log4cxx src/paas_fedora src/paac_fedora
+			paagent.spec
 
 doc: 
 	doxygen Doxyfile
@@ -106,4 +107,5 @@ deb: dist
 	mv $(PACKAGE_NAME)-$(PACKAGE_VERSION) $(DEBUILD)
 	cp $(PACKAGE_NAME)-$(PACKAGE_VERSION).tar.gz debuild/$(PACKAGE_NAME)_$(PACKAGE_VERSION).orig.tar.gz
 	cp -r debian $(DEBUILD)/$(PACKAGE_NAME)-$(PACKAGE_VERSION)
+	rm -rf $(DEBUILD)/$(PACKAGE_NAME)-$(PACKAGE_VERSION)/debian/.svn
 	cd $(DEBUILD)/$(PACKAGE_NAME)-$(PACKAGE_VERSION); debuild

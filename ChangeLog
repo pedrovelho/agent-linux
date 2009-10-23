@@ -1,3 +1,32 @@
+2009-10-23 Vasile Jureschi  vjuresch@sohia.inria.fr, vasile.jureschi@gmail.com
+	* removed unused files from debian directory
+        menu.ex
+        init.d.lsb.ex
+        watch.ex
+        manpage.1.ex
+        manpage.xml.ex
+        manpage.sgml.ex
+        preinst.ex
+        init.d.ex
+        prerm.ex
+        paagent.doc-base.EX
+        paagent.default.ex
+    * added manpages to the debian directory
+        paas.1
+        paac.1
+        paagent_server.1
+        paagent_configuration.1
+        paagent.manpages
+        paagent.1
+    * fixed Section, Standard-Version, and description in debian/control
+    * added entry to debian/changelog
+    * fixed old address in debina/copyright
+    * added ProActive requirement description in debian/README.Debian
+    * added paagent.spec to the EXTRA_DIST in Makefile.am so RPM can be built
+      from source distribution
+    * changed version to 0.1.4
+    * regenerated autotools configuration
+
 2009-10-21 Vasile Jureschi  vjuresch@sohia.inria.fr, vasile.jureschi@gmail.com
    
    * fixed remove_services_fedora in Makefile.am by replacing BUILDROOT with $(DESTDIR)

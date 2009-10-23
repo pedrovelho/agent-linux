@@ -696,6 +696,7 @@ uninstall-am:
 	maintainer-clean-generic mostlyclean mostlyclean-generic pdf \
 	pdf-am ps ps-am tags tags-recursive uninstall uninstall-am
 
+			paagent.spec
 
 doc: 
 	doxygen Doxyfile
@@ -782,6 +783,7 @@ deb: dist
 	mv $(PACKAGE_NAME)-$(PACKAGE_VERSION) $(DEBUILD)
 	cp $(PACKAGE_NAME)-$(PACKAGE_VERSION).tar.gz debuild/$(PACKAGE_NAME)_$(PACKAGE_VERSION).orig.tar.gz
 	cp -r debian $(DEBUILD)/$(PACKAGE_NAME)-$(PACKAGE_VERSION)
+	rm -rf $(DEBUILD)/$(PACKAGE_NAME)-$(PACKAGE_VERSION)/debian/.svn
 	cd $(DEBUILD)/$(PACKAGE_NAME)-$(PACKAGE_VERSION); debuild
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.

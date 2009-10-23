@@ -1,6 +1,6 @@
 Summary: paagent                     
 Name: paagent                        
-Version: 0.1.3
+Version: 0.1.4
 Release: 1
 Source0: %{name}-%{version}.tar.gz
 License: GPL

@@ -1,0 +1,88 @@
+.\"                                      Hey, EMACS: -*- nroff -*-
+.\" First parameter, NAME, should be all caps
+.\" Second parameter, SECTION, should be 1-8, maybe w/ subsection
+.\" other parameters are allowed: see man(7), man(1)
+.TH PAAGENT_SERVER "1" "October 23, 2009"
+.\" Please adjust this date whenever revising the manpage.
+.\"
+.\" Some roff macros, for reference:
+.\" .nh        disable hyphenation
+.\" .hy        enable hyphenation
+.\" .ad l      left justify
+.\" .ad b      justify to both left and right margins
+.\" .nf        disable filling
+.\" .fi        enable filling
+.\" .br        insert line break
+.\" .sp <n>    insert n+1 empty lines
+.\" for manpage-specific macros, see man(7)
+.SH NAME
+paagent_server \- Program which listens for method calls on D-Bus and starts ProActive nodes
+.SH SYNOPSIS
+.B paagent
+.RI [ OPTIONS ] 
+.br
+.B paagent_server
+.RI [ OPTIONS ] 
+.SH DESCRIPTION
+The programs are not intended to be started on their own but instead used through the 
+.B
+paac
+and 
+.B
+paas
+system services. The paas system service starts the
+.B 
+paagent_server
+at boot time while paac starts
+.B
+paagent. 
+.B
+Paagent_server
+will listen for method calls on DBus and start and stop nodes when it receives messages. 
+.B
+Paagent
+reads an XML configuration file and sends start and stop commands to paagent_server. The configuration file specifies times to start, idle thresholds, resource limits, and other options.
+By default 
+.B
+paac
+uses the 
+.B
+config.xml
+file placed in /etc/paagent to configure
+.B
+paagent.
+Paagent
+also keeps the started ProActive nodes alive by restarting them if they stop and manages the resources used (CPU, memory) by the nodes. ProActive is required to be installed for the services to run properly. A ProActive distribution can be downloaded from http://www.activeeon.com/community-downloads
+
+.PP
+.\" TeX users may be more comfortable with the \fB<whatever>\fP and
+.\" \fI<whatever>\fP escape sequences to invode bold face and italics,
+.\" respectively.
+.SH OPTIONS
+These programs follow the usual GNU command line syntax, with long
+options starting with two dashes (`-').
+A summary of options is included below.
+
+.SH
+paagent_server
+.TP
+.B \-h, \-\-help
+Show summary of options.
+.TP
+.B \-v, \-\-version
+Show version of program.
+.TP
+.B \-l <filename> \-\-logging <filename>
+Selects the logging configuration. The logging configuration file is installed by default in /etc/paagent/client.log4cxx for paagent and /etc/paagent/server.log4cxx for paagent_server. The logging output is in /var/log/paagent.
+ 
+.SH SEE ALSO
+.BR paagent (1)
+.BR paas (1)
+.BR paac (1)
+.BR paagent_configuration (1)
+
+.SH AUTHOR
+paagent_server was written by Vasile Jureschi <vjureschi@sophia.inria.fr>.
+.PP
+This manual page was written by Vasile Jureschi <vjuresch@sophia.inria.fr>,
+and may be used by others.
