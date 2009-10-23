@@ -1,26 +1,32 @@
-2009-10-12 Vasile Jureschi  vjuresch@sohia.inria.fr, vasile.jureschi@gmail.com
-	* added namespace "paagent" to prevent name clashes (e.g. Event class)
-	 
-	* fixed the cpulimiting, as it was not implemented for every action 
-		- modified Runner class 
-	
-	* modified the starter classes (Runner, Controller, NodeStarter 
-	  and derived classes) to use a simpler way of passing arguments. 
-	  In the paagent_server the configuration options are now
-	  passed around using a Configuration singleton class. 
-	
-	* added handling for the <jvm_args> option in the configuration xml
-	    - modified the Configuration class and NodeStarter class
+2009-10-21 Vasile Jureschi  vjuresch@sohia.inria.fr, vasile.jureschi@gmail.com
+   
+   * fixed remove_services_fedora in Makefile.am by replacing BUILDROOT with $(DESTDIR)
+   * modified the install_services_ubuntu target so it can be used with the deb target
+     - added $(DESTDIR) Makefile.am for the paths in the target
+   * modified the install_services_fedora to create and restore a backup of .rpmmacros
+    when building the rpm
+   * added deb target in Makefile.am
+   * modified paas and paac to use /usr/bin instead of /usr/local/bin
+   * added skeleton debian configuration in debian directory
+   * regenerated autotools configuration  
 	    
-2009-10-12 Vasile Jureschi  vjuresch@sohia.inria.fr, vasile.jureschi@gmail.com
-	
-	* added string GetJVMParamsString() const; in Configuration class to get 
-	the string of parameters
+2009-10-16 Vasile Jureschi  vjuresch@sohia.inria.fr, vasile.jureschi@gmail.com
+ 
+   * rpm building works now 
+   * removed tclap include references from Makefile.am and added the tclap
+     header files in the src folder
+   * regenerated autotools configuration
+   * added tclap references in Makefile.am
 
-2009-10-12 Vasile Jureschi  vjuresch@sohia.inria.fr, vasile.jureschi@gmail.com
+2009-10-15 Vasile Jureschi  vjuresch@sohia.inria.fr, vasile.jureschi@gmail.com
 
-   * added arguments parsing in CustomNodeStarter constructor by appending the 
-     extra arguments to the exec_arguments vector
+   * modified the paas_fedora and paac_fedora scripts to be usable on Fedora
+   * changed installation directory from /etc/init.d to /etc/rc.d/init.d for
+     fedora scripts (paas_fedora paac_fedora)
+      - modified: Makefile.am paas_fedora paac_fedora
+   * added paagent.spec file for building RPMs
+   * modified the Makefile.am to take build parameters from paagent.spec
+   * add make rpm target to the Makefile.am
 
 2009-10-13 Vasile Jureschi  vjuresch@sohia.inria.fr, vasile.jureschi@gmail.com
 
@@ -35,32 +41,27 @@
      The named constructors were refactored to accept a pointer to and event and 
      an action. This was less cumbersome than passing a long list of arguments.  
 
-2009-10-15 Vasile Jureschi  vjuresch@sohia.inria.fr, vasile.jureschi@gmail.com
+2009-10-12 Vasile Jureschi  vjuresch@sohia.inria.fr, vasile.jureschi@gmail.com
 
-   * modified the paas_fedora and paac_fedora scripts to be usable on Fedora
-   * changed installation directory from /etc/init.d to /etc/rc.d/init.d for
-     fedora scripts (paas_fedora paac_fedora)
-      - modified: Makefile.am paas_fedora paac_fedora
-   * added paagent.spec file for building RPMs
-   * modified the Makefile.am to take build parameters from paagent.spec
-   * add make rpm target to the Makefile.am
+   * added arguments parsing in CustomNodeStarter constructor by appending the 
+     extra arguments to the exec_arguments vector
 
-2009-10-16 Vasile Jureschi  vjuresch@sohia.inria.fr, vasile.jureschi@gmail.com
- 
-   * rpm building works now 
-   * removed tclap include references from Makefile.am and added the tclap
-     header files in the src folder
-   * regenerated autotools configuration
-   * added tclap references in Makefile.am
-
-2009-10-21 Vasile Jureschi  vjuresch@sohia.inria.fr, vasile.jureschi@gmail.com
+2009-10-12 Vasile Jureschi  vjuresch@sohia.inria.fr, vasile.jureschi@gmail.com
+	
+	* added string GetJVMParamsString() const; in Configuration class to get 
+	the string of parameters
    
-   * fixed remove_services_fedora in Makefile.am by replacing BUILDROOT with $(DESTDIR)
-   * modified the install_services_ubuntu target so it can be used with the deb target
-     - added $(DESTDIR) Makefile.am for the paths in the target
-   * modified the install_services_fedora to create and restore a backup of .rpmmacros
-    when building the rpm
-   * added deb target in Makefile.am
-   * modified paas and paac to use /usr/bin instead of /usr/local/bin
-   * added skeleton debian configuration in debian directory
-   * regenerated autotools configuration  
+2009-10-12 Vasile Jureschi  vjuresch@sohia.inria.fr, vasile.jureschi@gmail.com
+	* added namespace "paagent" to prevent name clashes (e.g. Event class)
+	 
+	* fixed the cpulimiting, as it was not implemented for every action 
+		- modified Runner class 
+	
+	* modified the starter classes (Runner, Controller, NodeStarter 
+	  and derived classes) to use a simpler way of passing arguments. 
+	  In the paagent_server the configuration options are now
+	  passed around using a Configuration singleton class. 
+	
+	* added handling for the <jvm_args> option in the configuration xml
+	    - modified the Configuration class and NodeStarter class
+   
