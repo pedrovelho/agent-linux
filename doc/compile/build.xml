@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project basedir="./../../">
+	
+	<!-- ************
+		Taskdefs
+	-->
+
+	<taskdef name="if" classname="ise.antelope.tasks.IfTask" />
+
+	<!-- emma -->
+<!--	<path id="emma.lib">-->
+<!--		<pathelement location="${base.dir}/compile/lib/emma_ant.jar" />-->
+<!--		<pathelement location="${base.dir}/compile/lib/emma.jar" />-->
+<!--	</path>-->
+<!---->
+<!--	<taskdef resource="emma_ant.properties" classpathref="emma.lib" />-->
+
+
+	<!-- ************
+		Properties
+	-->
+
+	<!--
+		Create a timestamp for this build
+		If ${version} is defined its value is used as string version for this build
+		Otherwise the timestamp is used
+	-->
+
+	<!-- Version setting example-->
+	<!-- <property name="version" value="4.2.0" /> -->
+	<!-- Release date -->
+	<!-- <property name="release.date" value="17 Dec. 2009" /> -->
+
+	<tstamp>
+		<!-- <format property="TODAY" pattern="yyyy-MM-dd HH:mm:ss" /> -->
+		<format property="TODAY" pattern="yyyy-MM-dd" />
+
+	</tstamp>
+
+	<if name="version">
+		<property name="isRelease" value="true" />
+
+		<else>
+			<property name="version" value="${TODAY}" />
+		</else>
+	</if>
+
+
+	<property file="${user.home}/.proactive/build.properties" />
+	<property name="doc.dir" value="${basedir}/doc" />
+
+
+	<!-- ************
+		Imports
+	-->
+
+	<import file="${doc.dir}/src/build.xml"  optional="true" />
+
+</project>
