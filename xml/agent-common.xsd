@@ -3,7 +3,59 @@
   xmlns:xsd="http://www.w3.org/2001/XMLSchema" 
   elementFormDefault="qualified">
 
+
+<!-- 
+               /!\   PLEASE DO NOT REFORMAT THIS FILE /!\     
+  
+     This file is correctly formated and highly readable. Please do not ruin our efforts. Thanks !
+ -->
+
+
+
+
+
+  <!--  Root element -->
+
+  <xsd:element name="agent" type="AgentType">
+    <xsd:annotation><xsd:documentation>
+    A ProActive Agent configuration file
+    </xsd:documentation></xsd:annotation>
+  </xsd:element>
+
+
+  <xsd:complexType name="AgentType">
+    <xsd:sequence>
+      <xsd:element minOccurs="1" maxOccurs="1" name="config" type="GlobalAgentConfigType">
+        <xsd:annotation><xsd:documentation>
+          The global configuration of the ProActive Agent. This configuration can be overriden by each event.
+        </xsd:documentation></xsd:annotation>
+      </xsd:element>
+      <xsd:element minOccurs="1" maxOccurs="1" name="events">
+        <xsd:annotation><xsd:documentation>
+          A ProActive Agent configuration file
+        </xsd:documentation></xsd:annotation>
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element minOccurs="1" maxOccurs="unbounded" name="event" type="CalendarEventType" />
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:element minOccurs="1" maxOccurs="1" name="connections">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element minOccurs="1" maxOccurs="unbounded" ref="Connection" />
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+
+
+
+
+
   <!-- ACTIONS -->
+  
   <xsd:element name="Connection" abstract="true" type="ConnectionType"/>
   <xsd:complexType name="ConnectionType" abstract="true">
     <xsd:annotation><xsd:documentation xml:lang="en">
@@ -13,9 +65,7 @@
     
       <xsd:element minOccurs="0" maxOccurs="1" name="respawnIncrement" type="xsd:positiveInteger">
         <xsd:annotation><xsd:documentation xml:lang="en">
-        Each time a runtime dies, it is automatically restarted by the agent. To avoid
-        system overloading, the agent waits for a given amount of time before restarting
-        the runtime. This delay depends of the number of restart and the respawnincrement
+        Each time a runtime dies, it is automatically restarted by the agent. To avoid system overloading, the agent waits for a given amount of time before restarting the runtime. This delay depends of the number of restart and the respawnincrement
         </xsd:documentation></xsd:annotation>
       </xsd:element>
       
@@ -132,8 +182,10 @@
 
 
 
+
   <!-- EVENTS -->
-  <xsd:complexType name="CalendarEvent">
+  
+  <xsd:complexType name="CalendarEventType">
     <xsd:sequence>
       <xsd:element minOccurs="1" maxOccurs="1" name="start">
         <xsd:complexType>
@@ -253,6 +305,8 @@
         </xsd:attribute>
       </xsd:complexType>
       </xsd:element>
+      
+      <xsd:element minOccurs="0" maxOccurs="1" name="config" type="EventAgentConfigType"/>
     </xsd:sequence>
   </xsd:complexType>
 
@@ -260,133 +314,116 @@
 
 
   <!-- CONFIGURATION -->
-  <xsd:complexType name="AgentConfig">
+  
+  <xsd:complexType name="GlobalAgentConfigType">
     <xsd:annotation><xsd:documentation xml:lang="en">
         The options defining how the ProActive runtime is
         started.
         Theses options apply to all the events
-   	</xsd:documentation></xsd:annotation>
+    </xsd:documentation></xsd:annotation>
     <xsd:sequence>
-      <xsd:element minOccurs="1" maxOccurs="1" name="proactiveHome" type="xsd:string">
-        <xsd:annotation><xsd:documentation xml:lang="en">
-            The path to the ProActive Programming or
-            ProActive Scheduling
-            installation directory      		
-        </xsd:documentation></xsd:annotation>
-      </xsd:element>
-      <xsd:element minOccurs="1" maxOccurs="1" name="javaHome" type="xsd:string">
-        <xsd:annotation><xsd:documentation xml:lang="en">
-            The path to the Java installation directory
-        </xsd:documentation></xsd:annotation>
-      </xsd:element>
-      <xsd:element minOccurs="0" maxOccurs="1" name="jvmParameters"> 
-        <xsd:annotation><xsd:documentation xml:lang="en">
-            The list of parameters to be passed to the JVM
-        </xsd:documentation></xsd:annotation>
-        <xsd:complexType>
-          <xsd:sequence>
-            <xsd:element minOccurs="1" maxOccurs="unbounded" name="param" type="xsd:string" />
-          </xsd:sequence>
-       </xsd:complexType>
-     </xsd:element>
-      
-     <xsd:element minOccurs="0" maxOccurs="1" name="memoryManagement">
-        <xsd:annotation><xsd:documentation xml:lang="en">
-            True is an only if the started ProActive runtimes
-            must be memory
-            constrained
-
-            Both java and fork process memory can be
-            constrained.
-            TODO: Add the algorithm 
-        </xsd:documentation></xsd:annotation>
-
-        <xsd:complexType>
-          <xsd:sequence>
-            <xsd:element minOccurs="0" maxOccurs="1" name="java" type="xsd:positiveInteger"/>
-            <xsd:element minOccurs="0" maxOccurs="1" name="native" type="xsd:positiveInteger"/>
-          </xsd:sequence>
-        
-          <xsd:attribute name="enabled" type="xsd:boolean" use="required">
-            <xsd:annotation><xsd:documentation>
-              Is memory management enabled
-             </xsd:documentation></xsd:annotation>
-          </xsd:attribute>
-        </xsd:complexType>
-      </xsd:element>
-
-            
-     <xsd:element minOccurs="0" maxOccurs="1" name="nbRuntimes">
-        <xsd:annotation><xsd:documentation xml:lang="en">
-       
-        </xsd:documentation></xsd:annotation>
-
-        <xsd:complexType>
-          <xsd:sequence>
-            <xsd:element minOccurs="1" maxOccurs="1" name="count" type="xsd:positiveInteger"/>
-          </xsd:sequence>
-        
-          <xsd:attribute name="auto" type="xsd:boolean" use="optional">
-            <xsd:annotation><xsd:documentation>
-
-             </xsd:documentation></xsd:annotation>
-          </xsd:attribute>
-        </xsd:complexType>
-      </xsd:element>
-      
-      <xsd:element minOccurs="0" maxOccurs="1" name="protocol" type="xsd:string">
-        <xsd:annotation>
-          <xsd:documentation xml:lang="en">
-            The communication protocol to be used by the
-            started ProActive
-            runtime 		
-      		</xsd:documentation>
-        </xsd:annotation>
-      </xsd:element>
-
-      <xsd:element minOccurs="0" maxOccurs="1" name="initialPortValue" type="xsd:unsignedShort">
-        <xsd:annotation>
-          <xsd:documentation xml:lang="en">
-            TODO
-      		</xsd:documentation>
-        </xsd:annotation>
-      </xsd:element>
-
-      <xsd:element minOccurs="0" maxOccurs="1" name="onRuntimeExitScript" type="xsd:string"> <!-- Fixme: should be on_runtime_exit_script -->
-        <xsd:annotation>
-          <xsd:documentation xml:lang="en">
-            The path to an executable to be started each time
-            a forked ProActive
-            runtime exits
-            It can be used to cleanup some
-            ressources, or to gather some results
-					</xsd:documentation>
-        </xsd:annotation>
-      </xsd:element>
+      <xsd:element minOccurs="1" maxOccurs="1" name="proactiveHome" type="ConfProactiveHomeType"/>
+      <xsd:element minOccurs="1" maxOccurs="1" name="javaHome" type="ConfJavaHomeType"/>
+      <xsd:element minOccurs="0" maxOccurs="1" name="jvmParameters" type="ConfJvmParametersType"/> 
+      <xsd:element minOccurs="0" maxOccurs="1" name="memoryManagement" type="ConfMemoryManagementType"/>
+      <xsd:element minOccurs="0" maxOccurs="1" name="nbRuntimes" type="ConfNbRuntimesType"/>
+      <xsd:element minOccurs="0" maxOccurs="1" name="protocol" type="ConfProtocolType"/>
+      <xsd:element minOccurs="0" maxOccurs="1" name="initialPortValue" type="ConfInitialPortValueType"/>
+      <xsd:element minOccurs="0" maxOccurs="1" name="onRuntimeExitScript" type="ConfOnRuntimeExitScriptType"/>
     </xsd:sequence>
   </xsd:complexType>
 
-  <xsd:complexType name="Configuration">
+
+  <xsd:complexType name="EventAgentConfigType">
+    <xsd:annotation><xsd:documentation xml:lang="en">
+    </xsd:documentation></xsd:annotation>
     <xsd:sequence>
-      <xsd:element minOccurs="1" maxOccurs="1" name="config" type="AgentConfig" />
-      <xsd:element minOccurs="1" maxOccurs="1" name="events">
-        <xsd:complexType>
-          <xsd:sequence>
-            <xsd:element minOccurs="1" maxOccurs="unbounded" name="event" type="CalendarEvent" />
-          </xsd:sequence>
-        </xsd:complexType>
-      </xsd:element>
-      <xsd:element minOccurs="1" maxOccurs="1" name="connections">
-        <xsd:complexType>
-          <xsd:sequence>
-            <xsd:element minOccurs="1" maxOccurs="unbounded" ref="Connection" />
-          </xsd:sequence>
-        </xsd:complexType>
-      </xsd:element>
+      <xsd:element minOccurs="0" maxOccurs="1" name="proactiveHome" type="ConfProactiveHomeType" />
+      <xsd:element minOccurs="0" maxOccurs="1" name="javaHome" type="ConfJavaHomeType"/>
+      <xsd:element minOccurs="0" maxOccurs="1" name="jvmParameters" type="ConfJvmParametersType"/> 
+      <xsd:element minOccurs="0" maxOccurs="1" name="memoryManagement" type="ConfMemoryManagementType"/>
+      <xsd:element minOccurs="0" maxOccurs="1" name="nbRuntimes" type="ConfNbRuntimesType"/>
+      <xsd:element minOccurs="0" maxOccurs="1" name="protocol" type="ConfProtocolType"/>
+      <xsd:element minOccurs="0" maxOccurs="1" name="initialPortValue" type="ConfInitialPortValueType"/>
+      <xsd:element minOccurs="0" maxOccurs="1" name="onRuntimeExitScript" type="ConfOnRuntimeExitScriptType"/>
     </xsd:sequence>
   </xsd:complexType>
 
-  <xsd:element name="agent" type="Configuration" />
+
+  <xsd:simpleType name="ConfProactiveHomeType">
+    <xsd:annotation><xsd:documentation xml:lang="en">
+    The path to the ProActive Programming or ProActive Scheduling installation directory          
+    </xsd:documentation></xsd:annotation>
+    <xsd:list itemType="nonEmptyString"/>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="ConfJavaHomeType">
+    <xsd:annotation><xsd:documentation xml:lang="en">
+    The path to the Java installation directory
+    </xsd:documentation></xsd:annotation>
+    <xsd:list  itemType="nonEmptyString"/>
+  </xsd:simpleType>
+      
+  <xsd:complexType name="ConfJvmParametersType"> 
+    <xsd:annotation><xsd:documentation xml:lang="en">
+    The list of parameters to be passed to the JVM
+    </xsd:documentation></xsd:annotation>
+    <xsd:sequence>
+      <xsd:element minOccurs="1" maxOccurs="unbounded" name="param" type="xsd:string" />
+    </xsd:sequence>
+  </xsd:complexType>
+      
+  <xsd:complexType name="ConfMemoryManagementType">
+    <xsd:annotation><xsd:documentation xml:lang="en">
+    True is an only if the started ProActive runtimes must be memory constrained. Both java and fork process memory can be constrained.
+    </xsd:documentation></xsd:annotation>
+    <xsd:sequence>
+      <xsd:element minOccurs="0" maxOccurs="1" name="java" type="xsd:positiveInteger"/>
+      <xsd:element minOccurs="0" maxOccurs="1" name="native" type="xsd:positiveInteger"/>
+    </xsd:sequence>
+    <xsd:attribute name="enabled" type="xsd:boolean" use="required">
+      <xsd:annotation><xsd:documentation>
+      Is memory management enabled
+      </xsd:documentation></xsd:annotation>
+   </xsd:attribute>
+  </xsd:complexType>
+
+  <xsd:complexType name="ConfNbRuntimesType">
+    <xsd:annotation><xsd:documentation xml:lang="en">
+
+    </xsd:documentation></xsd:annotation>
+    <xsd:sequence>
+      <xsd:element minOccurs="1" maxOccurs="1" name="count" type="xsd:positiveInteger"/>
+    </xsd:sequence>
+    <xsd:attribute name="auto" type="xsd:boolean" use="optional">
+      <xsd:annotation><xsd:documentation>
+
+      </xsd:documentation></xsd:annotation>
+    </xsd:attribute>
+  </xsd:complexType>
+      
+  <xsd:simpleType name="ConfProtocolType">
+    <xsd:annotation><xsd:documentation xml:lang="en">
+    The communication protocol to be used by the started ProActive runtime     
+    </xsd:documentation></xsd:annotation>
+    <xsd:list itemType="nonEmptyString"/>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="ConfInitialPortValueType">
+    <xsd:annotation><xsd:documentation xml:lang="en">
+
+    </xsd:documentation></xsd:annotation>
+    <xsd:list itemType="xsd:unsignedShort"/>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="ConfOnRuntimeExitScriptType"> 
+    <xsd:annotation><xsd:documentation xml:lang="en">
+    The path to an executable to be started each time a forked ProActive runtime exits. It can be used to cleanup some ressources, or to gather some results
+    </xsd:documentation></xsd:annotation>
+    <xsd:list itemType="nonEmptyString"/>
+  </xsd:simpleType>
+
+
 
 
 
@@ -396,9 +433,10 @@
     </xsd:restriction>
   </xsd:simpleType>
 
-  <xsd:simpleType name="nonEmptyString" >
+  <xsd:simpleType name="nonEmptyString">
     <xsd:restriction base="xsd:string">
       <xsd:minLength value="1" />
+      <xsd:pattern value=".*[^\s].*" />
     </xsd:restriction>
   </xsd:simpleType>
 
