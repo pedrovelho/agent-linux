@@ -6,9 +6,9 @@
   elementFormDefault="qualified">
 
   <xsd:redefine schemaLocation="agent-common.xsd">
-    <xsd:complexType name="CalendarEvent">
+    <xsd:complexType name="CalendarEventType">
       <xsd:complexContent>
-        <xsd:extension base="CalendarEvent">
+        <xsd:extension base="CalendarEventType">
           <xsd:sequence>
             <xsd:element name="nice" minOccurs="0" maxOccurs="1">
               <xsd:complexType>
