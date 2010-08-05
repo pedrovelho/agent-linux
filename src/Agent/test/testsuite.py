@@ -36,45 +36,21 @@
 # $$ACTIVEEON_INITIAL_DEV$$
 #################################################################
 
-
-'''
-This is the ProActive Linux agent main entry point
-'''
-
-import optparse
-import logging.config
+import unittest
+import xmlrunner
 import sys
 
-    
-def main():
-    
-    parser = optparse.OptionParser()
-    parser.add_option("-v", "--verbose", action="store_true", dest="verbose", default=False, help="Enable verbose mode", )
-    parser.add_option("-c", "--cgroup",  action="store",      dest="cgroup",  type="string", help="cgroup mount point", )
+import actionTest
+import controllerTest
+import eventgeneratorTest
 
-    (options, args) = parser.parse_args();
 
-    logging.config.fileConfig("logging.conf")
-    if options.verbose is True:
-        # TODO: Set level to DEBUG for each logger
-        pass
-    
-    filename = "config.xml"
-    if len(args) == 1:
-        filename = args[0]
-    elif len(args) != 0:
-        parser.print_help()
-        return 1 
-    
-    import action
-    import eventgenerator
-    import controller
-    
-    act = action.parse(filename)
-    evg =  eventgenerator.parse(filename, act)
-    controller.mainloop(evg)
+suite = unittest.TestSuite([
+                            unittest.TestLoader().loadTestsFromModule(actionTest),
+                            unittest.TestLoader().loadTestsFromModule(controllerTest),
+                            unittest.TestLoader().loadTestsFromModule(eventgeneratorTest),
+])
 
-    return 0
-    
 if __name__ == '__main__':
-    sys.exit(main())
+    runner = xmlrunner.XMLTestRunner(sys.stderr)
+    runner.run(suite)

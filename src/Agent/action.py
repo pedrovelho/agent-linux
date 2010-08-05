@@ -1,15 +1,56 @@
-'''
-Created on Jul 7, 2010
-
-@author: cmathieu
-'''
-
-import logging
+#! /usr/bin/env python
+# -*- coding: UTF-8 -*-
+#################################################################
+#
+# ProActive Parallel Suite(TM): The Java(TM) library for
+#    Parallel, Distributed, Multi-Core Computing for
+#     Enterprise Grids & Clouds
+#
+# Copyright (C) 1997-2010 INRIA/University of 
+#                 Nice-Sophia Antipolis/ActiveEon
+# Contact: proactive@ow2.org or contact@activeeon.com
+#
+# This library is free software; you can redistribute it and/or
+# modify it under the terms of the GNU General Public License
+# as published by the Free Software Foundation; version 3 of
+# the License.
+#
+# This library is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+# General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this library; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
+# USA
+#
+# If needed, contact us to obtain a release under GPL Version 2 
+# or a different license than the GPL.
+#
+#  Initial developer(s):               The ProActive Team
+#                        http://proactive.inria.fr/team_members.htm
+#  Contributor(s):
+#
+#################################################################
+# $$ACTIVEEON_INITIAL_DEV$$
+#################################################################
 from lxml import etree
+from main import AgentError
+import logging
+import main
+
+''' 
+This module is responsible for parsing the events from the agent configuration file
+'''
+
 
 logger = logging.getLogger("action")
 
-class __RootAction:
+class _AbstractConnection:
+    ''' 
+    An abstract connection. It only defines the methods that must be implemented by the subclasses
+    '''
     def getStart(self, config):
         return lambda :self._start(config)
     def getStop(self, config):
@@ -29,8 +70,11 @@ class __RootAction:
         raise NotImplementedError
 
 
-class Dummy(__RootAction):
 
+class DummyConnection(_AbstractConnection):
+    ''' 
+    A do-nothing connection. It only logs a message when a method is called
+    '''
     def parse(self, doc):
         logger.debug("%s parse called" % self.__class__.__name__)
         return "/bin/true"
@@ -47,8 +91,56 @@ class Dummy(__RootAction):
         logger.debug("%s restart called" % self.__class__.__name__)
         return "/bin/true"
   
+
+
+class RessourceManagerConnection(_AbstractConnection):
+    ''' 
+    Spawns a JVM who registers to a ProActive ressource manager
+    '''
+    def parse(self, doc):
+        logger.debug("%s parse called" % self.__class__.__name__)
+        return "/bin/true"
+
+    def _start(self, config):
+        logger.debug("%s start called" % self.__class__.__name__)
+        return "/bin/true"
+
+    def _stop(self, config):
+        logger.debug("%s stop called" % self.__class__.__name__)
+        return "/bin/true"
+
+    def _restart(self, config):
+        logger.debug("%s restart called" % self.__class__.__name__)
+        return "/bin/true"
     
-class Advert(__RootAction):
+
+class CustomConnection(_AbstractConnection):
+    ''' 
+    Spawns a JVM who will run user supplied code
+    '''
+    def parse(self, doc):
+        logger.debug("%s parse called" % self.__class__.__name__)
+        return "/bin/true"
+
+    def _start(self, config):
+        logger.debug("%s start called" % self.__class__.__name__)
+        return "/bin/true"
+
+    def _stop(self, config):
+        logger.debug("%s stop called" % self.__class__.__name__)
+        return "/bin/true"
+
+    def _restart(self, config):
+        logger.debug("%s restart called" % self.__class__.__name__)
+        return "/bin/true"
+        
+    
+  
+    
+class LocalBindConnection(_AbstractConnection):
+    '''
+    Spawns a JVM who registers into a local registery. 
+    '''
     __nodeName = None
     __javaStarterClass = None
     __initialRestartDelay = None 
@@ -56,15 +148,15 @@ class Advert(__RootAction):
     def parse(self, node):
         logger.debug("%s parse called" % self.__class__.__name__)
         
-        lx = node.xpath("./a:nodeName", namespaces = {'a' : "urn:proactive:agent:1.0"});
+        lx = node.xpath("./a:nodeName", namespaces = {'a' : main.xmlns});
         assert(len(lx) == 1)
         self.__nodeName = lx[0].text
 
-        lx = node.xpath("./a:javaStarterClass", namespaces = {'a' : "urn:proactive:agent:1.0"});
+        lx = node.xpath("./a:javaStarterClass", namespaces = {'a' : main.xmlns});
         assert(len(lx) == 1)
         self.__javaStarterClass = lx[0].text
 
-        lx = node.xpath("./a:initialRestartDelay", namespaces = {'a' : "urn:proactive:agent:1.0"});
+        lx = node.xpath("./a:initialRestartDelay", namespaces = {'a' : main.xmlns});
         assert(len(lx) == 1)
         self.__initialRestartDelay = lx[0].text
         
@@ -117,18 +209,48 @@ def _buildJavaCommand(config, className, classArg=None):
 
     return cmd
     
-_handlers = {'AdvertAction' : Advert}
 
-def parse(filename):
-    tree = etree.parse(filename)
-    lx = tree.xpath("//a:action[a:isEnabled='true' or a:isEnabled='1']", namespaces = {'a' : "urn:proactive:agent:1.0"})
+def parse(configFname):
+    '''
+    Parse the agent configuration file and return an _Connection object
+    
+    If the file cannot be parsed an AgentException is raised
+    '''
+    handlers = {
+                'localBind' : LocalBindConnection,
+                'rmConnection': RessourceManagerConnection,
+                'customConnection': CustomConnection,
+                }
+    
+    # Load XML Schema and parse the configuration file
+    #
+    # TODO: Handle user error (wrong schema, invalid XML etc.) as nicely as possible
+    try:
+        schemaFname = "../../../xml/agent-linux.xsd"
+        schema = etree.XMLSchema(file=schemaFname)
+    except etree.LxmlError as e:
+        raise AgentError("Unable to load XML Schema %s: %s" % (schemaFname, e))
+    
+    try: 
+        parser = etree.XMLParser(schema=schema, no_network=True, compact=True)
+        tree = etree.parse(configFname, parser)
+    except IOError as e: # File not found or access right
+        raise AgentError("Unable to read configuration file: %s" % configFname)
+    except etree.XMLSyntaxError as e: # Bad XSD declaration, Invalid or malformed XML
+        raise AgentError("Unable to parse the user supplied configuration file %s: %s " % (configFname, e))
+    except etree.LxmlError as e: # Catch all
+        raise AgentError("Unable to parse the user supplied configuration file %s: %s " % (configFname, e))
+    
+    # Delegate the parsing to the right class (according to the enabled action)
+    lx = tree.xpath("//a:connections/*[@enabled='true' or @enabled='1']", namespaces = {'a' : main.xmlns})
 
     l = len(lx)
     if (l == 0):
-        return Dummy.parse()
+        raise AgentError('Invalid configuration file. One and only one connection must be enabled (It cannot be enforced by the XML Schema)')
     elif (l == 1):
-        name = lx[0].get("type")
-        handler = _handlers.get(name)()
-        return handler.parse(lx[0])
+        name = lx[0].tag.replace("{%s}" % main.xmlns, "", 1)
+        handler = handlers.get(name)()
+        handler.parse(lx[0])
+        return handler
     else:
-        raise Exception('Invalid config file. One and only one action can be enabled in the config file (it is allowed by the XSD but not by the daemon)')
+        raise AgentError('Invalid configuration file. One connection must be enabled (It cannot be enforced by the XML Schema)')

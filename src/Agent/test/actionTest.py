@@ -35,20 +35,39 @@
 #################################################################
 # $$ACTIVEEON_INITIAL_DEV$$
 #################################################################
-
+import action
 import unittest
-import xmlrunner
-import sys
-
-import eventgeneratorTest
-import controllerTest
+from main import AgentError
 
 
-suite = unittest.TestSuite([
-                            unittest.TestLoader().loadTestsFromModule(eventgeneratorTest),
-                            unittest.TestLoader().loadTestsFromModule(controllerTest),
-])
+class TestWrongXML(unittest.TestCase):
+    '''
+    Check that the agent correctly handle bad XML files
+    '''
+    
+    def test_does_not_exit(self):
+        ''' Checks that an exception is thrown is a wrong path is given'''
+        self.assertRaises(AgentError, action.parse, "/does/not/exist")
+        
+    def test_bad_xsd(self):
+        ''' Checks that an exception is thrown is the namespace is wrong'''
+        self.assertRaises(AgentError, action.parse, "./actionTest_test_bad_xsd.xml")
+        
+    def test_invalid_xml(self):
+        ''' Checks that an exception is thrown if the file is invalid'''
+        self.assertRaises(AgentError, action.parse, "./actionTest_test_invalid_xml.xml")
+        
+    def test_no_enabled(self):
+        ''' Checks that an exception is thrown when no connection is enabled'''
+        self.assertRaises(AgentError, action.parse, "./actionTest_test_no_enabled.xml")
 
-if __name__ == '__main__':
-    runner = xmlrunner.XMLTestRunner(sys.stderr)
-    runner.run(suite)
+    def test_too_many_enabled(self):
+        ''' Checks that an exception is thrown when several connections are enabled '''
+        self.assertRaises(AgentError, action.parse, "./actionTest_test_too_many_enabled.xml")
+        
+    def test_valid_xml(self):
+        ''' Checks that everything is fine when a valid file is given'''
+        a = action.parse("./actionTest_test_valid_xml.xml")
+        self.assertNotEqual(None, a)
+        self.assertTrue(isinstance(a, action._AbstractConnection))
+
