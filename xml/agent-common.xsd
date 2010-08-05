@@ -328,7 +328,7 @@
       <xsd:element minOccurs="0" maxOccurs="1" name="memoryManagement" type="ConfMemoryManagementType"/>
       <xsd:element minOccurs="0" maxOccurs="1" name="nbRuntimes" type="ConfNbRuntimesType"/>
       <xsd:element minOccurs="0" maxOccurs="1" name="protocol" type="ConfProtocolType"/>
-      <xsd:element minOccurs="0" maxOccurs="1" name="initialPortValue" type="ConfInitialPortValueType"/>
+      <xsd:element minOccurs="0" maxOccurs="1" name="initialPortValue" type="ConfPortRangeType"/>
       <xsd:element minOccurs="0" maxOccurs="1" name="onRuntimeExitScript" type="ConfOnRuntimeExitScriptType"/>
     </xsd:sequence>
   </xsd:complexType>
@@ -344,7 +344,7 @@
       <xsd:element minOccurs="0" maxOccurs="1" name="memoryManagement" type="ConfMemoryManagementType"/>
       <xsd:element minOccurs="0" maxOccurs="1" name="nbRuntimes" type="ConfNbRuntimesType"/>
       <xsd:element minOccurs="0" maxOccurs="1" name="protocol" type="ConfProtocolType"/>
-      <xsd:element minOccurs="0" maxOccurs="1" name="initialPortValue" type="ConfInitialPortValueType"/>
+      <xsd:element minOccurs="0" maxOccurs="1" name="initialPortValue" type="ConfPortRangeType"/>
       <xsd:element minOccurs="0" maxOccurs="1" name="onRuntimeExitScript" type="ConfOnRuntimeExitScriptType"/>
     </xsd:sequence>
   </xsd:complexType>
@@ -409,12 +409,13 @@
     <xsd:list itemType="nonEmptyString"/>
   </xsd:simpleType>
 
-  <xsd:simpleType name="ConfInitialPortValueType">
+  <xsd:complexType name="ConfPortRangeType">
     <xsd:annotation><xsd:documentation xml:lang="en">
 
     </xsd:documentation></xsd:annotation>
-    <xsd:list itemType="xsd:unsignedShort"/>
-  </xsd:simpleType>
+    <xsd:attribute use="required" type="xsd:unsignedShort" name="first"/>
+    <xsd:attribute use="required" type="xsd:unsignedShort" name="last"/>
+  </xsd:complexType>
 
   <xsd:simpleType name="ConfOnRuntimeExitScriptType"> 
     <xsd:annotation><xsd:documentation xml:lang="en">
