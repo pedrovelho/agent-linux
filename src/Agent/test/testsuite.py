@@ -43,12 +43,14 @@ import sys
 import actionTest
 import controllerTest
 import eventgeneratorTest
+import mainTest
 
 
 suite = unittest.TestSuite([
                             unittest.TestLoader().loadTestsFromModule(actionTest),
                             unittest.TestLoader().loadTestsFromModule(controllerTest),
                             unittest.TestLoader().loadTestsFromModule(eventgeneratorTest),
+                            unittest.TestLoader().loadTestsFromModule(mainTest),
 ])
 
 if __name__ == '__main__':

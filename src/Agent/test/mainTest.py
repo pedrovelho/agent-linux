@@ -37,22 +37,28 @@
 #################################################################
 
 from main import AgentError
-import action
 import main
 import unittest
 
-class TestEnabledAction(unittest.TestCase):
-    ''' 
-    The number of enabled connections cannot be enforced by the XSD. This class 
-    checks that an exception is thrown is 0 or several connections are enabled.
+
+class TestXMLLoading(unittest.TestCase):
+    '''
+    Check that the agent correctly handle bad XML files
     '''
     
-    def test_no_enabled(self):
-        ''' Checks that an exception is thrown when no connection is enabled'''
-        tree = main._parse_config_file("./actionTest_test_no_enabled.xml")
-        self.assertRaises(AgentError, action.parse, tree)
-
-    def test_too_many_enabled(self):
-        ''' Checks that an exception is thrown when several connections are enabled '''
-        tree = main._parse_config_file("./actionTest_test_too_many_enabled.xml")
-        self.assertRaises(AgentError, action.parse, tree)
+    def test_does_not_exit(self):
+        ''' Checks that an exception is thrown is a wrong path is given'''
+        self.assertRaises(AgentError, main._parse_config_file, "/does/not/exist")
+        
+    def test_bad_xsd(self):
+        ''' Checks that an exception is thrown is the namespace is wrong'''
+        self.assertRaises(AgentError, main._parse_config_file, "./mainTest_test_bad_xsd.xml")
+        
+    def test_invalid_xml(self):
+        ''' Checks that an exception is thrown if the file is invalid'''
+        self.assertRaises(AgentError, main._parse_config_file, "./mainTest_test_invalid_xml.xml")
+        
+    def test_valid_xml(self):
+        ''' Checks that everything is fine when a valid file is given'''
+        a = main._parse_config_file("./mainTest_test_valid_xml.xml")
+        self.assertNotEqual(None, a)

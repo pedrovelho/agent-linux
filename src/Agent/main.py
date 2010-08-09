@@ -35,15 +35,16 @@
 #################################################################
 # $$ACTIVEEON_INITIAL_DEV$$
 #################################################################
+from lxml import etree
+import logging.config
+import optparse
+import sys
 
 
 '''
 This is the ProActive Linux agent main entry point
 '''
 
-import optparse
-import logging.config
-import sys
 
 xmlns = "urn:proactive:agent:linux:3.0"
 
@@ -56,6 +57,36 @@ class AgentError(Exception):
         
     def __str__(self):
         return "%s" % self.msg
+
+class AgentInternalError(AgentError):
+    pass
+        
+def _parse_config_file(fname):
+    '''
+    Parse the XML configuration file and return its XML tree
+    '''
+    
+    # Load the XML Schema and read the configuration file
+    #
+    # TODO: Handle user error (wrong schema, invalid XML etc.) as nicely as possible
+    try:
+        schemaFname = "../../../xml/agent-linux.xsd"
+        schema = etree.XMLSchema(file=schemaFname)
+    except etree.LxmlError as e:
+        raise AgentError("Unable to load XML Schema %s: %s" % (schemaFname, e))
+    
+    try: 
+        parser = etree.XMLParser(schema=schema, no_network=True, compact=True)
+        tree = etree.parse(fname, parser)
+    except IOError as e: # File not found or access right
+        raise AgentError("Unable to read configuration file: %s" % fname)
+    except etree.XMLSyntaxError as e: # Bad XSD declaration, Invalid or malformed XML
+        raise AgentError("Unable to parse the user supplied configuration file %s: %s " % (fname, e))
+    except etree.LxmlError as e: # Catch all
+        raise AgentError("Unable to parse the user supplied configuration file %s: %s " % (fname, e))
+    
+    return tree
+
         
 def main():
     parser = optparse.OptionParser()
@@ -80,18 +111,20 @@ def main():
     elif len(args) != 0:
         parser.print_help()
         return 1 
+
+    tree = _parse_config_file(fname)
     
     # Parse connections
     import action
     try:
-        act = action.parse(fname)
+        act = action.parse(tree)
     except AgentError as e:
         logger.error("Failed to parse the configuration file: %s" % e)
         return 2
     
     # Parse the calendar
     import eventgenerator
-    evg =  eventgenerator.parse(fname, act)
+    evg =  eventgenerator.parse(tree, act)
 
     # Start the agent main loop
     import controller

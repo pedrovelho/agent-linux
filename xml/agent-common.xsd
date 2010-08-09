@@ -328,7 +328,7 @@
       <xsd:element minOccurs="0" maxOccurs="1" name="memoryManagement" type="ConfMemoryManagementType"/>
       <xsd:element minOccurs="0" maxOccurs="1" name="nbRuntimes" type="ConfNbRuntimesType"/>
       <xsd:element minOccurs="0" maxOccurs="1" name="protocol" type="ConfProtocolType"/>
-      <xsd:element minOccurs="0" maxOccurs="1" name="initialPortValue" type="ConfPortRangeType"/>
+      <xsd:element minOccurs="0" maxOccurs="1" name="portRange" type="ConfPortRangeType"/>
       <xsd:element minOccurs="0" maxOccurs="1" name="onRuntimeExitScript" type="ConfOnRuntimeExitScriptType"/>
     </xsd:sequence>
   </xsd:complexType>
@@ -344,7 +344,7 @@
       <xsd:element minOccurs="0" maxOccurs="1" name="memoryManagement" type="ConfMemoryManagementType"/>
       <xsd:element minOccurs="0" maxOccurs="1" name="nbRuntimes" type="ConfNbRuntimesType"/>
       <xsd:element minOccurs="0" maxOccurs="1" name="protocol" type="ConfProtocolType"/>
-      <xsd:element minOccurs="0" maxOccurs="1" name="initialPortValue" type="ConfPortRangeType"/>
+      <xsd:element minOccurs="0" maxOccurs="1" name="portRange" type="ConfPortRangeType"/>
       <xsd:element minOccurs="0" maxOccurs="1" name="onRuntimeExitScript" type="ConfOnRuntimeExitScriptType"/>
     </xsd:sequence>
   </xsd:complexType>
@@ -372,35 +372,28 @@
       <xsd:element minOccurs="1" maxOccurs="unbounded" name="param" type="xsd:string" />
     </xsd:sequence>
   </xsd:complexType>
-      
+
   <xsd:complexType name="ConfMemoryManagementType">
     <xsd:annotation><xsd:documentation xml:lang="en">
     True is an only if the started ProActive runtimes must be memory constrained. Both java and fork process memory can be constrained.
     </xsd:documentation></xsd:annotation>
-    <xsd:sequence>
-      <xsd:element minOccurs="0" maxOccurs="1" name="java" type="xsd:positiveInteger"/>
-      <xsd:element minOccurs="0" maxOccurs="1" name="native" type="xsd:positiveInteger"/>
-    </xsd:sequence>
-    <xsd:attribute name="enabled" type="xsd:boolean" use="required">
-      <xsd:annotation><xsd:documentation>
-      Is memory management enabled
-      </xsd:documentation></xsd:annotation>
-   </xsd:attribute>
+    <xsd:simpleContent>
+      <xsd:extension base="xsd:positiveInteger">
+        <xsd:attribute name="enabled" type="xsd:boolean" use="required">
+          <xsd:annotation><xsd:documentation>
+          Is memory management enabled
+          </xsd:documentation></xsd:annotation>
+        </xsd:attribute>
+      </xsd:extension>
+    </xsd:simpleContent>
   </xsd:complexType>
 
-  <xsd:complexType name="ConfNbRuntimesType">
+  <xsd:simpleType name="ConfNbRuntimesType">
     <xsd:annotation><xsd:documentation xml:lang="en">
 
     </xsd:documentation></xsd:annotation>
-    <xsd:sequence>
-      <xsd:element minOccurs="1" maxOccurs="1" name="count" type="xsd:positiveInteger"/>
-    </xsd:sequence>
-    <xsd:attribute name="auto" type="xsd:boolean" use="optional">
-      <xsd:annotation><xsd:documentation>
-
-      </xsd:documentation></xsd:annotation>
-    </xsd:attribute>
-  </xsd:complexType>
+    <xsd:union memberTypes="xsd:positiveInteger autoType"/>
+  </xsd:simpleType>
       
   <xsd:simpleType name="ConfProtocolType">
     <xsd:annotation><xsd:documentation xml:lang="en">
@@ -438,6 +431,12 @@
     <xsd:restriction base="xsd:string">
       <xsd:minLength value="1" />
       <xsd:pattern value=".*[^\s].*" />
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="autoType">
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="auto"/>
     </xsd:restriction>
   </xsd:simpleType>
 

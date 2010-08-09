@@ -52,45 +52,26 @@ class _AbstractConnection:
     An abstract connection. It only defines the methods that must be implemented by the subclasses
     '''
     def getStart(self, config):
-        return lambda :self._start(config)
-    def getStop(self, config):
-        return lambda :self._stop(config)
-    def getRestart(self, config):
-        return lambda :self._restart(config)
+        ''' Returns the command to executed (as a string) to start the connection'''
+        raise NotImplemented
+    
     def parse(self, node):
+        ''' Parse the configuration file to extract the value of the connection's parameters'''
         raise NotImplementedError
                     
-    def _start(self, config):
-        raise NotImplementedError
-
-    def _stop(self, config):
-        raise NotImplementedError
-
-    def _restart(self, config):
-        raise NotImplementedError
-
-
-
+                    
+                    
 class DummyConnection(_AbstractConnection):
     ''' 
     A do-nothing connection. It only logs a message when a method is called
     '''
     def parse(self, doc):
         logger.debug("%s parse called" % self.__class__.__name__)
-        return "/bin/true"
 
-    def _start(self, config):
+    def start(self, config):
         logger.debug("%s start called" % self.__class__.__name__)
         return "/bin/true"
 
-    def _stop(self, config):
-        logger.debug("%s stop called" % self.__class__.__name__)
-        return "/bin/true"
-
-    def _restart(self, config):
-        logger.debug("%s restart called" % self.__class__.__name__)
-        return "/bin/true"
-  
 
 
 class RessourceManagerConnection(_AbstractConnection):
@@ -101,18 +82,11 @@ class RessourceManagerConnection(_AbstractConnection):
         logger.debug("%s parse called" % self.__class__.__name__)
         return "/bin/true"
 
-    def _start(self, config):
+    def start(self, config):
         logger.debug("%s start called" % self.__class__.__name__)
         return "/bin/true"
-
-    def _stop(self, config):
-        logger.debug("%s stop called" % self.__class__.__name__)
-        return "/bin/true"
-
-    def _restart(self, config):
-        logger.debug("%s restart called" % self.__class__.__name__)
-        return "/bin/true"
     
+
 
 class CustomConnection(_AbstractConnection):
     ''' 
@@ -122,20 +96,11 @@ class CustomConnection(_AbstractConnection):
         logger.debug("%s parse called" % self.__class__.__name__)
         return "/bin/true"
 
-    def _start(self, config):
+    def start(self, config):
         logger.debug("%s start called" % self.__class__.__name__)
         return "/bin/true"
 
-    def _stop(self, config):
-        logger.debug("%s stop called" % self.__class__.__name__)
-        return "/bin/true"
 
-    def _restart(self, config):
-        logger.debug("%s restart called" % self.__class__.__name__)
-        return "/bin/true"
-        
-    
-  
     
 class LocalBindConnection(_AbstractConnection):
     '''
@@ -166,19 +131,13 @@ class LocalBindConnection(_AbstractConnection):
         
         return self
     
-    def _start(self, config):
+    def start(self, config):
         logger.debug("%s start called" % self.__class__.__name__)
         cmd = _buildJavaCommand(config, self.__javaStarterClass, self.__nodeName);
         return cmd
+
+
     
-    def _stop(self, config):
-        logger.debug("%s stop called" % self.__class__.__name__)
-        return "/bin/true"
-
-    def _restart(self, config):
-        logger.debug("%s restart called" % self.__class__.__name__)
-        return "/bin/true"
-
 def _buildJavaCommand(config, className, classArg=None):
     cmd = []
     
@@ -210,7 +169,7 @@ def _buildJavaCommand(config, className, classArg=None):
     return cmd
     
 
-def parse(configFname):
+def parse(tree):
     '''
     Parse the agent configuration file and return an _Connection object
     
@@ -221,25 +180,6 @@ def parse(configFname):
                 'rmConnection': RessourceManagerConnection,
                 'customConnection': CustomConnection,
                 }
-    
-    # Load XML Schema and parse the configuration file
-    #
-    # TODO: Handle user error (wrong schema, invalid XML etc.) as nicely as possible
-    try:
-        schemaFname = "../../../xml/agent-linux.xsd"
-        schema = etree.XMLSchema(file=schemaFname)
-    except etree.LxmlError as e:
-        raise AgentError("Unable to load XML Schema %s: %s" % (schemaFname, e))
-    
-    try: 
-        parser = etree.XMLParser(schema=schema, no_network=True, compact=True)
-        tree = etree.parse(configFname, parser)
-    except IOError as e: # File not found or access right
-        raise AgentError("Unable to read configuration file: %s" % configFname)
-    except etree.XMLSyntaxError as e: # Bad XSD declaration, Invalid or malformed XML
-        raise AgentError("Unable to parse the user supplied configuration file %s: %s " % (configFname, e))
-    except etree.LxmlError as e: # Catch all
-        raise AgentError("Unable to parse the user supplied configuration file %s: %s " % (configFname, e))
     
     # Delegate the parsing to the right class (according to the enabled action)
     lx = tree.xpath("//a:connections/*[@enabled='true' or @enabled='1']", namespaces = {'a' : main.xmlns})

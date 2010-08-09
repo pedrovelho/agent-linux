@@ -1,14 +1,51 @@
-'''
-Created on Jul 8, 2010
+#! /usr/bin/env python
+# -*- coding: UTF-8 -*-
+#################################################################
+#
+# ProActive Parallel Suite(TM): The Java(TM) library for
+#    Parallel, Distributed, Multi-Core Computing for
+#     Enterprise Grids & Clouds
+#
+# Copyright (C) 1997-2010 INRIA/University of 
+#                 Nice-Sophia Antipolis/ActiveEon
+# Contact: proactive@ow2.org or contact@activeeon.com
+#
+# This library is free software; you can redistribute it and/or
+# modify it under the terms of the GNU General Public License
+# as published by the Free Software Foundation; version 3 of
+# the License.
+#
+# This library is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+# General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this library; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
+# USA
+#
+# If needed, contact us to obtain a release under GPL Version 2 
+# or a different license than the GPL.
+#
+#  Initial developer(s):               The ProActive Team
+#                        http://proactive.inria.fr/team_members.htm
+#  Contributor(s):
+#
+#################################################################
+# $$ACTIVEEON_INITIAL_DEV$$
+#################################################################
 
-@author: cmathieu
-'''
-import unittest
+
 from eventgenerator import Event, CalendarEventGenerator, _ONE_WEEK_IN_SECS
 import eventgenerator
+import main
 import math
+import unittest
+from main import AgentError
 
 def almostEquals(value1, value2, sigma=2):
+    ''' Some tests use current time so strict equality cannot be used '''
     return math.fabs(value2 - value1) <= 2
 
 class TestConfigOption(unittest.TestCase):
@@ -21,27 +58,45 @@ class TestConfig(unittest.TestCase):
     pass
 
 class TestEvent(unittest.TestCase):
+    ''' 
+    Test the event class 
     
+    It mostly checks that an exception is thrown when an invalid value is given
+    or an error is encountered
+    '''
     def testInit(self):
+        ''' Check that the Event ctor does not accept invalid values '''
         # startOffset must be positive
-        self.assertRaises(AssertionError, Event, -1, 100, None)
+        e = Event(-1, 100, None)
+        self.assertRaises(AgentError, e.check)
         # duration must be strictly positive
-        self.assertRaises(AssertionError, Event, 0, 0, None)    
+        e = Event(0, 0, None)
+        self.assertRaises(AgentError, e.check)    
         # Too long duration
-        self.assertRaises(AssertionError, Event, 0, _ONE_WEEK_IN_SECS, None)    
+        e = Event(0, _ONE_WEEK_IN_SECS, None)
+        self.assertRaises(AgentError, e.check)    
         
     def testStopOffset(self):
+        ''' Check the stopOffset is correctly computed from startOffset and duration'''
         event = Event(100, 200, None)
         self.assertEqual(300, event.stopOffset)
         
     def testToString(self):
+        ''' Check to string '''
         # Check it does not raise an exception
         Event(100, 200, None).__str__()
             
 
 class TestCalendarEventGenerator(unittest.TestCase):
+    ''' 
+    Test the calendar event generator
+    
+    The generator is configured by hand, then we check that the generator
+    outputs the right events. 
+    '''
     
     def testCheckOverlapping(self):
+        ''' Check that an exception is raised if two events overlaps '''
         #Empty calendar
         evg = CalendarEventGenerator()
         evg._checkOverlapping()
@@ -69,24 +124,21 @@ class TestCalendarEventGenerator(unittest.TestCase):
         # Basic overlapping
         evg = CalendarEventGenerator()
         evg.events = [Event(0, 100, None), Event(50, 100, None)]
-        self.assertRaises(AssertionError, evg._checkOverlapping)
+        self.assertRaises(AgentError, evg._checkOverlapping)
 
         # End of week overlapping
         evg = CalendarEventGenerator()
         evg.events = [Event(0, 100, None), Event(_ONE_WEEK_IN_SECS - 1, 100, None)]
-        self.assertRaises(AssertionError, evg._checkOverlapping)
+        self.assertRaises(AgentError, evg._checkOverlapping)
 
     def testNextEvent(self):
+        ''' Test the event generator '''
+
         class Action:
             def getStart(self, config):
                 return lambda :self._start(config)
             def _start(self, config):
                 return "START"
-
-            def getStop(self, config):
-                return lambda :self._stop()
-            def _stop(self):
-                return "STOP"
 
             def getRestart(self, config):
                 return lambda :self._restart(config)
@@ -108,12 +160,13 @@ class TestCalendarEventGenerator(unittest.TestCase):
         for i in range(1000):
             (act, sleepTime, func) = g.next()
             assert almostEquals(i * eventgenerator._ONE_WEEK_IN_SECS, sleepTime)
-            assert func() == "START"
-            assert act == "START"
+            self.assertEqual(func(), "START")
+            self.assertEqual(act, "START")
         
             (act, sleepTime, func) = g.next()
             assert almostEquals((i * eventgenerator._ONE_WEEK_IN_SECS) + 100, sleepTime)
-            assert func() == "STOP"
+            self.assertEqual(act, "STOP")
+            self.assertEqual(func, None)
             
         # One and only one event starting by stop
         bias = eventgenerator.secondsSinceStartOfWeeK()
@@ -123,11 +176,13 @@ class TestCalendarEventGenerator(unittest.TestCase):
         for i in range(1000):
             (act, sleepTime, func) = g.next()
             assert almostEquals((i * eventgenerator._ONE_WEEK_IN_SECS) + 100, sleepTime)
-            assert func() == "STOP"
-
+            self.assertEqual(act, "STOP")
+            self.assertEqual(func, None)
+            
             (act, sleepTime, func) = g.next()
             assert almostEquals((i+1) * eventgenerator._ONE_WEEK_IN_SECS - 100, sleepTime)
-            assert func() == "START"
+            self.assertEqual(func(), "START")
+            self.assertEqual(act, "START")
 
         # First event is next week 
         bias = eventgenerator.secondsSinceStartOfWeeK()
@@ -137,11 +192,13 @@ class TestCalendarEventGenerator(unittest.TestCase):
         for i in range(1000):
             (act, sleepTime, func) = g.next()
             assert almostEquals(eventgenerator._ONE_WEEK_IN_SECS - bias + (i*eventgenerator._ONE_WEEK_IN_SECS), sleepTime)
-            assert func() == "START"
+            self.assertEqual(func(), "START")
+            self.assertEqual(act, "START")
 
             (act, sleepTime, func) = g.next()
             assert almostEquals(eventgenerator._ONE_WEEK_IN_SECS - bias + (i*eventgenerator._ONE_WEEK_IN_SECS) + 10, sleepTime)
-            assert func() == "STOP"
+            self.assertEqual(act, "STOP")
+            self.assertEqual(func, None)
             
         # Two simple events and only one event starting by stop
         bias = eventgenerator.secondsSinceStartOfWeeK()
@@ -151,20 +208,24 @@ class TestCalendarEventGenerator(unittest.TestCase):
         for i in range(1000):
             (act, sleepTime, func) = g.next()
             assert almostEquals((i * eventgenerator._ONE_WEEK_IN_SECS) + 100, sleepTime)
-            assert func() == "START"
-
+            self.assertEqual(func(), "START")
+            self.assertEqual(act, "START")
+            
             (act, sleepTime, func) = g.next()
             assert almostEquals(i * eventgenerator._ONE_WEEK_IN_SECS + 300, sleepTime)
-            assert func() == "STOP"
+            self.assertEqual(act, "STOP")
+            self.assertEqual(func, None)
             
             (act, sleepTime, func) = g.next()
             assert almostEquals(i * eventgenerator._ONE_WEEK_IN_SECS + 1000, sleepTime)
-            assert func() == "START"
-
+            self.assertEqual(func(), "START")
+            self.assertEqual(act, "START")
+            
             (act, sleepTime, func) = g.next()
             assert almostEquals(i * eventgenerator._ONE_WEEK_IN_SECS + 1400, sleepTime)
-            assert func() == "STOP"
-
+            self.assertEqual(act, "STOP")
+            self.assertEqual(func, None)
+            
         # Next event is next week, with week overlapping and multi event        
         bias = eventgenerator.secondsSinceStartOfWeeK()
         evg = CalendarEventGenerator(action)
@@ -174,28 +235,34 @@ class TestCalendarEventGenerator(unittest.TestCase):
         for i in range(1000):
             (act, sleepTime, func) = g.next()
             assert almostEquals(eventgenerator._ONE_WEEK_IN_SECS - 1100 + (i*eventgenerator._ONE_WEEK_IN_SECS), sleepTime)
-            assert func() == "STOP"
+            self.assertEqual(act, "STOP")
+            self.assertEqual(func, None)
 
             (act, sleepTime, func) = g.next()
             assert almostEquals((i+1)*eventgenerator._ONE_WEEK_IN_SECS -500, sleepTime)
-            assert func() == "START"
-        
+            self.assertEqual(func(), "START")
+            self.assertEqual(act, "START")
+                    
             (act, sleepTime, func) = g.next()
             assert almostEquals((i+1)*eventgenerator._ONE_WEEK_IN_SECS -400, sleepTime)
-            assert func() == "STOP"
-
+            self.assertEqual(act, "STOP")
+            self.assertEqual(func, None)
+            
             (act, sleepTime, func) = g.next()
             assert almostEquals((i+1)*eventgenerator._ONE_WEEK_IN_SECS -300, sleepTime)
-            assert func() == "START"
-        
+            self.assertEqual(func(), "START")
+            self.assertEqual(act, "START")
+                    
             (act, sleepTime, func) = g.next()
             assert almostEquals((i+1)*eventgenerator._ONE_WEEK_IN_SECS -199, sleepTime)
-            assert func() == "STOP"
-            
+            self.assertEqual(act, "STOP")
+            self.assertEqual(func, None)   
+                     
             (act, sleepTime, func) = g.next()
             assert almostEquals((i+1)*eventgenerator._ONE_WEEK_IN_SECS -100, sleepTime)
-            assert func() == "START"
-            
+            self.assertEqual(func(), "START")
+            self.assertEqual(act, "START")
+                        
         # Restart
         bias = eventgenerator.secondsSinceStartOfWeeK()
         evg = CalendarEventGenerator(action)
@@ -204,29 +271,60 @@ class TestCalendarEventGenerator(unittest.TestCase):
         for i in range(1000):
             (act, sleepTime, func) = g.next()
             assert almostEquals(i * eventgenerator._ONE_WEEK_IN_SECS, sleepTime)
-            assert func() == "START"
-            
+            self.assertEqual(func(), "START")
+            self.assertEqual(act, "START")
+                        
             (act, sleepTime, func) = g.next()
             assert almostEquals(i * eventgenerator._ONE_WEEK_IN_SECS + 100, sleepTime)
             assert func() == "RESTART"
         
             (act, sleepTime, func) = g.next()
             assert almostEquals((i * eventgenerator._ONE_WEEK_IN_SECS) + 200, sleepTime)
-            assert func() == "STOP"
-            
+            self.assertEqual(act, "STOP")
+            self.assertEqual(func, None)
 
-class TestEventGenerator(unittest.TestCase):
-
-    def setUp(self):
-        pass
+class TestParser(unittest.TestCase):
+    '''
+    Check that the parser is able to get the data from the XML configuration file 
+    '''
     
-    def testOverlap(self):
-        pass
+    def testParseFile(self):
+        tree = main._parse_config_file("./eventgeneratorTest_test_parse_file.xml")
+        evg = eventgenerator.parse(tree, None)
+        
+        # This event does not redefine the configuration
+        event = evg.events[0]
+        self.assertEqual("proactiveHome1", event.config.proactiveHome)
+        self.assertEqual("javaHome1", event.config.javaHome)
+        self.assertEqual(["param1"], event.config.jvmParameters)
+        self.assertEqual(1, event.config.memoryLimit)
+        self.assertEqual(1, event.config.nbRuntimes)
+        self.assertEqual("script1", event.config.onRuntimeExitScript)
+        self.assertEqual((6000, 6002), event.config.portRange)
 
-    def testName(self):
-        pass
 
+        # This event redefines the whole configuration
+        event = evg.events[1]
+        self.assertEqual("proactiveHome2", event.config.proactiveHome)
+        self.assertEqual("javaHome2", event.config.javaHome)
+        self.assertEqual(["param2"], event.config.jvmParameters)
+        self.assertEqual(2, event.config.memoryLimit)
+        self.assertEqual(2, event.config.nbRuntimes)
+        self.assertEqual("script2", event.config.onRuntimeExitScript)
+        self.assertEqual((6003, 6007), event.config.portRange)
+        
+        # This event redefines only a part of the configuration
+        event = evg.events[2]
+        self.assertEqual("proactiveHome1", event.config.proactiveHome)
+        self.assertEqual("javaHome3", event.config.javaHome)
+        self.assertEqual(["param1"], event.config.jvmParameters)
+        self.assertEqual(1, event.config.memoryLimit)
+        self.assertEqual(3, event.config.nbRuntimes)
+        self.assertEqual("script3", event.config.onRuntimeExitScript)
+        self.assertEqual((6000, 6002), event.config.portRange)
 
-if __name__ == "__main__":
-    #import sys;sys.argv = ['', 'Test.testName']
-    unittest.main()
+    
+    def testCoherentState(self):
+        tree = main._parse_config_file("./eventgeneratorTest_test_parse_file.xml")
+        evg = eventgenerator.parse(tree, None)
+        evg.check()
