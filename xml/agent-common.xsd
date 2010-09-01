@@ -125,27 +125,11 @@
               </xsd:documentation></xsd:annotation>
             </xsd:element>
 
-            <xsd:element minOccurs="1" maxOccurs="1" name="credential">
+            <xsd:element minOccurs="0" maxOccurs="1" name="credential" type="nonEmptyString">
               <xsd:annotation><xsd:documentation xml:lang="en">
               The path of the file containing the credentials to use to connect
-              to the ProActive Ressource Manager
+              to the ProActive Ressource Manager. If not specified then the default credential is used
               </xsd:documentation></xsd:annotation>
-              <xsd:complexType>
-                <xsd:sequence>
-                  <xsd:element minOccurs="0" maxOccurs="1" name="path" type="nonEmptyString">
-                    <xsd:annotation><xsd:documentation xml:lang="en">
-                    The patht to the credential to use    
-                    </xsd:documentation></xsd:annotation>
-                  </xsd:element>
-                </xsd:sequence>
-
-                <xsd:attribute  name="usedefault" type="xsd:boolean" use="required">
-                  <xsd:annotation><xsd:documentation xml:lang="en">
-                  If true, the agent will try to use the credential located at the standard
-                  path.
-                  </xsd:documentation></xsd:annotation>
-                </xsd:attribute>
-              </xsd:complexType>
             </xsd:element>
           </xsd:sequence>
         </xsd:extension>

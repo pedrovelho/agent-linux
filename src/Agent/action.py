@@ -118,6 +118,7 @@ class RessourceManagerConnection(_AbstractConnection):
     def __init__(self):
         _AbstractConnection.__init__(self)
 
+
         self._url = None
         self._node_source_name = None
         self._credential = None
@@ -137,11 +138,8 @@ class RessourceManagerConnection(_AbstractConnection):
             self._node_source_name = lx[0].text
 
         lx = node.xpath("./a:credential", namespaces = {'a' : main.xmlns});
-        assert(len(lx) == 1)
-        prop = lx[0].get("usedefault")
-        if prop is "true":
-            self._credential = None
-        else:
+        assert(len(lx) == 1 or len(lx) == 0)
+        if len(lx) == 1:
             self._credential = lx[0].text
 
         assert(self._url is not None)
