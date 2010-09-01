@@ -37,12 +37,12 @@
 #################################################################
 
 
-from eventgenerator import Event, CalendarEventGenerator, _ONE_WEEK_IN_SECS
 import eventgenerator
-import main
+from eventgenerator import *
+from eventgenerator import _ONE_WEEK_IN_SECS
 import math
+import time
 import unittest
-from main import AgentError
 
 def almostEquals(value1, value2, sigma=2):
     ''' Some tests use current time so strict equality cannot be used '''
@@ -67,26 +67,45 @@ class TestEvent(unittest.TestCase):
     def testInit(self):
         ''' Check that the Event ctor does not accept invalid values '''
         # startOffset must be positive
-        e = Event(-1, 100, None)
+        e = Event(-1, 100, None, None)
         self.assertRaises(AgentError, e.check)
         # duration must be strictly positive
-        e = Event(0, 0, None)
+        e = Event(0, 0, None, None)
         self.assertRaises(AgentError, e.check)    
         # Too long duration
-        e = Event(0, _ONE_WEEK_IN_SECS, None)
+        e = Event(0, _ONE_WEEK_IN_SECS, None, None)
         self.assertRaises(AgentError, e.check)    
         
     def testStopOffset(self):
         ''' Check the stopOffset is correctly computed from startOffset and duration'''
-        event = Event(100, 200, None)
+        event = Event(100, 200, None, None)
         self.assertEqual(300, event.stopOffset)
         
     def testToString(self):
         ''' Check to string '''
         # Check it does not raise an exception
-        Event(100, 200, None).__str__()
-            
+        Event(100, 200, None, None).__str__()
 
+class TestSpecificEvent(unittest.TestCase):
+    
+    def test_epoch_date(self):
+        print int(time.time())
+        print time.asctime(time.localtime(time.time()))
+                                          
+        event = Event(0, 10, None, None)
+        start_event = StartEvent(event, 0)
+        print time.asctime(time.localtime(start_event.epoch_date))
+        stop_event = StopEvent(event, 0)
+        print time.asctime(time.localtime(stop_event.epoch_date))
+        
+        event = Event(_ONE_WEEK_IN_SECS - 20, 10, None, None)
+        start_event = StartEvent(event, 0)
+        print time.asctime(time.localtime(start_event.epoch_date))
+        stop_event = StopEvent(event, 0)
+        print time.asctime(time.localtime(stop_event.epoch_date))
+        
+        
+        
 class TestCalendarEventGenerator(unittest.TestCase):
     ''' 
     Test the calendar event generator
@@ -103,32 +122,32 @@ class TestCalendarEventGenerator(unittest.TestCase):
         
         # Single event calendar 
         evg = CalendarEventGenerator()
-        evg.events = [Event(0, 100, None)]
+        evg.events = [Event(0, 100, None, None)]
         evg._checkOverlapping()
         
         # No overlapping
         evg = CalendarEventGenerator()
-        evg.events = [Event(0, 100, None), Event(200, 300, None), Event(500, 1000, None)]
+        evg.events = [Event(0, 100, None, None), Event(200, 300, None, None), Event(500, 1000, None, None)]
         evg._checkOverlapping()
 
         # No overlapping but sunday / monday overlap
         evg = CalendarEventGenerator()
-        evg.events = [Event(200, 100, None), Event(_ONE_WEEK_IN_SECS - 100, 200, None)]
+        evg.events = [Event(200, 100, None, None), Event(_ONE_WEEK_IN_SECS - 100, 200, None, None)]
         evg._checkOverlapping()
 
         # No overlapping but join
         evg = CalendarEventGenerator()
-        evg.events = [Event(0, 100, None), Event(100, 300, None), Event(400, 1000, None)]
+        evg.events = [Event(0, 100, None, None), Event(100, 300, None, None), Event(400, 1000, None, None)]
         evg._checkOverlapping()
 
         # Basic overlapping
         evg = CalendarEventGenerator()
-        evg.events = [Event(0, 100, None), Event(50, 100, None)]
+        evg.events = [Event(0, 100, None, None), Event(50, 100, None, None)]
         self.assertRaises(AgentError, evg._checkOverlapping)
 
         # End of week overlapping
         evg = CalendarEventGenerator()
-        evg.events = [Event(0, 100, None), Event(_ONE_WEEK_IN_SECS - 1, 100, None)]
+        evg.events = [Event(0, 100, None, None), Event(_ONE_WEEK_IN_SECS - 1, 100, None, None)]
         self.assertRaises(AgentError, evg._checkOverlapping)
 
     def testNextEvent(self):
@@ -153,135 +172,117 @@ class TestCalendarEventGenerator(unittest.TestCase):
         self.assertRaises(StopIteration, g.next)
 
         # One and only one event starting by start
-        bias = eventgenerator.secondsSinceStartOfWeeK()
+        bias = eventgenerator._seconds_elespased_since_start_of_week()
         evg = CalendarEventGenerator(action)
-        evg.events = [Event(0+bias, 100, None)]
+        evg.events = [Event(0+bias, 100, None, None)]
         g = evg.getActions()
         for i in range(1000):
-            (act, sleepTime, func) = g.next()
-            assert almostEquals(i * eventgenerator._ONE_WEEK_IN_SECS, sleepTime)
-            self.assertEqual(func(), "START")
-            self.assertEqual(act, "START")
+            (event) = g.next()
+            assert almostEquals(i * eventgenerator._ONE_WEEK_IN_SECS, event.seconds_remaining())
+            self.assertEqual(event.type, "START")
         
-            (act, sleepTime, func) = g.next()
-            assert almostEquals((i * eventgenerator._ONE_WEEK_IN_SECS) + 100, sleepTime)
-            self.assertEqual(act, "STOP")
-            self.assertEqual(func, None)
+            (event) = g.next()
+            assert almostEquals((i * eventgenerator._ONE_WEEK_IN_SECS) + 100,  event.seconds_remaining())
+            self.assertEqual(event.type, "STOP")
             
         # One and only one event starting by stop
-        bias = eventgenerator.secondsSinceStartOfWeeK()
+        bias = eventgenerator._seconds_elespased_since_start_of_week()
         evg = CalendarEventGenerator(action)
-        evg.events = [Event(bias - 100, 200, None)]
+        evg.events = [Event(bias - 100, 200, None, None)]
         g = evg.getActions()
         for i in range(1000):
-            (act, sleepTime, func) = g.next()
-            assert almostEquals((i * eventgenerator._ONE_WEEK_IN_SECS) + 100, sleepTime)
-            self.assertEqual(act, "STOP")
-            self.assertEqual(func, None)
+            (event) = g.next()
+            assert almostEquals((i * eventgenerator._ONE_WEEK_IN_SECS) + 100, event.seconds_remaining())
+            self.assertEqual(event.type, "STOP")
             
-            (act, sleepTime, func) = g.next()
-            assert almostEquals((i+1) * eventgenerator._ONE_WEEK_IN_SECS - 100, sleepTime)
-            self.assertEqual(func(), "START")
-            self.assertEqual(act, "START")
+            (event) = g.next()
+            assert almostEquals((i+1) * eventgenerator._ONE_WEEK_IN_SECS - 100, event.seconds_remaining())
+            self.assertEqual(event.type, "START")
 
         # First event is next week 
-        bias = eventgenerator.secondsSinceStartOfWeeK()
+        bias = eventgenerator._seconds_elespased_since_start_of_week()
         evg = CalendarEventGenerator(action)
-        evg.events = [Event(0, 10, None)]
+        evg.events = [Event(0, 10, None, None)]
         g = evg.getActions()
         for i in range(1000):
-            (act, sleepTime, func) = g.next()
-            assert almostEquals(eventgenerator._ONE_WEEK_IN_SECS - bias + (i*eventgenerator._ONE_WEEK_IN_SECS), sleepTime)
-            self.assertEqual(func(), "START")
-            self.assertEqual(act, "START")
+            (event) = g.next()
+            assert almostEquals(eventgenerator._ONE_WEEK_IN_SECS - bias + (i*eventgenerator._ONE_WEEK_IN_SECS), event.seconds_remaining())
+            self.assertEqual(event.type, "START")
 
-            (act, sleepTime, func) = g.next()
-            assert almostEquals(eventgenerator._ONE_WEEK_IN_SECS - bias + (i*eventgenerator._ONE_WEEK_IN_SECS) + 10, sleepTime)
-            self.assertEqual(act, "STOP")
-            self.assertEqual(func, None)
+            (event) = g.next()
+            assert almostEquals(eventgenerator._ONE_WEEK_IN_SECS - bias + (i*eventgenerator._ONE_WEEK_IN_SECS) + 10, event.seconds_remaining())
+            self.assertEqual(event.type, "STOP")
             
         # Two simple events and only one event starting by stop
-        bias = eventgenerator.secondsSinceStartOfWeeK()
+        bias = eventgenerator._seconds_elespased_since_start_of_week()
         evg = CalendarEventGenerator(action)
-        evg.events = [Event(bias + 100, 200, None), Event(bias + 1000, 400, None)]
+        evg.events = [Event(bias + 100, 200, None, None), Event(bias + 1000, 400, None, None)]
         g = evg.getActions()
         for i in range(1000):
-            (act, sleepTime, func) = g.next()
-            assert almostEquals((i * eventgenerator._ONE_WEEK_IN_SECS) + 100, sleepTime)
-            self.assertEqual(func(), "START")
-            self.assertEqual(act, "START")
+            (event) = g.next()
+            assert almostEquals((i * eventgenerator._ONE_WEEK_IN_SECS) + 100, event.seconds_remaining())
+            self.assertEqual(event.type, "START")
             
-            (act, sleepTime, func) = g.next()
-            assert almostEquals(i * eventgenerator._ONE_WEEK_IN_SECS + 300, sleepTime)
-            self.assertEqual(act, "STOP")
-            self.assertEqual(func, None)
+            (event) = g.next()
+            assert almostEquals(i * eventgenerator._ONE_WEEK_IN_SECS + 300, event.seconds_remaining())
+            self.assertEqual(event.type, "STOP")
             
-            (act, sleepTime, func) = g.next()
-            assert almostEquals(i * eventgenerator._ONE_WEEK_IN_SECS + 1000, sleepTime)
-            self.assertEqual(func(), "START")
-            self.assertEqual(act, "START")
-            
-            (act, sleepTime, func) = g.next()
-            assert almostEquals(i * eventgenerator._ONE_WEEK_IN_SECS + 1400, sleepTime)
-            self.assertEqual(act, "STOP")
-            self.assertEqual(func, None)
+            (event) = g.next()
+            assert almostEquals(i * eventgenerator._ONE_WEEK_IN_SECS + 1000, event.seconds_remaining())
+            self.assertEqual(event.type, "START")
+                        
+            (event) = g.next()
+            assert almostEquals(i * eventgenerator._ONE_WEEK_IN_SECS + 1400, event.seconds_remaining())
+            self.assertEqual(event.type, "STOP")
             
         # Next event is next week, with week overlapping and multi event        
-        bias = eventgenerator.secondsSinceStartOfWeeK()
+        bias = eventgenerator._seconds_elespased_since_start_of_week()
         evg = CalendarEventGenerator(action)
-        evg.events = [Event(bias - 500, 100, None), Event(bias - 300, 101, None), Event(bias - 100, eventgenerator._ONE_WEEK_IN_SECS-1000, None)]
+        evg.events = [Event(bias - 500, 100, None, None), Event(bias - 300, 101, None, None), Event(bias - 100, eventgenerator._ONE_WEEK_IN_SECS-1000, None, None)]
         g = evg.getActions()
  
         for i in range(1000):
-            (act, sleepTime, func) = g.next()
-            assert almostEquals(eventgenerator._ONE_WEEK_IN_SECS - 1100 + (i*eventgenerator._ONE_WEEK_IN_SECS), sleepTime)
-            self.assertEqual(act, "STOP")
-            self.assertEqual(func, None)
+            (event) = g.next()
+            assert almostEquals(eventgenerator._ONE_WEEK_IN_SECS - 1100 + (i*eventgenerator._ONE_WEEK_IN_SECS), event.seconds_remaining())
+            self.assertEqual(event.type, "STOP")
 
-            (act, sleepTime, func) = g.next()
-            assert almostEquals((i+1)*eventgenerator._ONE_WEEK_IN_SECS -500, sleepTime)
-            self.assertEqual(func(), "START")
-            self.assertEqual(act, "START")
-                    
-            (act, sleepTime, func) = g.next()
-            assert almostEquals((i+1)*eventgenerator._ONE_WEEK_IN_SECS -400, sleepTime)
-            self.assertEqual(act, "STOP")
-            self.assertEqual(func, None)
+            (event) = g.next()
+            assert almostEquals((i+1)*eventgenerator._ONE_WEEK_IN_SECS -500, event.seconds_remaining())
+            self.assertEqual(event.type, "START")
+                                
+            (event) = g.next()
+            assert almostEquals((i+1)*eventgenerator._ONE_WEEK_IN_SECS -400, event.seconds_remaining())
+            self.assertEqual(event.type, "STOP")
             
-            (act, sleepTime, func) = g.next()
-            assert almostEquals((i+1)*eventgenerator._ONE_WEEK_IN_SECS -300, sleepTime)
-            self.assertEqual(func(), "START")
-            self.assertEqual(act, "START")
-                    
-            (act, sleepTime, func) = g.next()
-            assert almostEquals((i+1)*eventgenerator._ONE_WEEK_IN_SECS -199, sleepTime)
-            self.assertEqual(act, "STOP")
-            self.assertEqual(func, None)   
+            (event) = g.next()
+            assert almostEquals((i+1)*eventgenerator._ONE_WEEK_IN_SECS -300, event.seconds_remaining())
+            self.assertEqual(event.type, "START")
+                                
+            (event) = g.next()
+            assert almostEquals((i+1)*eventgenerator._ONE_WEEK_IN_SECS -199, event.seconds_remaining())
+            self.assertEqual(event.type, "STOP")
                      
-            (act, sleepTime, func) = g.next()
-            assert almostEquals((i+1)*eventgenerator._ONE_WEEK_IN_SECS -100, sleepTime)
-            self.assertEqual(func(), "START")
-            self.assertEqual(act, "START")
-                        
+            (event) = g.next()
+            assert almostEquals((i+1)*eventgenerator._ONE_WEEK_IN_SECS -100, event.seconds_remaining())
+            self.assertEqual(event.type, "START")
+                                    
         # Restart
-        bias = eventgenerator.secondsSinceStartOfWeeK()
+        bias = eventgenerator._seconds_elespased_since_start_of_week()
         evg = CalendarEventGenerator(action)
-        evg.events = [Event(0+bias, 100, None), Event(100+bias, 100, None)]
+        evg.events = [Event(0+bias, 100, None, None), Event(100+bias, 100, None, None)]
         g = evg.getActions()
         for i in range(1000):
-            (act, sleepTime, func) = g.next()
-            assert almostEquals(i * eventgenerator._ONE_WEEK_IN_SECS, sleepTime)
-            self.assertEqual(func(), "START")
-            self.assertEqual(act, "START")
-                        
-            (act, sleepTime, func) = g.next()
-            assert almostEquals(i * eventgenerator._ONE_WEEK_IN_SECS + 100, sleepTime)
-            assert func() == "RESTART"
+            (event) = g.next()
+            assert almostEquals(i * eventgenerator._ONE_WEEK_IN_SECS, event.seconds_remaining())
+            self.assertEqual(event.type, "START")
+                                    
+            (event) = g.next()
+            assert almostEquals(i * eventgenerator._ONE_WEEK_IN_SECS + 100, event.seconds_remaining())
+            self.assertEqual(event.type, "RESTART")
         
-            (act, sleepTime, func) = g.next()
-            assert almostEquals((i * eventgenerator._ONE_WEEK_IN_SECS) + 200, sleepTime)
-            self.assertEqual(act, "STOP")
-            self.assertEqual(func, None)
+            (event) = g.next()
+            assert almostEquals((i * eventgenerator._ONE_WEEK_IN_SECS) + 200, event.seconds_remaining())
+            self.assertEqual(event.type, "STOP")
 
 class TestParser(unittest.TestCase):
     '''

@@ -36,10 +36,16 @@
 # $$ACTIVEEON_INITIAL_DEV$$
 #################################################################
 
+from main import AgentError, AgentInternalError
 import logging
 import main
 import time
-from main import AgentError, AgentInternalError
+import os
+import subprocess
+import io
+import threading 
+import time
+import utils
 
 days = {
         "monday": 0,
@@ -53,13 +59,23 @@ days = {
 
 _ONE_WEEK_IN_SECS = (60*60*24*7)
 
-def secondsSinceStartOfWeeK():
+def _seconds_elespased_since_start_of_week():
     ''' 
     Returns the number of seconds elapsed since the beginning of the week (Monday 00:00)
     '''    
     now =  time.localtime()
     return now[5] + (now[4]*60) + (now[3]*60*60) + (now[6]*60*60*24)
 
+def _start_of_week_epoch():
+    '''
+    Returns the epoch time of the start of the week
+    '''
+    current_epoch = int(time.time())
+    return current_epoch - _seconds_elespased_since_start_of_week()
+
+
+
+    
 
 class EventConfig(object):
     '''
@@ -72,11 +88,13 @@ class EventConfig(object):
         self.javaHome = None
         self.jvmParameters = []
         self.memoryLimit = 0
-        self.nbRuntimes = 0
+        self.nbRuntimes = utils.get_number_of_cpus()
         self.protocol = "rmi"
-        self.portRange = (0, 0)
+        self.portRange = None
         self.onRuntimeExitScript = None
-      
+        self.nice = 0
+        self.ionice = None
+        
     def check(self):
         '''
         Check the state of this event is consistent 
@@ -106,12 +124,26 @@ class EventConfig(object):
             raiseError("ProActive communication protocol cannot be empty") # FIXME: XSD should disallow this
             raise AgentError("FIXME")
         
-        if self.portRange[0] < 0 or self.portRange[0] > 65536:
-            raiseError("First TCP port must be an integer between 0 and 65536")
-        if self.portRange[1] < 0 or self.portRange[1] > 65536:
-            raiseError("Last TCP port must be an integer between 0 and 65536")
-        if self.portRange[0] > self.portRange[1]:
-            raiseError("Last TCP port must be greater or equals to the first TCP port")
+        if self.portRange is not None:
+            if self.portRange[0] < 0 or self.portRange[0] > 65536:
+                raiseError("First TCP port must be an integer between 0 and 65536")
+            if self.portRange[1] < 0 or self.portRange[1] > 65536:
+                raiseError("Last TCP port must be an integer between 0 and 65536")
+            if self.portRange[0] > self.portRange[1]:
+                raiseError("Last TCP port must be greater or equals to the first TCP port")
+            if self.portRange[1] - self.portRange[0] < self.nbRuntimes:
+                raiseError("The port range is too small according to the number of runtimes")
+                
+        if self.nice < -20 or self.nice > 19:
+            raiseError("Invalid nice value. Must be betweeon -20 and 19")
+            
+        if self.ionice is not None:
+            if self.ionice["class"] == 1 or self.ionice["class"] == 2:
+                if self.ionice["data"] is None:
+                    raiseError("A class data is mandatory with the best effort and real time ionice classes")
+            else:
+                if self.ionice["data"] is not None:
+                    raiseError("none and idle ionice classes does not accept any class data argument")
             
     def parse(self, eventNode):
         '''
@@ -145,19 +177,15 @@ class EventConfig(object):
                 self.javaHome = lx[0].text
 
         lx = confNode.xpath("./a:jvmParameters/a:param", namespaces = {'a' : main.xmlns})
-        if len(lx) != 0 and not isRoot:
+        if len(lx) == 0 and not isRoot:
             self.jvmParameters = [] 
         for node in lx:
             self.jvmParameters.append(node.text)
 
-        lx = confNode.xpath("./a:memoryManagement", namespaces = {'a' : main.xmlns})
+        lx = confNode.xpath("./a:memoryLimit", namespaces = {'a' : main.xmlns})
         assert(len(lx) == 1 or len(lx) == 0)
         if len(lx) == 1:
-            isEnabled = lx[0].get("enabled", "false")
-            if isEnabled == "true" or isEnabled == 0:
-                self.memoryLimit = int(lx[0].text)
-            else:
-                self.memoryLimit = 0
+            self.memoryLimit = int(lx[0].text)
         
         lx = confNode.xpath("./a:nbRuntimes", namespaces = {'a' : main.xmlns})
         assert(len(lx) == 1 or len(lx) == 0)
@@ -181,18 +209,224 @@ class EventConfig(object):
         if len(lx) == 1: 
             self.onRuntimeExitScript = lx[0].text
 
-        
+        lx = confNode.xpath("./a:nice", namespaces = {'a' : main.xmlns})
+        assert(len(lx) == 1 or len(lx) == 0)
+        if len(lx) == 1: 
+            self.nice = int(lx[0].text)
+            
+        lx = confNode.xpath("./a:ionice", namespaces = {'a' : main.xmlns})
+        assert(len(lx) == 1 or len(lx) == 0)
+        if len(lx) == 1:
+            classes = {'none' : 0, 'realtime' : 1, 'besteffort' : 2, 'idle' : 3}
+            clazz = classes[lx[0].get("class")]
+            data = lx[0].get("data")
+            self.ionice = {"class" : clazz, "data" : data}
+            
+
+class AgentTime(object):
     
+    def __init__(self):
+        # Origin is the set to the start of the current week
+        now = int(time.time())
+        tm = time.localtime()
+        offset = tm[5] + (tm[4]*60) + (tm[3]*60*60) + (tm[6]*60*60*24)
+        self.origin = now - offset
+
+    def event_date_in_agent_time(self, weeks, offset_in_week):
+        atime = weeks * _ONE_WEEK_IN_SECS
+        atime+= offset_in_week
+        return atime
+    
+    def event_date_in_epoch(self, weeks, offset_in_week):
+        return self.origin + self.event_date_in_agent_time(weeks, offset_in_week)
+
+    def epoch_to_agent_time(self, epoch):
+        return epoch - self.origin
+
+    def agent_time_to_epoch(self, atime):
+        return atime + self.origin            
+            
+            
+class SpecificEvent(object):
+    def __init__(self, generic_event, epoch_date, type):
+        self.config     = generic_event.config
+        self.action     = generic_event.action
+        self.type = type
+        self.epoch_date = epoch_date
+        self.duration   = generic_event.duration
+        self.startOffset= generic_event.startOffset
+        
+    def wait_epoch_date(self):
+        '''
+        Wait until the start time of this event
+        '''
+        time.sleep(self.seconds_remaining())
+
+    def seconds_remaining(self):
+        '''
+        Return the number of seconds remaining until the event
+        '''
+        return self.epoch_date - int(time.time())
+
+class JVMStarter():
+    '''
+    This class is in  charge of spawning a new process for the JVM.
+    '''
+    def __init__(self, config, cmd, epoch_date):
+        self.config = config
+        self.cmd = cmd
+        self.epoch_date = epoch_date
+        self.is_canceled = False
+      
+    def schedule(self):
+        sleep_time = int(self.epoch_date - time.time())
+        print "JVM Starter thread created for %s. Executing will begin in %s secs" % (self.cmd, sleep_time) 
+        time.sleep(sleep_time)
+        
+        self.p = None
+        while not self.is_canceled:
+            # Do we need to restart the process ? 
+            if self.p is None or self.p.poll() is not None:
+                if self.p is not None:
+                    print "Process %s exited with status code %s" % (self.p.pid, self.p.poll())
+                    (stdout, stderr) = self.p.communicate()
+                    print stdout
+                    print stderr
+                
+                self.p = subprocess.Popen(self.cmd, bufsize=4096, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE, preexec_fn=self._pinit)
+                print "Forked process with pid:%s cmd:%s" % (self.p.pid, self.cmd)
+            time.sleep(1)
+    
+        self.p.terminate()
+        (stdout, stderr) = self.p.communicate()
+        print stdout
+        print stderr        
+        print "JVM Stater: cancelled"
+        
+    def cancel(self):
+        self.is_canceled = True
+        
+    def _pinit(self):
+        # CPU Nice
+        if self.config.nice != 0:
+            os.nice(self.action.nice) # Can throw an OSError   
+        
+        # IONice
+        if self.config.ionice is not None:
+            io_class = self.config.ionice['class']
+            ion_cmd  = ["/usr/bin/ionice", "-p %s" % os.getpid() , "-c %s" % io_class]
+            if self.config.ionice['classdata'] is not None:
+                ion_cmd.append("-n" % self.config.ionice['classdata'])
+            retcode = subprocess.call(ion_cmd)
+            assert retcode == 0
+        
+        # Memory limit
+        if self.config.memoryLimit > 0:
+            mount_point = "/home/cmathieu/cg"
+            group = "agent"
+            p = os.path.join(mount_point, group)
+            m = os.path.join(p, "memory.limit_in_bytes")
+            with io.open(m, "w") as file:
+                file.write(unicode(self.config.memoryLimit))
+                    
+            m = os.path.join(p, "memory.swappiness")
+            with io.open(m, "w") as file:
+                file.write(unicode(0))
+                
+            m = os.path.join(p, "memory.memsw.limit_in_bytes")
+            with io.open(m, "w") as file:
+                file.write(unicode(self.config.memoryLimit))
+            
+    
+class StartEvent(SpecificEvent):
+   
+    def __init__(self, generic_event, epoch_date):
+        super(StartEvent, self).__init__(generic_event, epoch_date, "START")
+        self.forks = []
+   
+    def schedule(self):
+
+        for i in xrange(self.config.nbRuntimes):
+            cmd = self._build_java_cmd(i)
+            starter = JVMStarter(self.config, cmd, self.epoch_date)
+            thread = threading.Thread(None, starter.schedule, "THREAD%s" % i, (), {})
+            thread.start()
+            self.forks.append((starter, thread))
+    
+    def cancel(self):
+        for (starter, thread) in self.forks:
+            starter.cancel() 
+
+        for (starter, thread) in self.forks:
+            thread.join()
+
+    def _build_java_cmd(self, id):
+        cmd = []
+        
+        # Java
+        cmd.append(self.config.javaHome + "/bin/java")
+        # Classpath
+        cmd.append("-classpath")
+        cmd.append(self.config.proactiveHome +  "/dist/lib/*")
+        for param in self.config.jvmParameters:
+            cmd.append(param)
+            
+        cmd.append("-Dproactive.communication.protocol=%s" % self.config.protocol)
+
+        if self.config.portRange is not None:
+            port = self.config.portRange[0] + id
+            assert port <= self.config.portRange[1] + id, "port range is to small according to nbRuntimes"
+            
+            if self.config.protocol == "rmi":
+                cmd.append("-Dproactive.rmi.port=%d" % port)
+            elif self.config.protocol == "http":
+                cmd.append("-Dproactive.http.port=%d" % port)
+            elif self.config.protocol == "pamr":
+                pass # PAMR does not user server socket
+            elif self.config.protocol == "pnp":
+                cmd.append("-Dproactive.pnp.port=%d" % port)
+            else:
+                print "Port range is not supported for protocol: %s" % self.config.protocol
+
+        cmd.append(self.action.getClass())
+        map(cmd.append, self.action.getArguments())
+        return cmd
+
+    
+class StopEvent(SpecificEvent): 
  
+    def __init__(self, generic_event, epoch_date):
+        super(StopEvent, self).__init__(generic_event, epoch_date, "STOP")
+        self.duration = 0
+        
+    def schedule(self):
+        pass
+    
+    def cancel(self):
+        pass
+
+    
+class RestartEvent(SpecificEvent): 
+    # FIXME: SUPPORT RESTART
+    def __init__(self, old_event, new_event, epoch_date):
+        super(RestartEvent, self).__init__(new_event, epoch_date, "RESTART")
+        
+    def schedule(self):
+        pass
+
+    def cancel(self):
+        pass
+
 
 class Event(object):
     '''
     
     '''
-    def __init__(self, startOffset, duration, config):
+    def __init__(self, startOffset, duration, config, action):
         self.startOffset = startOffset
         self.duration = duration
         self.config = config
+        self.action = action
     
     @property
     def stopOffset(self):
@@ -225,7 +459,7 @@ class Event(object):
         
     def __str__(self):
         return "startOffset: %s, duration: %s, config: %s" % (self.startOffset, self.duration, self.config)   
-
+    
      
      
      
@@ -276,10 +510,8 @@ class CalendarEventGenerator(object):
             config.parse(eventNode)
             startOffset = self.__get_start_offset(eventNode)
             duration    = self.__getDuration(eventNode)
-            if duration == 0:
-                duration = 1
                 
-            event = Event(startOffset, duration, config)
+            event = Event(startOffset, duration, config, self.action)
             self.events.append(event)
             
         # Sort events by start date    
@@ -308,40 +540,39 @@ class CalendarEventGenerator(object):
     def getActions(self, timebias=0):
         g = self.__getActions(timebias) 
 
-        (nAction, nTimestamp, nFunc, nIndex) = g.next()
+        (nEvent, nIndex) = g.next()
         while True:
-            (cAction, cTimestamp, cFunc, cIndex) = (nAction, nTimestamp, nFunc, nIndex)
-            (nAction, nTimestamp, nFunc, cIndex) = g.next()
+            (cEvent, cIndex) = (nEvent, nIndex)
+            (nEvent, nIndex) = g.next()
             
-            if nTimestamp == cTimestamp and cAction == "STOP" and nAction == "START":
+            if nEvent.epoch_date == cEvent.epoch_date and cEvent.type == "STOP" and nEvent.type == "START": 
                 # Converts current and next action into a restart
-                yield ("RESTART", cTimestamp, self.action.getRestart(self.events[nIndex].config))
-                (cAction, cTimestamp, cFunc, cIndex) = (nAction, nTimestamp, nFunc, nIndex)
-                (nAction, nTimestamp, nFunc, nIndex) = g.next()
+                yield (RestartEvent(cEvent, nEvent, nEvent.epoch_date))
+                (cEvent, cIndex) = (nEvent, nIndex)
+                (nEvent, nIndex) = g.next()
             else:
-                yield (cAction, cTimestamp, cFunc)
+                yield (cEvent)
             
     def __getActions(self, timebias=0): 
-        def currentOffset():
-            return secondsSinceStartOfWeeK() + timebias
-               
-        def remaining(offset):
-            ret = offset - currentOffset() + (weeks*_ONE_WEEK_IN_SECS)
-            assert ret >= 0
-            return ret 
+       
+        def offset_in_origin_week(agent_time):
+            now = int(time.time())
+            return now - agent_time.origin
 
         if len(self.events) == 0:
             raise StopIteration("No calendars event")
+
+        agent_time = AgentTime()
 
         index = None
         wasStart = None
         weeks = 0
         # Tries to find the first event according to the current time offset since the start of the week
         for i in range(len(self.events)):
-            if self.events[i].startOffset >= currentOffset():
+            if self.events[i].startOffset >= offset_in_origin_week(agent_time):
                 index = i ; wasStart = True
                 break
-            if self.events[i].stopOffset >= currentOffset():
+            if self.events[i].stopOffset >=  offset_in_origin_week(agent_time):
                 index = i ; wasStart = False
                 break
 
@@ -356,9 +587,9 @@ class CalendarEventGenerator(object):
                 
         # Everything is set. It's time to yield the first event 
         if wasStart:
-            yield ("START", remaining(self.events[index].startOffset), self.action.getStart(self.events[index].config), index)
+            yield (StartEvent(self.events[index], agent_time.event_date_in_epoch(weeks, self.events[index].startOffset)), index)
         else:
-            yield ("STOP", remaining(self.events[index].stopOffset), None, index)
+            yield (StopEvent(self.events[index], agent_time.event_date_in_epoch(weeks, self.events[index].stopOffset)), index)
         
         if mustResetWeeks: 
             weeks = 0
@@ -369,9 +600,9 @@ class CalendarEventGenerator(object):
             if wasStart:
                 # Return the stop offset of the current event
                 if self.events[index].stopOffset > self.events[index].startOffset:
-                    yield ("STOP", remaining(self.events[index].stopOffset), None, index)
+                    yield (StopEvent(self.events[index], agent_time.event_date_in_epoch(weeks, self.events[index].stopOffset)), index)
                 else: # stop is next week
-                    yield ("STOP", remaining(self.events[index].stopOffset) + _ONE_WEEK_IN_SECS, None, index)
+                    yield (StopEvent(self.events[index], agent_time.event_date_in_epoch(weeks, self.events[index].stopOffset + _ONE_WEEK_IN_SECS)), index)
                 wasStart = False
             else:
                 # Go to the next event
@@ -380,8 +611,9 @@ class CalendarEventGenerator(object):
                     index = 0
                     weeks +=1
                 
-                yield ("START", remaining(self.events[index].startOffset), self.action.getStart(self.events[index].config), index)
+                yield (StartEvent(self.events[index], agent_time.event_date_in_epoch(weeks, self.events[index].startOffset)), index)
                 wasStart = True
+
 
 def parse(tree, action):
     '''

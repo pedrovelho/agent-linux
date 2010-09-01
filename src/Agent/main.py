@@ -47,6 +47,8 @@ This is the ProActive Linux agent main entry point
 
 
 xmlns = "urn:proactive:agent:linux:3.0"
+cgroup_mnt_point = "/home/cmathieu/cg"
+
 
 class AgentError(Exception):
     '''
@@ -87,7 +89,7 @@ def _parse_config_file(fname):
     
     return tree
 
-        
+         
 def main():
     parser = optparse.OptionParser()
     parser.add_option("-v", "--verbose", action="store_true", dest="verbose", default=False, help="Enable verbose mode", )

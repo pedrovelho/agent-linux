@@ -11,9 +11,6 @@
  -->
 
 
-
-
-
   <!--  Root element -->
 
   <xsd:element name="agent" type="AgentType">
@@ -325,7 +322,7 @@
       <xsd:element minOccurs="1" maxOccurs="1" name="proactiveHome" type="ConfProactiveHomeType"/>
       <xsd:element minOccurs="1" maxOccurs="1" name="javaHome" type="ConfJavaHomeType"/>
       <xsd:element minOccurs="0" maxOccurs="1" name="jvmParameters" type="ConfJvmParametersType"/> 
-      <xsd:element minOccurs="0" maxOccurs="1" name="memoryManagement" type="ConfMemoryManagementType"/>
+      <xsd:element minOccurs="0" maxOccurs="1" name="memoryLimit" type="ConfMemoryLimitationType"/>
       <xsd:element minOccurs="0" maxOccurs="1" name="nbRuntimes" type="ConfNbRuntimesType"/>
       <xsd:element minOccurs="0" maxOccurs="1" name="protocol" type="ConfProtocolType"/>
       <xsd:element minOccurs="0" maxOccurs="1" name="portRange" type="ConfPortRangeType"/>
@@ -341,7 +338,7 @@
       <xsd:element minOccurs="0" maxOccurs="1" name="proactiveHome" type="ConfProactiveHomeType" />
       <xsd:element minOccurs="0" maxOccurs="1" name="javaHome" type="ConfJavaHomeType"/>
       <xsd:element minOccurs="0" maxOccurs="1" name="jvmParameters" type="ConfJvmParametersType"/> 
-      <xsd:element minOccurs="0" maxOccurs="1" name="memoryManagement" type="ConfMemoryManagementType"/>
+      <xsd:element minOccurs="0" maxOccurs="1" name="memoryLimit" type="ConfMemoryLimitationType"/>
       <xsd:element minOccurs="0" maxOccurs="1" name="nbRuntimes" type="ConfNbRuntimesType"/>
       <xsd:element minOccurs="0" maxOccurs="1" name="protocol" type="ConfProtocolType"/>
       <xsd:element minOccurs="0" maxOccurs="1" name="portRange" type="ConfPortRangeType"/>
@@ -373,21 +370,15 @@
     </xsd:sequence>
   </xsd:complexType>
 
-  <xsd:complexType name="ConfMemoryManagementType">
+  <xsd:simpleType name="ConfMemoryLimitationType">
     <xsd:annotation><xsd:documentation xml:lang="en">
-    True is an only if the started ProActive runtimes must be memory constrained. Both java and fork process memory can be constrained.
+      The amount of memory in megabytes to give to all the forked processes. 
+      If forked process use more than this amount of memory, then processes are killed 
+      by the operating system 
     </xsd:documentation></xsd:annotation>
-    <xsd:simpleContent>
-      <xsd:extension base="xsd:positiveInteger">
-        <xsd:attribute name="enabled" type="xsd:boolean" use="required">
-          <xsd:annotation><xsd:documentation>
-          Is memory management enabled
-          </xsd:documentation></xsd:annotation>
-        </xsd:attribute>
-      </xsd:extension>
-    </xsd:simpleContent>
-  </xsd:complexType>
-
+    <xsd:list itemType="xsd:positiveInteger"/>
+  </xsd:simpleType>
+  
   <xsd:simpleType name="ConfNbRuntimesType">
     <xsd:annotation><xsd:documentation xml:lang="en">
 
