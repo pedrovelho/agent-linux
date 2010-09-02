@@ -36,16 +36,12 @@
 # $$ACTIVEEON_INITIAL_DEV$$
 #################################################################
 
-import io
-import logging
-import os
-import subprocess
 import time
-from main import AgentInternalError
-import main
+import logging
 
-logger = logging.getLogger("controller")
-        
+logger = logging.getLogger("agent.ctr")
+
+
 def mainloop(eventGenerator, speedup=1, bias=0):
     '''
     The main loop of the agent.
@@ -64,14 +60,22 @@ def mainloop(eventGenerator, speedup=1, bias=0):
             if old_event is not None:
                 old_event.cancel()
             
-            print "Current event is type:%s start:%s duration:%s" % (event.type, event.epoch_date, event.duration)    
+            logger.debug("Controller is scheduling an event -> type:%s start:%s duration:%s" % (event.type, event.epoch_date, event.duration)) 
             event.schedule()
             
-            # FIXME:
-            print "Sleep until next event in %s sec" % int((event.epoch_date + event.duration) - time.time())
-            time.sleep(int((event.epoch_date + event.duration) - time.time()))
+            # FIXME: sleep shouldn't be used. It should be event based ! 
+            sleep_time = int((event.epoch_date + event.duration) - time.time())
+            logger.debug("Controller will sleep for %s seconds" % sleep_time)
+            time.sleep(sleep_time)
             
         except StopIteration:
-            print "No more event..."
-            return 
-    
+            logger.critical("Controller failed to get the next event for the event generator.")
+            break
+        except (KeyboardInterrupt, SystemExit):
+            # Terminate all the processes then exit
+            logger.info("Daemon exiting...")
+            if old_event is not None:
+                old_event.cancel()
+            if event is not None:
+                event.cancel()
+                return

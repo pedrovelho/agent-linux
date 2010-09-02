@@ -36,34 +36,31 @@
 # $$ACTIVEEON_INITIAL_DEV$$
 #################################################################
 
-from main import AgentError
-import logging
 import random
+import logging
 import main
+from main import AgentInternalError
 
 ''' 
 This module is responsible for parsing the events from the agent configuration file
 '''
 
+logger = logging.getLogger("agent.act")
 
-logger = logging.getLogger("action")
-
-
-def nodename_iterator():
+def _nodename_iterator():
     prefix = random.randint(1000, 9999)
     id = 0
     while True:
-        yield "AGENT+%s+%s" % (prefix, id) 
+        yield "AGENT_%s_%s" % (prefix, id) 
         id +=1
-nodename = nodename_iterator()
+        
+_nodename = _nodename_iterator()
  
  
-class _AbstractConnection:
+class _AbstractConnection(object):
     ''' 
     An abstract connection. It only defines the methods that must be implemented by the subclasses
     '''
-    
-    
     
     def __init__(self):
         self._respawn_increment = 1
@@ -73,28 +70,26 @@ class _AbstractConnection:
     def parse(self, node):
         ''' Parse the configuration file to extract the value of the connection's parameters'''
       
-        lx = node.xpath("./a:nodeName", namespaces = {'a' : main.xmlns});
-        assert(len(lx) == 1)
-        self._nodename = lx[0].text
+        lx = node.xpath("./a:_nodename", namespaces = {'a' : main.xmlns});
+        if len(lx) == 1:
+            self._nodename = lx[0].text
 
         lx = node.xpath("./a:javaStarterClass", namespaces = {'a' : main.xmlns});
-        assert(len(lx) == 1)
-        self._java_starter_class = lx[0].text
+        if len(lx) == 1:
+            self._java_starter_class = lx[0].text
 
         lx = node.xpath("./a:respawnIncrement", namespaces = {'a' : main.xmlns});
-        assert(len(lx) == 1)
-        self._respawn_increment = lx[0].text
-        
-        assert(self._respawn_increment is not None)
-        assert(self._respawn_increment > 0)
+        if len(lx) == 1:
+            self._respawn_increment = int(lx[0].text)
 
     def getClass(self):
         ''' Return the Java class to start '''
-        raise NotImplementedError
+        raise AgentInternalError("Not implemented")
     
     def getArguments(self):        
         ''''Return the Java arguments '''
-        raise NotImplementedError
+        raise AgentInternalError("Not implemented")
+    
     
 class DummyConnection(_AbstractConnection):
     ''' 
@@ -110,6 +105,7 @@ class DummyConnection(_AbstractConnection):
     def getArguments(self):        
         ''''Return the Java arguments '''
         return []
+   
     
 class RessourceManagerConnection(_AbstractConnection):
     ''' 
@@ -118,16 +114,14 @@ class RessourceManagerConnection(_AbstractConnection):
     def __init__(self):
         _AbstractConnection.__init__(self)
 
-
         self._url = None
         self._node_source_name = None
         self._credential = None
     
-    
     def parse(self, node):
         _AbstractConnection.parse(self, node)
         logger.debug("%s parse called" % self.__class__.__name__)
-        
+              
         lx = node.xpath("./a:url", namespaces = {'a' : main.xmlns});
         assert(len(lx) == 1)
         self._url = lx[0].text
@@ -146,10 +140,30 @@ class RessourceManagerConnection(_AbstractConnection):
         assert(self._credential is not None)
 
     def getClass(self):
-        return self.__javaStarterClass
+        if self._java_starter_class is None:
+            return "org.ow2.proactive.resourcemanager.utils.PAAgentServiceRMStarter"
+        else:
+            return self._java_starter_class
     
     def getArguments(self):
-        return [self.__nodeName]
+        args = []
+
+        args.append("--rmURL")
+        args.append(self._url)
+        
+        if self._nodename is not None:
+            args.append("--nodeName")
+            args.append(self._nodename)
+            
+        if self._node_source_name is not None:
+            args.append("--sourceName")
+            args.append(self._node_source_name)
+        
+        if self._credential is not None:
+            args.append("--credentialFile")
+            args.append(self._credential)
+        
+        return args
 
 
 class CustomConnection(_AbstractConnection):
@@ -174,11 +188,10 @@ class CustomConnection(_AbstractConnection):
         assert self._java_starter_class is not None, "javaStarterClass must be defined with custom connection"
 
     def getClass(self):
-        return self.__javaStarterClass
+        return self._java_starter_class
     
     def getArguments(self):
-        return [self.__nodeName]
-
+        return [self._nodename]
 
     
 class LocalBindConnection(_AbstractConnection):
@@ -195,14 +208,14 @@ class LocalBindConnection(_AbstractConnection):
         if self._java_starter_class is None:
             self._java_starter_class = "org.objectweb.proactive.core.util.winagent.PAAgentServiceRMIStarter"
         
-        if self._nodename is None:
-            self._nodename = nodename.next()
-    
     def getClass(self):
-        return self.__javaStarterClass
-    
+        return self._java_starter_class
+        
     def getArguments(self):
-        return [self.__nodeName]
+        if self._nodename == None:
+            return [_nodename.next()]
+        else:
+            return [self._nodename]
 
 
 def parse(tree):
@@ -222,11 +235,11 @@ def parse(tree):
 
     l = len(lx)
     if (l == 0):
-        raise AgentError('Invalid configuration file. One and only one connection must be enabled (It cannot be enforced by the XML Schema)')
+        raise main.AgentConfigFileError('One and only one connection must be enabled (not enforced by the XML Schema)')
     elif (l == 1):
         name = lx[0].tag.replace("{%s}" % main.xmlns, "", 1)
         handler = handlers.get(name)()
         handler.parse(lx[0])
         return handler
     else:
-        raise AgentError('Invalid configuration file. One connection must be enabled (It cannot be enforced by the XML Schema)')
+        raise main.AgentConfigFileError('One connection must be enabled (not enforced by the XML Schema)')

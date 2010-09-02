@@ -1,0 +1,45 @@
+<?xml version="1.0"?>
+<agent
+  xmlns="urn:proactive:agent:linux:3.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="urn:proactive:agent:linux:3.0 xml/agent-linux.xsd">
+  
+  <config>
+    <proactiveHome>/home/cmathieu/Workspaces/PPS/programming-git</proactiveHome>
+    <javaHome>/home/cmathieu/java/x86_64/sun/jdk1.6.0_10</javaHome>
+    <jvmParameters>
+      <param>-Xmx512M</param>
+    </jvmParameters>  
+    <nbRuntimes>2</nbRuntimes>
+    <nice>19</nice>
+    
+  </config>
+
+  <events>
+    <event>
+      <start day="thursday" hour="14"  minute="37" second="30" />
+      <duration hours="0" minutes="0" seconds="10" days="0"/>
+      <config>
+        <proactiveHome>/tmp/scheduling</proactiveHome>
+        <jvmParameters>
+         <param>-Xms128M</param>
+         <param>-Dtoto=${rank}</param>
+        </jvmParameters>
+        <protocol>http</protocol>
+        <ionice class="idle" classdata="1"/>
+      </config>
+    </event>
+  </events>
+  
+  <connections>
+    <localBind enabled="true">
+    <respawnIncrement>12</respawnIncrement>
+    <nodename>TOTO</nodename>
+    </localBind>
+    
+    <rmConnection enabled="false">
+      <url>rmi://britany.activeeon.com:1099/</url>
+      <credential>/tmp/scheduling/config/authentication/rm.cred</credential>
+    </rmConnection>    
+   </connections>
+</agent>

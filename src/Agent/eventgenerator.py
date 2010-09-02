@@ -36,16 +36,18 @@
 # $$ACTIVEEON_INITIAL_DEV$$
 #################################################################
 
-from main import AgentError, AgentInternalError
-import logging
-import main
 import time
+import main
 import os
 import subprocess
 import io
 import threading 
-import time
 import utils
+import logging
+from IN import AF_INET
+import sys
+
+logger = logging.getLogger("agent.evg")
 
 days = {
         "monday": 0,
@@ -72,9 +74,6 @@ def _start_of_week_epoch():
     '''
     current_epoch = int(time.time())
     return current_epoch - _seconds_elespased_since_start_of_week()
-
-
-
     
 
 class EventConfig(object):
@@ -90,7 +89,7 @@ class EventConfig(object):
         self.memoryLimit = 0
         self.nbRuntimes = utils.get_number_of_cpus()
         self.protocol = "rmi"
-        self.portRange = None
+        self.portRange = (1025, 65535)
         self.onRuntimeExitScript = None
         self.nice = 0
         self.ionice = None
@@ -99,58 +98,55 @@ class EventConfig(object):
         '''
         Check the state of this event is consistent 
         '''
-        def raiseError(message):
-            raise AgentError("Invalid event configuration: " + message)
-        
         if self.proactiveHome is None:
-            raiseError("ProActive home is not set")
+            raise main.AgentConfigFileError("ProActive home is not set")
         if len(self.proactiveHome) < 1:
-            raiseError("ProActive home cannot be empty") # FIXME: XSD should disallow this 
+            # FIXME: Should be enforced by the XSD
+            raise main.AgentConfigFileError("ProActive home cannot be empty")
         
         if self.javaHome is None:
-            raiseError("Java home is not set")
+            raise main.AgentConfigFileError("Java home is not set")
         if len(self.javaHome) < 1:
-            raiseError("Java home cannot be empty") # FIXME: XSD should disallow this
+            # FIXME: Should be enforce by the XSD
+            raise main.AgentConfigFileError("Java home cannot be empty")
         
         if self.memoryLimit < 0:
-            raiseError("Memory limit must be a positive integer")
+            raise main.AgentInternalError("Memory limit must be a positive integer")
         
         if self.nbRuntimes < 0:
-            raiseError("The number of runtimes must be a positive integer")
+            raise main.AgentInternalError("The number of runtimes must be a positive integer")
         
         if self.protocol is None:
-            raiseError("ProActive communication protocol is not set")
+            raise main.AgentInternalError("ProActive communication protocol is not set")
         if len(self.protocol) < 1:
-            raiseError("ProActive communication protocol cannot be empty") # FIXME: XSD should disallow this
-            raise AgentError("FIXME")
-        
-        if self.portRange is not None:
-            if self.portRange[0] < 0 or self.portRange[0] > 65536:
-                raiseError("First TCP port must be an integer between 0 and 65536")
-            if self.portRange[1] < 0 or self.portRange[1] > 65536:
-                raiseError("Last TCP port must be an integer between 0 and 65536")
-            if self.portRange[0] > self.portRange[1]:
-                raiseError("Last TCP port must be greater or equals to the first TCP port")
-            if self.portRange[1] - self.portRange[0] < self.nbRuntimes:
-                raiseError("The port range is too small according to the number of runtimes")
+            raise main.AgentConfigFileError("ProActive communication protocol cannot be empty") 
                 
+        if self.portRange[0] < 0 or self.portRange[0] > 65536:
+            raise main.AgentInternalError("First TCP port must be an integer between 0 and 65536")
+        if self.portRange[1] < 0 or self.portRange[1] > 65536:
+            raise main.AgentInternalError("Last TCP port must be an integer between 0 and 65536")
+        if self.portRange[0] > self.portRange[1]:
+            raise main.AgentInternalError("Last TCP port must be greater or equals to the first TCP port")
+        if self.portRange[1] - self.portRange[0] < self.nbRuntimes:
+            raise main.AgentInternalError("The port range is too small according to the number of runtimes")
+            
         if self.nice < -20 or self.nice > 19:
-            raiseError("Invalid nice value. Must be betweeon -20 and 19")
+            raise main.AgentInternalError("Invalid nice value. Must be betweeon -20 and 19")
             
         if self.ionice is not None:
             if self.ionice["class"] == 1 or self.ionice["class"] == 2:
-                if self.ionice["data"] is None:
-                    raiseError("A class data is mandatory with the best effort and real time ionice classes")
+                if self.ionice["classdata"] is None:
+                    raise main.AgentConfigFileError("A class data is mandatory with the best effort and real time ionice classes")
             else:
-                if self.ionice["data"] is not None:
-                    raiseError("none and idle ionice classes does not accept any class data argument")
-            
+                if self.ionice["classdata"] is not None:
+                    raise main.AgentConfigFileError("none and idle ionice classes does not accept any class data argument")
+                    
     def parse(self, eventNode):
         '''
         Fill this config with the value extracted from XML configuration file
         '''
         confNode = eventNode.xpath("/a:agent/a:config", namespaces = {'a' : main.xmlns})
-        assert(len(confNode) == 1)
+        assert len(confNode) == 1 
         self.__parse_config(True, confNode[0])
 
         eventNode = eventNode.xpath("./a:config", namespaces = {'a' : main.xmlns})
@@ -160,67 +156,67 @@ class EventConfig(object):
     def __parse_config(self, isRoot, confNode):
         lx = confNode.xpath("./a:proactiveHome", namespaces = {'a' : main.xmlns})
         if isRoot: # This element is mandatory in the root config but optional otherwise
-            assert(len(lx) == 1)
+            assert len(lx) == 1
             self.proactiveHome = lx[0].text
         else:
-            assert(len(lx) == 1 or len(lx) == 0)
+            assert len(lx) == 1 or len(lx) == 0
             if len(lx) == 1:
                 self.proactiveHome = lx[0].text
                 
         lx = confNode.xpath("./a:javaHome", namespaces = {'a' : main.xmlns})
         if isRoot: # This element is mandatory in the root config but optional otherwise
-            assert(len(lx) == 1)
+            assert len(lx) == 1
             self.javaHome = lx[0].text
         else:
-            assert(len(lx) == 1 or len(lx) == 0)
+            assert len(lx) == 1 or len(lx) == 0
             if len(lx) == 1:
                 self.javaHome = lx[0].text
 
         lx = confNode.xpath("./a:jvmParameters/a:param", namespaces = {'a' : main.xmlns})
-        if len(lx) == 0 and not isRoot:
-            self.jvmParameters = [] 
+        if len(lx) != 0 and not isRoot: 
+            self.jvmParameters = []
         for node in lx:
             self.jvmParameters.append(node.text)
 
         lx = confNode.xpath("./a:memoryLimit", namespaces = {'a' : main.xmlns})
-        assert(len(lx) == 1 or len(lx) == 0)
+        assert len(lx) == 1 or len(lx) == 0
         if len(lx) == 1:
             self.memoryLimit = int(lx[0].text)
         
         lx = confNode.xpath("./a:nbRuntimes", namespaces = {'a' : main.xmlns})
-        assert(len(lx) == 1 or len(lx) == 0)
+        assert len(lx) == 1 or len(lx) == 0
         if len(lx) == 1: 
             self.nbRuntimes = int(lx[0].text)
             if self.nbRuntimes == "auto":
                 self.nbRuntimes = 0
 
         lx = confNode.xpath("./a:protocol", namespaces = {'a' : main.xmlns})
-        assert(len(lx) == 1 or len(lx) == 0)
+        assert len(lx) == 1 or len(lx) == 0
         if len(lx) == 1: 
             self.protocol = lx[0].text
 
         lx = confNode.xpath("./a:portRange", namespaces = {'a' : main.xmlns})
-        assert(len(lx) == 1 or len(lx) == 0)
+        assert len(lx) == 1 or len(lx) == 0
         if len(lx) == 1: 
             self.portRange = (int(lx[0].get("first")), int(lx[0].get("last")))
 
         lx = confNode.xpath("./a:onRuntimeExitScript", namespaces = {'a' : main.xmlns})
-        assert(len(lx) == 1 or len(lx) == 0)
+        assert len(lx) == 1 or len(lx) == 0
         if len(lx) == 1: 
             self.onRuntimeExitScript = lx[0].text
 
         lx = confNode.xpath("./a:nice", namespaces = {'a' : main.xmlns})
-        assert(len(lx) == 1 or len(lx) == 0)
+        assert len(lx) == 1 or len(lx) == 0
         if len(lx) == 1: 
             self.nice = int(lx[0].text)
             
         lx = confNode.xpath("./a:ionice", namespaces = {'a' : main.xmlns})
-        assert(len(lx) == 1 or len(lx) == 0)
+        assert len(lx) == 1 or len(lx) == 0
         if len(lx) == 1:
             classes = {'none' : 0, 'realtime' : 1, 'besteffort' : 2, 'idle' : 3}
             clazz = classes[lx[0].get("class")]
             data = lx[0].get("data")
-            self.ionice = {"class" : clazz, "data" : data}
+            self.ionice = {"class" : clazz, "classdata" : data}
             
 
 class AgentTime(object):
@@ -272,54 +268,75 @@ class JVMStarter():
     '''
     This class is in  charge of spawning a new process for the JVM.
     '''
-    def __init__(self, config, cmd, epoch_date):
+    def __init__(self, config, cmd, epoch_date, respawn_increment, rank):
         self.config = config
         self.cmd = cmd
         self.epoch_date = epoch_date
         self.is_canceled = False
+        self.respawn_increment = respawn_increment
+        self.rank = rank
       
     def schedule(self):
         sleep_time = int(self.epoch_date - time.time())
-        print "JVM Starter thread created for %s. Executing will begin in %s secs" % (self.cmd, sleep_time) 
+        logger.info("Thread created to execute %s. Execution starts in %s seconds" % (self.cmd, sleep_time)) 
         time.sleep(sleep_time)
+       
+        def get_wait_time_func(respawn_increment, max_wait_time=3*60):
+            nb_die = 0
+            while  True:
+                nb_die += 1
+                yield (nb_die, min(nb_die * respawn_increment, max_wait_time))
+
         
+        wait_time_gen = get_wait_time_func(self.respawn_increment)
         self.p = None
         while not self.is_canceled:
             # Do we need to restart the process ? 
             if self.p is None or self.p.poll() is not None:
                 if self.p is not None:
-                    print "Process %s exited with status code %s" % (self.p.pid, self.p.poll())
+                    (nb_die, wait_time) = wait_time_gen.next()
+                    logger.warning("Process %s exited with status code %s. Failure number %d waiting %s seconds before restarting" % (self.p.pid, self.p.poll(), nb_die, wait_time))
                     (stdout, stderr) = self.p.communicate()
-                    print stdout
-                    print stderr
+                    logger.info("Standard output of %s is: %s" % (self.p.pid, stdout))
+                    logger.info("Standard error of %s is: %s" % (self.p.pid, stderr))
+                    time.sleep(wait_time)
                 
                 self.p = subprocess.Popen(self.cmd, bufsize=4096, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE, preexec_fn=self._pinit)
-                print "Forked process with pid:%s cmd:%s" % (self.p.pid, self.cmd)
+                logger.info("Forked the process:%s to start command:%s" % (self.p.pid, self.cmd))
             time.sleep(1)
     
         self.p.terminate()
+        logger.info("Terminated pid: %s" % self.p.pid)
         (stdout, stderr) = self.p.communicate()
-        print stdout
-        print stderr        
-        print "JVM Stater: cancelled"
+        logger.info("Standard output of %s is:\n %s" % (self.p.pid, stdout))
+        logger.info("Standard error  of %s is:\n %s" % (self.p.pid, stderr))
         
     def cancel(self):
         self.is_canceled = True
         
     def _pinit(self):
+        # Do not use logger in this function since it is executed in a forked process
+        # stdout & stderr are monitored by the agent
+        
         # CPU Nice
         if self.config.nice != 0:
-            os.nice(self.action.nice) # Can throw an OSError   
-        
+            try:
+                os.nice(self.config.nice) # Can throw an OSError   
+            except OSError as e:
+                print >> sys.stderr, "ERROR: nice call failed"
+                
         # IONice
         if self.config.ionice is not None:
             io_class = self.config.ionice['class']
             ion_cmd  = ["/usr/bin/ionice", "-p %s" % os.getpid() , "-c %s" % io_class]
             if self.config.ionice['classdata'] is not None:
                 ion_cmd.append("-n" % self.config.ionice['classdata'])
-            retcode = subprocess.call(ion_cmd)
-            assert retcode == 0
-        
+            try:
+                retcode = subprocess.call(ion_cmd)
+                assert retcode == 0
+            except OSError as e:
+                print >> sys.stderr, "ERROR ionice call failed: %s" % e
+                
         # Memory limit
         if self.config.memoryLimit > 0:
             mount_point = "/home/cmathieu/cg"
@@ -345,10 +362,12 @@ class StartEvent(SpecificEvent):
         self.forks = []
    
     def schedule(self):
+        (ports) = self._chose_tcp_ports()
 
         for i in xrange(self.config.nbRuntimes):
-            cmd = self._build_java_cmd(i)
-            starter = JVMStarter(self.config, cmd, self.epoch_date)
+            cmd = self._build_java_cmd(i, ports[i], i)
+            
+            starter = JVMStarter(self.config, cmd, self.epoch_date, self.action._respawn_increment, i)
             thread = threading.Thread(None, starter.schedule, "THREAD%s" % i, (), {})
             thread.start()
             self.forks.append((starter, thread))
@@ -360,7 +379,25 @@ class StartEvent(SpecificEvent):
         for (starter, thread) in self.forks:
             thread.join()
 
-    def _build_java_cmd(self, id):
+    def _chose_tcp_ports(self):
+        import socket
+
+        ports = []
+        offset = 0
+        while len(ports) != self.config.nbRuntimes:
+            port = self.config.portRange[0] + offset
+            assert port <= self.config.portRange[1], "Port range is too small, only %d port available %s" % (len(ports), port)
+            try:
+                s = socket.socket(AF_INET, socket.SOCK_STREAM)
+                s.bind(("", port))
+                ports.append(port)
+            except socket.error:
+                pass
+            offset +=1
+        
+        return ports
+              
+    def _build_java_cmd(self, id, tcp_port, rank):
         cmd = []
         
         # Java
@@ -368,25 +405,27 @@ class StartEvent(SpecificEvent):
         # Classpath
         cmd.append("-classpath")
         cmd.append(self.config.proactiveHome +  "/dist/lib/*")
-        for param in self.config.jvmParameters:
-            cmd.append(param)
             
         cmd.append("-Dproactive.communication.protocol=%s" % self.config.protocol)
 
-        if self.config.portRange is not None:
-            port = self.config.portRange[0] + id
-            assert port <= self.config.portRange[1] + id, "port range is to small according to nbRuntimes"
-            
-            if self.config.protocol == "rmi":
-                cmd.append("-Dproactive.rmi.port=%d" % port)
-            elif self.config.protocol == "http":
-                cmd.append("-Dproactive.http.port=%d" % port)
-            elif self.config.protocol == "pamr":
-                pass # PAMR does not user server socket
-            elif self.config.protocol == "pnp":
-                cmd.append("-Dproactive.pnp.port=%d" % port)
-            else:
-                print "Port range is not supported for protocol: %s" % self.config.protocol
+    
+        if self.config.protocol == "rmi":
+            cmd.append("-Dproactive.rmi.port=%d" % tcp_port)
+        elif self.config.protocol == "http":
+            cmd.append("-Dproactive.http.port=%d" % tcp_port)
+        elif self.config.protocol == "pamr":
+            pass # PAMR does not user server socket
+        elif self.config.protocol == "pnp":
+            cmd.append("-Dproactive.pnp.port=%d" % tcp_port)
+        else:
+            print "TCP port is not supported for protocol: %s" % self.config.protocol
+
+        cmd.append("-Djava.security.manager")
+        cmd.append("-Djava.security.policy="     + os.path.join(os.path.dirname(__file__), "../../agent.java.policy"))
+#       cmd.append("-Dlog4j.configuration=file:" + os.path.join(os.path.dirname(__file__), "../../agent.log4j"))
+        cmd.append("-Dproactive.agent.rank=%d" % rank)
+        for param in self.config.jvmParameters:
+            cmd.append(param.replace('${rank}', "%d" % rank))
 
         cmd.append(self.action.getClass())
         map(cmd.append, self.action.getArguments())
@@ -441,26 +480,23 @@ class Event(object):
         '''
         def raiseError(message, internal=False):
             if internal:
-                raise AgentInternalError("Invalid event state")
+                raise main.AgentInternalError("Invalid event state")
             else:
-                raise AgentError("Invalid event state: " + message)
+                raise main.AgentError("Invalid event state: " + message)
   
         if self.startOffset < 0:
-            raiseError("Start offset must be positive", True)
+            raise main.AgentInternalError("Start offset must be positive")
         if self.startOffset > _ONE_WEEK_IN_SECS:
-            raiseError("Start offset must be lesser than %s" % _ONE_WEEK_IN_SECS, True)
+            raise main.AgentInternalError("Start offset must be lesser than %s" % _ONE_WEEK_IN_SECS)
         if self.duration < 1:
-            raiseError("An event must last a least one second")
+            raise main.AgentConfigFileError("An event must last a least one second (not enforced by XSD)")
         if self.duration >= _ONE_WEEK_IN_SECS:
-            raiseError("An event cannot last more than 7 days", True)
-            raise AgentError("FIXME")
+            raise main.AgentInternalError("An event cannot last more than 7 days (not enforced by XSD)")
         
         self.config.check()
         
     def __str__(self):
         return "startOffset: %s, duration: %s, config: %s" % (self.startOffset, self.duration, self.config)   
-    
-     
      
      
 class CalendarEventGenerator(object):
@@ -479,7 +515,7 @@ class CalendarEventGenerator(object):
     def __get_start_offset(self, eventNode):
         ''' Return the start offset of this event in seconds'''
         lx = eventNode.xpath("./a:start", namespaces = {'a' : main.xmlns})
-        assert(len(lx) == 1)
+        assert len(lx) == 1
 
         startOffset = 0
         startOffset += int(lx[0].get("second"))
@@ -532,10 +568,10 @@ class CalendarEventGenerator(object):
         if len(self.events) > 1:
             for i in range(len(self.events)-1):
                 if self.events[i].stopOffset > self.events[i+1].startOffset:
-                    raise AgentError("Calendar events %s and %s overlap" % (self.events[i], self.events[i+1]))
+                    raise main.AgentConfigFileError("Calendar events %s and %s overlap (not enforced by XSD)" % (self.events[i], self.events[i+1]))
 
             if (self.events[-1].stopOffset <= self.events[-1].startOffset) and (self.events[-1].stopOffset > self.events[0].startOffset):
-                raise AgentError("Calendar events %s and %s overlap" % (self.events[-1], self.events[0]))
+                raise main.AgentConfigFileError("Calendar events %s and %s overlap (not enforced by XSD)" % (self.events[-1], self.events[0]))
       
     def getActions(self, timebias=0):
         g = self.__getActions(timebias) 
@@ -560,7 +596,7 @@ class CalendarEventGenerator(object):
             return now - agent_time.origin
 
         if len(self.events) == 0:
-            raise StopIteration("No calendars event")
+            raise main.AgentInternalError("No calendars event")
 
         agent_time = AgentTime()
 
@@ -621,4 +657,5 @@ def parse(tree, action):
     '''
     evg = CalendarEventGenerator(action)
     evg.parse(tree)
+    evg.check()
     return evg

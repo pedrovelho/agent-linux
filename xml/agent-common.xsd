@@ -381,8 +381,8 @@
     <xsd:annotation><xsd:documentation xml:lang="en">
 
     </xsd:documentation></xsd:annotation>
-    <xsd:attribute use="required" type="xsd:unsignedShort" name="first"/>
-    <xsd:attribute use="required" type="xsd:unsignedShort" name="last"/>
+    <xsd:attribute use="required" type="portType" name="first"/>
+    <xsd:attribute use="required" type="portType" name="last"/>
   </xsd:complexType>
 
   <xsd:simpleType name="ConfOnRuntimeExitScriptType"> 
@@ -414,5 +414,11 @@
       <xsd:enumeration value="auto"/>
     </xsd:restriction>
   </xsd:simpleType>
-
+  
+  <xsd:simpleType name="portType">
+    <xsd:restriction base="xsd:unsignedShort">
+      <xsd:minInclusive value="0"/>
+      <xsd:maxExclusive value="65535"/>
+    </xsd:restriction>
+  </xsd:simpleType>
 </xsd:schema>
