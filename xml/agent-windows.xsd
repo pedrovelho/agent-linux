@@ -6,9 +6,46 @@
   elementFormDefault="qualified">
 
  <xsd:redefine schemaLocation="agent-common.xsd">
-    <xsd:complexType name="CalendarEvent">
+    <xsd:complexType name="GlobalAgentConfigType">
       <xsd:complexContent>
-        <xsd:extension base="CalendarEvent">
+        <xsd:extension base="GlobalAgentConfigType">
+          <xsd:sequence>
+            <xsd:element minOccurs="1" maxOccurs="1" name="processPriority">
+              <xsd:annotation><xsd:documentation xml:lang="en">
+
+              </xsd:documentation></xsd:annotation>
+              <xsd:simpleType>
+               <xsd:restriction base="xsd:string">
+                  <xsd:enumeration value="idle"/>
+                  <xsd:enumeration value="belowNormal"/>
+                  <xsd:enumeration value="normal"/>
+                  <xsd:enumeration value="aboveNormal"/>
+                  <xsd:enumeration value="high"/>
+                  <xsd:enumeration value="realtime"/>
+               </xsd:restriction>
+              </xsd:simpleType>
+            </xsd:element>
+
+            <xsd:element minOccurs="1" maxOccurs="1" name="maxCpuUsage">
+              <xsd:annotation>
+                <xsd:documentation xml:lang="en">
+
+                </xsd:documentation>
+              </xsd:annotation>
+              <xsd:simpleType>
+                <xsd:restriction base="xsd:positiveInteger">
+                  <xsd:maxInclusive value="100"/>
+                </xsd:restriction>
+              </xsd:simpleType>
+            </xsd:element>
+          </xsd:sequence>
+        </xsd:extension>
+      </xsd:complexContent>
+    </xsd:complexType>
+
+    <xsd:complexType name="EventAgentConfigType">
+      <xsd:complexContent>
+        <xsd:extension base="EventAgentConfigType">
           <xsd:sequence>
             <xsd:element minOccurs="1" maxOccurs="1" name="processPriority">
               <xsd:annotation><xsd:documentation xml:lang="en">
