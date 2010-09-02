@@ -46,6 +46,8 @@ import utils
 import logging
 from IN import AF_INET
 import sys
+import errors
+import signal
 
 logger = logging.getLogger("agent.evg")
 
@@ -87,7 +89,8 @@ class EventConfig(object):
         self.javaHome = None
         self.jvmParameters = []
         self.memoryLimit = 0
-        self.nbRuntimes = utils.get_number_of_cpus()
+        self.cgroup_mnt_point = None
+        self.nbRuntimes = 1
         self.protocol = "rmi"
         self.portRange = (1025, 65535)
         self.onRuntimeExitScript = None
@@ -99,47 +102,54 @@ class EventConfig(object):
         Check the state of this event is consistent 
         '''
         if self.proactiveHome is None:
-            raise main.AgentConfigFileError("ProActive home is not set")
+            raise errors.AgentConfigFileError("ProActive home is not set")
         if len(self.proactiveHome) < 1:
             # FIXME: Should be enforced by the XSD
-            raise main.AgentConfigFileError("ProActive home cannot be empty")
+            raise errors.AgentConfigFileError("ProActive home cannot be empty")
         
         if self.javaHome is None:
-            raise main.AgentConfigFileError("Java home is not set")
+            raise errors.AgentConfigFileError("Java home is not set")
         if len(self.javaHome) < 1:
             # FIXME: Should be enforce by the XSD
-            raise main.AgentConfigFileError("Java home cannot be empty")
+            raise errors.AgentConfigFileError("Java home cannot be empty")
         
         if self.memoryLimit < 0:
-            raise main.AgentInternalError("Memory limit must be a positive integer")
-        
+            raise errors.AgentInternalError("Memory limit must be a positive integer")
+        if self.memoryLimit != 0:
+            if self.cgroup_mnt_point is None:
+                raise errors.AgentInternalError("cgroup mount point is not defined but memory limit is set")
+            if len(self.cgroup_mnt_point) == 0:
+                raise errors.AgentInternalError("cgroup mount point lenght is 0 but memory limit is set")
+            if not os.path.exists(self.cgroup_mnt_point):
+                raise errors.AgentConfigFileError("cgroup is not mounted at %s" % self.cgroup_mnt_point)
+            
         if self.nbRuntimes < 0:
-            raise main.AgentInternalError("The number of runtimes must be a positive integer")
+            raise errors.AgentInternalError("The number of runtimes must be a positive integer")
         
         if self.protocol is None:
-            raise main.AgentInternalError("ProActive communication protocol is not set")
+            raise errors.AgentInternalError("ProActive communication protocol is not set")
         if len(self.protocol) < 1:
-            raise main.AgentConfigFileError("ProActive communication protocol cannot be empty") 
+            raise errors.AgentConfigFileError("ProActive communication protocol cannot be empty") 
                 
         if self.portRange[0] < 0 or self.portRange[0] > 65536:
-            raise main.AgentInternalError("First TCP port must be an integer between 0 and 65536")
+            raise errors.AgentInternalError("First TCP port must be an integer between 0 and 65536")
         if self.portRange[1] < 0 or self.portRange[1] > 65536:
-            raise main.AgentInternalError("Last TCP port must be an integer between 0 and 65536")
+            raise errors.AgentInternalError("Last TCP port must be an integer between 0 and 65536")
         if self.portRange[0] > self.portRange[1]:
-            raise main.AgentInternalError("Last TCP port must be greater or equals to the first TCP port")
+            raise errors.AgentInternalError("Last TCP port must be greater or equals to the first TCP port")
         if self.portRange[1] - self.portRange[0] < self.nbRuntimes:
-            raise main.AgentInternalError("The port range is too small according to the number of runtimes")
+            raise errors.AgentInternalError("The port range is too small according to the number of runtimes")
             
         if self.nice < -20 or self.nice > 19:
-            raise main.AgentInternalError("Invalid nice value. Must be betweeon -20 and 19")
+            raise errors.AgentInternalError("Invalid nice value. Must be betweeon -20 and 19")
             
         if self.ionice is not None:
             if self.ionice["class"] == 1 or self.ionice["class"] == 2:
                 if self.ionice["classdata"] is None:
-                    raise main.AgentConfigFileError("A class data is mandatory with the best effort and real time ionice classes")
+                    raise errors.AgentConfigFileError("A class data is mandatory with the best effort and real time ionice classes")
             else:
                 if self.ionice["classdata"] is not None:
-                    raise main.AgentConfigFileError("none and idle ionice classes does not accept any class data argument")
+                    raise errors.AgentConfigFileError("none and idle ionice classes does not accept any class data argument")
                     
     def parse(self, eventNode):
         '''
@@ -178,17 +188,21 @@ class EventConfig(object):
         for node in lx:
             self.jvmParameters.append(node.text)
 
-        lx = confNode.xpath("./a:memoryLimit", namespaces = {'a' : main.xmlns})
-        assert len(lx) == 1 or len(lx) == 0
-        if len(lx) == 1:
-            self.memoryLimit = int(lx[0].text)
-        
         lx = confNode.xpath("./a:nbRuntimes", namespaces = {'a' : main.xmlns})
         assert len(lx) == 1 or len(lx) == 0
         if len(lx) == 1: 
             self.nbRuntimes = int(lx[0].text)
             if self.nbRuntimes == "auto":
-                self.nbRuntimes = 0
+                self.nbRuntimes = utils.get_number_of_cpus()
+
+        lx = confNode.xpath("./a:memoryLimit", namespaces = {'a' : main.xmlns})
+        assert len(lx) == 1 or len(lx) == 0
+        if len(lx) == 1:
+            # Mimic the Windows agent behavior, until next release
+            self.memoryLimit = int(lx[0].text) * self.nbRuntimes
+            self.cgroup_mnt_point = lx[0].get("cgroup_mount_point")
+        
+
 
         lx = confNode.xpath("./a:protocol", namespaces = {'a' : main.xmlns})
         assert len(lx) == 1 or len(lx) == 0
@@ -256,7 +270,7 @@ class SpecificEvent(object):
         '''
         Wait until the start time of this event
         '''
-        time.sleep(self.seconds_remaining())
+        time.sleep(max(0, self.seconds_remaining()))
 
     def seconds_remaining(self):
         '''
@@ -268,18 +282,20 @@ class JVMStarter():
     '''
     This class is in  charge of spawning a new process for the JVM.
     '''
-    def __init__(self, config, cmd, epoch_date, respawn_increment, rank):
+    def __init__(self, config, cmd, epoch_date, respawn_increment, rank, cgroup_mnt_point):
         self.config = config
         self.cmd = cmd
         self.epoch_date = epoch_date
-        self.is_canceled = False
         self.respawn_increment = respawn_increment
         self.rank = rank
+        self.cgroup_mnt_point = cgroup_mnt_point
+
+        self.canceled = threading.Event()
       
     def schedule(self):
         sleep_time = int(self.epoch_date - time.time())
         logger.info("Thread created to execute %s. Execution starts in %s seconds" % (self.cmd, sleep_time)) 
-        time.sleep(sleep_time)
+        self.canceled.wait(sleep_time)
        
         def get_wait_time_func(respawn_increment, max_wait_time=3*60):
             nb_die = 0
@@ -290,29 +306,36 @@ class JVMStarter():
         
         wait_time_gen = get_wait_time_func(self.respawn_increment)
         self.p = None
-        while not self.is_canceled:
+        pgid = None
+        while not self.canceled.isSet():
             # Do we need to restart the process ? 
             if self.p is None or self.p.poll() is not None:
                 if self.p is not None:
+                    os.killpg(pgid, signal.SIGKILL)
                     (nb_die, wait_time) = wait_time_gen.next()
                     logger.warning("Process %s exited with status code %s. Failure number %d waiting %s seconds before restarting" % (self.p.pid, self.p.poll(), nb_die, wait_time))
                     (stdout, stderr) = self.p.communicate()
                     logger.info("Standard output of %s is: %s" % (self.p.pid, stdout))
                     logger.info("Standard error of %s is: %s" % (self.p.pid, stderr))
-                    time.sleep(wait_time)
+                    self.canceled.wait(wait_time)
+                    
                 
                 self.p = subprocess.Popen(self.cmd, bufsize=4096, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE, preexec_fn=self._pinit)
+                pgid = os.getpgid(self.p.pid)
                 logger.info("Forked the process:%s to start command:%s" % (self.p.pid, self.cmd))
-            time.sleep(1)
-    
-        self.p.terminate()
-        logger.info("Terminated pid: %s" % self.p.pid)
-        (stdout, stderr) = self.p.communicate()
-        logger.info("Standard output of %s is:\n %s" % (self.p.pid, stdout))
-        logger.info("Standard error  of %s is:\n %s" % (self.p.pid, stderr))
-        
+            self.canceled.wait(1)
+
+        if self.p is not None:   
+            self.p.terminate()
+            os.killpg(pgid, signal.SIGKILL)
+            logger.info("Terminated pid: %s" % self.p.pid)
+            (stdout, stderr) = self.p.communicate()
+            logger.info("Standard output of %s is:\n %s" % (self.p.pid, stdout))
+            logger.info("Standard error  of %s is:\n %s" % (self.p.pid, stderr))
+        logger.debug("Thread to execute %s exited" % (self.cmd)) 
+
     def cancel(self):
-        self.is_canceled = True
+        self.canceled.set()
         
     def _pinit(self):
         # Do not use logger in this function since it is executed in a forked process
@@ -324,6 +347,7 @@ class JVMStarter():
                 os.nice(self.config.nice) # Can throw an OSError   
             except OSError as e:
                 print >> sys.stderr, "ERROR: nice call failed"
+                os._exit(253) # Don't use sys.exit() here
                 
         # IONice
         if self.config.ionice is not None:
@@ -335,26 +359,37 @@ class JVMStarter():
                 retcode = subprocess.call(ion_cmd)
                 assert retcode == 0
             except OSError as e:
-                print >> sys.stderr, "ERROR ionice call failed: %s" % e
+                print >> sys.stderr, "ERROR: ionice call failed: %s" % e
+                os._exit(253) # Don't use sys.exit() here
                 
         # Memory limit
         if self.config.memoryLimit > 0:
-            mount_point = "/home/cmathieu/cg"
-            group = "agent"
-            p = os.path.join(mount_point, group)
-            m = os.path.join(p, "memory.limit_in_bytes")
-            with io.open(m, "w") as file:
-                file.write(unicode(self.config.memoryLimit))
+            try:
+                group = "agent"
+                p = os.path.join(self.cgroup_mnt_point, group)
+                m = os.path.join(p, "memory.limit_in_bytes")
+                with io.open(m, "w") as file:
+                    file.write(unicode(self.config.memoryLimit*1024*1024))
+                        
+                m = os.path.join(p, "memory.swappiness")
+                with io.open(m, "w") as file:
+                    file.write(unicode(0))
                     
-            m = os.path.join(p, "memory.swappiness")
-            with io.open(m, "w") as file:
-                file.write(unicode(0))
-                
-            m = os.path.join(p, "memory.memsw.limit_in_bytes")
-            with io.open(m, "w") as file:
-                file.write(unicode(self.config.memoryLimit))
-            
-    
+                m = os.path.join(p, "memory.memsw.limit_in_bytes")
+                with io.open(m, "w") as file:
+                    file.write(unicode(self.config.memoryLimit*1024*1024))
+                    
+                m = os.path.join(p, "tasks")
+                with io.open(m, "a") as file:
+                    file.write(unicode("%d" % os.getpid()))
+                    
+            except IOError as e:
+                # TODO: Better diagnostic / error handling
+                print >> sys.stderr, "ERROR: Failed to configure cgroup to limit the available memory"
+                os._exit(253) # Don't use sys.exit() here
+
+        os.setpgrp()
+        
 class StartEvent(SpecificEvent):
    
     def __init__(self, generic_event, epoch_date):
@@ -367,7 +402,7 @@ class StartEvent(SpecificEvent):
         for i in xrange(self.config.nbRuntimes):
             cmd = self._build_java_cmd(i, ports[i], i)
             
-            starter = JVMStarter(self.config, cmd, self.epoch_date, self.action._respawn_increment, i)
+            starter = JVMStarter(self.config, cmd, self.epoch_date, self.action._respawn_increment, i, self.config.cgroup_mnt_point)
             thread = threading.Thread(None, starter.schedule, "THREAD%s" % i, (), {})
             thread.start()
             self.forks.append((starter, thread))
@@ -480,18 +515,18 @@ class Event(object):
         '''
         def raiseError(message, internal=False):
             if internal:
-                raise main.AgentInternalError("Invalid event state")
+                raise errors.AgentInternalError("Invalid event state")
             else:
-                raise main.AgentError("Invalid event state: " + message)
+                raise errors.AgentError("Invalid event state: " + message)
   
         if self.startOffset < 0:
-            raise main.AgentInternalError("Start offset must be positive")
+            raise errors.AgentInternalError("Start offset must be positive")
         if self.startOffset > _ONE_WEEK_IN_SECS:
-            raise main.AgentInternalError("Start offset must be lesser than %s" % _ONE_WEEK_IN_SECS)
+            raise errors.AgentInternalError("Start offset must be lesser than %s" % _ONE_WEEK_IN_SECS)
         if self.duration < 1:
-            raise main.AgentConfigFileError("An event must last a least one second (not enforced by XSD)")
+            raise errors.AgentConfigFileError("An event must last a least one second (not enforced by XSD)")
         if self.duration >= _ONE_WEEK_IN_SECS:
-            raise main.AgentInternalError("An event cannot last more than 7 days (not enforced by XSD)")
+            raise errors.AgentInternalError("An event cannot last more than 7 days (not enforced by XSD)")
         
         self.config.check()
         
@@ -568,10 +603,10 @@ class CalendarEventGenerator(object):
         if len(self.events) > 1:
             for i in range(len(self.events)-1):
                 if self.events[i].stopOffset > self.events[i+1].startOffset:
-                    raise main.AgentConfigFileError("Calendar events %s and %s overlap (not enforced by XSD)" % (self.events[i], self.events[i+1]))
+                    raise errors.AgentConfigFileError("Calendar events %s and %s overlap (not enforced by XSD)" % (self.events[i], self.events[i+1]))
 
             if (self.events[-1].stopOffset <= self.events[-1].startOffset) and (self.events[-1].stopOffset > self.events[0].startOffset):
-                raise main.AgentConfigFileError("Calendar events %s and %s overlap (not enforced by XSD)" % (self.events[-1], self.events[0]))
+                raise errors.AgentConfigFileError("Calendar events %s and %s overlap (not enforced by XSD)" % (self.events[-1], self.events[0]))
       
     def getActions(self, timebias=0):
         g = self.__getActions(timebias) 
@@ -596,7 +631,7 @@ class CalendarEventGenerator(object):
             return now - agent_time.origin
 
         if len(self.events) == 0:
-            raise main.AgentInternalError("No calendars event")
+            raise errors.AgentInternalError("No calendars event")
 
         agent_time = AgentTime()
 

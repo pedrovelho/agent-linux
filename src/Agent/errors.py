@@ -36,46 +36,39 @@
 # $$ACTIVEEON_INITIAL_DEV$$
 #################################################################
 
-import time
-import logging
 
-logger = logging.getLogger("agent.ctr")
-
-
-def mainloop(eventGenerator, speedup=1, bias=0):
+class AgentError(Exception):
     '''
-    The main loop of the agent.
+    Base class exception for the ProActive Linux agent
     '''
+    def __init__(self, msg):
+        self.message = msg
+        
+    def __str__(self):
+        return "%s" % self.msg
 
-    gen = eventGenerator.getActions()
+
+class AgentInternalError(AgentError):
+    '''
+    ProActive Linux agent internal error
     
-    event     = None
-    old_event = None
+    A such exception is raised when the agent is in an unexpected or bad state. If a
+    such exception is encountered it means that you do a bug report ;)
+    '''
     
-    while True:
-        try:
-            old_event = event
-            event = gen.next()
-            
-            if old_event is not None:
-                old_event.cancel()
-            
-            logger.debug("Controller is scheduling an event -> type:%s start:%s duration:%s" % (event.type, event.epoch_date, event.duration)) 
-            event.schedule()
-            
-            # FIXME: sleep shouldn't be used. It should be event based ! 
-            sleep_time = max(0, int((event.epoch_date + event.duration) - time.time()))
-            logger.debug("Controller will sleep for %s seconds" % sleep_time)
-            time.sleep(sleep_time)
-            
-        except StopIteration:
-            logger.critical("Controller failed to get the next event for the event generator.")
-            break
-        except (KeyboardInterrupt, SystemExit):
-            # Terminate all the processes then exit
-            logger.info("Daemon exiting...")
-            if old_event is not None:
-                old_event.cancel()
-            if event is not None:
-                event.cancel()
-                return
+    def __str__(self):
+        return "%s (This is an internal error, please fill a bug report)" % self.message
+    
+        
+class AgentSetupError(AgentError):
+
+    def __str__(self):
+        return "%s (please check your installation)" % self.message
+    
+
+class AgentConfigFileError(AgentError):
+    
+    def __str__(self):
+        return  "Invalid configuration file: %s" % self.message
+    
+    

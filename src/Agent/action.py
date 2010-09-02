@@ -39,7 +39,7 @@
 import random
 import logging
 import main
-from main import AgentInternalError
+import errors
 
 ''' 
 This module is responsible for parsing the events from the agent configuration file
@@ -84,11 +84,11 @@ class _AbstractConnection(object):
 
     def getClass(self):
         ''' Return the Java class to start '''
-        raise AgentInternalError("Not implemented")
+        raise errors.AgentInternalError("Not implemented")
     
     def getArguments(self):        
         ''''Return the Java arguments '''
-        raise AgentInternalError("Not implemented")
+        raise errors.AgentInternalError("Not implemented")
     
     
 class DummyConnection(_AbstractConnection):
@@ -235,11 +235,11 @@ def parse(tree):
 
     l = len(lx)
     if (l == 0):
-        raise main.AgentConfigFileError('One and only one connection must be enabled (not enforced by the XML Schema)')
+        raise errors.AgentConfigFileError('One and only one connection must be enabled (not enforced by the XML Schema)')
     elif (l == 1):
         name = lx[0].tag.replace("{%s}" % main.xmlns, "", 1)
         handler = handlers.get(name)()
         handler.parse(lx[0])
         return handler
     else:
-        raise main.AgentConfigFileError('One connection must be enabled (not enforced by the XML Schema)')
+        raise errors.AgentConfigFileError('One connection must be enabled (not enforced by the XML Schema)')

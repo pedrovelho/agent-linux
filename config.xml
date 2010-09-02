@@ -10,15 +10,17 @@
     <jvmParameters>
       <param>-Xmx512M</param>
     </jvmParameters>  
+    <memoryLimit cgroup_mount_point="/home/cmathieu/cg">2000</memoryLimit>
     <nbRuntimes>2</nbRuntimes>
+
     <nice>19</nice>
     
   </config>
 
   <events>
     <event>
-      <start day="thursday" hour="14"  minute="37" second="30" />
-      <duration hours="0" minutes="0" seconds="10" days="0"/>
+      <start day="thursday" hour="18"  minute="20" second="35" />
+      <duration hours="0" minutes="00" seconds="10" days="0"/>
       <config>
         <proactiveHome>/tmp/scheduling</proactiveHome>
         <jvmParameters>
@@ -33,7 +35,7 @@
   
   <connections>
     <localBind enabled="true">
-    <respawnIncrement>12</respawnIncrement>
+    <respawnIncrement>2</respawnIncrement>
     <nodename>TOTO</nodename>
     </localBind>
     

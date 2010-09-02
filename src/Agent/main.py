@@ -40,7 +40,7 @@ import optparse
 import sys
 import os
 import logging.handlers
-
+from errors import *
 '''
 This is the ProActive Linux agent main entry point
 '''
@@ -51,47 +51,8 @@ This is the ProActive Linux agent main entry point
 # The current XML namespace 
 xmlns = "urn:proactive:agent:linux:3.0"
 
-# The mount point of the cgroup filesystem
-cgroup_mnt_point = None
+_logger = None
 
-logger = None
-
-
-class AgentError(Exception):
-    '''
-    Base class exception for the ProActive Linux agent
-    '''
-    def __init__(self, msg):
-        self.message = msg
-        
-    def __str__(self):
-        return "%s" % self.msg
-
-
-class AgentInternalError(AgentError):
-    '''
-    ProActive Linux agent internal error
-    
-    A such exception is raised when the agent is in an unexpected or bad state. If a
-    such exception is encountered it means that you do a bug report ;)
-    '''
-    
-    def __str__(self):
-        return "%s (This is an internal error, please fill a bug report)" % self.message
-    
-        
-class AgentSetupError(AgentError):
-
-    def __str__(self):
-        return "%s (please check your installation)" % self.message
-    
-
-class AgentConfigFileError(AgentError):
-    
-    def __str__(self):
-        return  "Invalid configuration file: %s" % self.message
-    
-    
         
 def _parse_config_file(fname):
     '''
@@ -146,7 +107,7 @@ def configure_logging(level, print_on_stdout, log_fname=None):
     
     return my_logger
          
-def main():
+def main_func():
     '''
     Linux agent entry point
     
@@ -155,21 +116,19 @@ def main():
     parser = optparse.OptionParser()
     parser.add_option("-d", "--debug",   action="store_true", dest="debug",   default=False, help="Enable debug level messages", )
     parser.add_option("-v", "--verbose", action="store_true", dest="verbose", default=False, help="Enable verbose mode (print on stdout)", )
-#    parser.add_option("-l", "--logConf",     action="store",      dest="log",     type="string", help="The logging configuration file to use")
+    #parser.add_option("-l", "--logConf",     action="store",      dest="log",     type="string", help="The logging configuration file to use")
     parser.add_option("-L", "--logFile", action="store",      dest="logFile", type="string", help="Path of the log file")
-    parser.add_option("-c", "--cgroup",  action="store",      dest="cgroup",  type="string", help="cgroup mount point", )
     (options, args) = parser.parse_args();
 
-    main.cgroup_mnt_point = options.cgroup
 
     level = logging.INFO
     if options.debug is True:
         level = logging.DEBUG
 
     try :
-        main.logger = configure_logging(level, options.verbose, options.logFile)
-        main.logger.info ("Agent started uid=%s cgroup=%s" %(os.getuid(), main.cgroup_mnt_point))
-        main.logger.debug("Agent is in debug mode !")
+        _logger = configure_logging(level, options.verbose, options.logFile)
+        _logger.info ("Agent started uid=%s" %(os.getuid()))
+        _logger.debug("Agent is in debug mode !")
     except Exception as e:
         print >> sys.stderr, "Failed to configure the logging module: %s" % e
         return 3
@@ -182,7 +141,7 @@ def main():
         return 1 
     
     def print_log_exit(error):
-        main.logger.critical(error)
+        _logger.critical(error)
         if not options.verbose:
             print >> sys.stderr, error
         sys.exit(5)
@@ -203,7 +162,7 @@ def main():
     try:
         import eventgenerator
         evg =  eventgenerator.parse(tree, act)
-    except (AgentError) as e:
+    except AgentError as e:
         print_log_exit(e)
 
     # Start the agent main loop
@@ -213,4 +172,4 @@ def main():
     return 0
     
 if __name__ == '__main__':
-    sys.exit(main())
+    sys.exit(main_func())

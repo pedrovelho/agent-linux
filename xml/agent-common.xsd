@@ -354,14 +354,16 @@
     </xsd:sequence>
   </xsd:complexType>
 
-  <xsd:simpleType name="ConfMemoryLimitationType">
+  <xsd:complexType name="ConfMemoryLimitationType" >
     <xsd:annotation><xsd:documentation xml:lang="en">
-      The amount of memory in megabytes to give to all the forked processes. 
-      If forked process use more than this amount of memory, then processes are killed 
-      by the operating system 
+      The amount of memory in megabytes to give to each forked ProActive runtimes. 
+      If a forked ProActive runtime uses more than this amount of memory, then ProActive runtime
+      or its childs are killed by the operating system. 
     </xsd:documentation></xsd:annotation>
-    <xsd:list itemType="xsd:positiveInteger"/>
-  </xsd:simpleType>
+    <xsd:simpleContent>
+      <xsd:extension base="xsd:unsignedInt"/>
+    </xsd:simpleContent>
+  </xsd:complexType>
   
   <xsd:simpleType name="ConfNbRuntimesType">
     <xsd:annotation><xsd:documentation xml:lang="en">
