@@ -16,12 +16,12 @@
               </xsd:documentation></xsd:annotation>
               <xsd:simpleType>
                <xsd:restriction base="xsd:string">
-                  <xsd:enumeration value="idle"/>
-                  <xsd:enumeration value="belowNormal"/>
-                  <xsd:enumeration value="normal"/>
-                  <xsd:enumeration value="aboveNormal"/>
-                  <xsd:enumeration value="high"/>
-                  <xsd:enumeration value="realtime"/>
+                  <xsd:enumeration value="Idle"/>
+                  <xsd:enumeration value="BelowNormal"/>
+                  <xsd:enumeration value="Normal"/>
+                  <xsd:enumeration value="AboveNormal"/>
+                  <xsd:enumeration value="High"/>
+                  <xsd:enumeration value="Realtime"/>
                </xsd:restriction>
               </xsd:simpleType>
             </xsd:element>
@@ -53,12 +53,12 @@
               </xsd:documentation></xsd:annotation>
               <xsd:simpleType>
                <xsd:restriction base="xsd:string">
-                  <xsd:enumeration value="idle"/>
-                  <xsd:enumeration value="belowNormal"/>
-                  <xsd:enumeration value="normal"/>
-                  <xsd:enumeration value="aboveNormal"/>
-                  <xsd:enumeration value="high"/>
-                  <xsd:enumeration value="realtime"/>
+                  <xsd:enumeration value="Idle"/>
+                  <xsd:enumeration value="BelowNormal"/>
+                  <xsd:enumeration value="Normal"/>
+                  <xsd:enumeration value="AboveNormal"/>
+                  <xsd:enumeration value="High"/>
+                  <xsd:enumeration value="Realtime"/>
                </xsd:restriction>
               </xsd:simpleType>
             </xsd:element>
