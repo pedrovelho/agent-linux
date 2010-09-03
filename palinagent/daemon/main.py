@@ -41,6 +41,8 @@ import sys
 import os
 import logging.handlers
 from errors import *
+import utils
+
 '''
 This is the ProActive Linux agent main entry point
 '''
@@ -51,9 +53,6 @@ This is the ProActive Linux agent main entry point
 # The current XML namespace 
 xmlns = "urn:proactive:agent:linux:3.0"
 
-_logger = None
-
-        
 def _parse_config_file(fname):
     '''
     Parse the XML configuration file and return its XML tree
@@ -63,7 +62,7 @@ def _parse_config_file(fname):
     #
     # TODO: Handle user error (wrong schema, invalid XML etc.) as nicely as possible
     try:
-        schemaFname = os.path.join(os.path.dirname(__file__), "../../xml/agent-linux.xsd")
+        schemaFname = os.path.join(os.path.dirname(__file__), "xsd/agent-linux.xsd")
         schema = etree.XMLSchema(file=schemaFname)
     except etree.LxmlError as e:
         raise AgentSetupError("Unable to load XML Schema %s: %s" % (schemaFname, e))
@@ -83,7 +82,7 @@ def _parse_config_file(fname):
 def configure_logging(level, print_on_stdout, log_fname=None):
     # TODO: LINAGENT-6 Should load the configuration from a file    
     if log_fname is None:
-        log_fname = os.path.join(os.path.dirname(os.path.abspath(__file__)), "../../ProActiveAgent-log.txt")
+        log_fname = os.path.join(os.path.abspath(os.getcwd()), "ProActiveAgent-log.txt")
     
     my_logger = logging.getLogger('agent')
     my_logger.setLevel(level)
@@ -106,7 +105,15 @@ def configure_logging(level, print_on_stdout, log_fname=None):
     #logging.config.fileConfig(fname)
     
     return my_logger
-         
+      
+def _log_debug_info(logger):
+    logger.debug("uname sysname:%s nodename:%s release:%s version:%s machine:%s" % os.uname())
+    logger.debug("uid:%s gid:%s euid:%s egid:%s" % (os.getuid, os.getgid(), os.geteuid(), os.getegid()))
+    logger.debug("environment: %s" % (os.environ))
+    logger.debug("cwd: %s" % (os.getcwd()))
+    logger.debug("agent path: %s" % (os.path.dirname(os.path.abspath(__file__))))
+    logger.debug("#core: %s" % utils.get_number_of_cpus())
+
 def main_func():
     '''
     Linux agent entry point
@@ -120,28 +127,29 @@ def main_func():
     parser.add_option("-L", "--logFile", action="store",      dest="logFile", type="string", help="Path of the log file")
     (options, args) = parser.parse_args();
 
-
-    level = logging.INFO
-    if options.debug is True:
-        level = logging.DEBUG
+    if len(args) == 1:
+        fname = args[0]
+    else:
+        parser.print_help()
+        return 1 
 
     try :
-        _logger = configure_logging(level, options.verbose, options.logFile)
-        _logger.info ("Agent started uid=%s" %(os.getuid()))
-        _logger.debug("Agent is in debug mode !")
+        level = logging.INFO
+        if options.debug is True:
+            level = logging.DEBUG
+        
+        logger = configure_logging(level, options.verbose, options.logFile)
+        logger.info ("Agent started using config file: %s" % fname)
+        logger.debug("Agent is in debug mode !")
+        if options.debug is True:
+            _log_debug_info(logger)
     except Exception as e:
         print >> sys.stderr, "Failed to configure the logging module: %s" % e
         return 3
     
-    fname = os.path.join(os.path.dirname(os.path.abspath(__file__)), "../../config.xml")
-    if len(args) == 1:
-        fname = args[0]
-    elif len(args) != 0:
-        parser.print_help()
-        return 1 
     
     def print_log_exit(error):
-        _logger.critical(error)
+        logger.critical(error)
         if not options.verbose:
             print >> sys.stderr, error
         sys.exit(5)

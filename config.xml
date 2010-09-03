@@ -19,7 +19,7 @@
 
   <events>
     <event>
-      <start day="thursday" hour="18"  minute="20" second="35" />
+      <start day="friday" hour="12"  minute="34" second="10" />
       <duration hours="0" minutes="00" seconds="10" days="0"/>
       <config>
         <proactiveHome>/tmp/scheduling</proactiveHome>

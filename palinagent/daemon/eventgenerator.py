@@ -48,6 +48,7 @@ from IN import AF_INET
 import sys
 import errors
 import signal
+import errno
 
 logger = logging.getLogger("agent.evg")
 
@@ -311,7 +312,13 @@ class JVMStarter():
             # Do we need to restart the process ? 
             if self.p is None or self.p.poll() is not None:
                 if self.p is not None:
-                    os.killpg(pgid, signal.SIGKILL)
+                    try:
+                        os.killpg(pgid, signal.SIGKILL)
+                    except OSError as e:
+                        if e.errno == errno.ESRCH:
+                            pass # Ok, no process to be killed
+                        else:
+                            logger.warning("Killing processes belonging to process group %s (pid:%s) failed: %s" % (pgid, pid, e))
                     (nb_die, wait_time) = wait_time_gen.next()
                     logger.warning("Process %s exited with status code %s. Failure number %d waiting %s seconds before restarting" % (self.p.pid, self.p.poll(), nb_die, wait_time))
                     (stdout, stderr) = self.p.communicate()
@@ -456,7 +463,7 @@ class StartEvent(SpecificEvent):
             print "TCP port is not supported for protocol: %s" % self.config.protocol
 
         cmd.append("-Djava.security.manager")
-        cmd.append("-Djava.security.policy="     + os.path.join(os.path.dirname(__file__), "../../agent.java.policy"))
+        cmd.append("-Djava.security.policy="     + os.path.join(os.path.dirname(__file__), "data/agent.java.policy"))
 #       cmd.append("-Dlog4j.configuration=file:" + os.path.join(os.path.dirname(__file__), "../../agent.log4j"))
         cmd.append("-Dproactive.agent.rank=%d" % rank)
         for param in self.config.jvmParameters:
