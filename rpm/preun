@@ -1,0 +1,4 @@
+if [ $1 -eq 0 ]; then
+        %{_initrddir}/paservice stop &>/dev/null || : 
+        /sbin/chkconfig --del paservice  || :
+fi

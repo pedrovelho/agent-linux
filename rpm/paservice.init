@@ -1,0 +1,82 @@
+#!/bin/bash
+#
+# paservice	Start up the ProActive Linux Agent
+# chkconfig: 2345 95 05
+# description: Start up a paservice
+#
+# processname: paservice
+# config: /etc/proactive/agent.config
+# config: /etc/sysconfig/paservice
+# pidfile: /var/run/paservice.pid
+
+### BEGIN INIT INFO
+# Provides: paservice
+# Required-Start: $local_fs $network 
+# Required-Stop: $local_fs 
+# Should-Start: $syslog
+# Should-Stop: $network $syslog
+# Default-Start: 2 3 4 5
+# Default-Stop: 0 1 6
+# Short-Description: Start up the ProActive Linux Agent
+# Description:       ProActive Linux Agent starts ProActive runtimes according to a schedule
+### END INIT INFO
+
+
+
+# source function library
+. /etc/rc.d/init.d/functions
+
+# Check that networking is up.
+[ "${NETWORKING}" = "no" ] && exit 0
+
+# default log file
+LOG=/var/log/paservice/agent.log
+
+# source the config
+. /etc/sysconfig/paservice
+
+RETVAL=0
+prog="/usr/bin/agent"
+user="paservice"
+group="paservice"
+
+case "$1" in
+  start)
+	echo -n $"Starting paservice: "
+	/sbin/runuser -s /bin/sh -c "$prog -d --logFile $LOG /home/cmathieu/Workspaces/PPS/Agent/config.xml" $user >> $SEEDLOG 2>&1 &
+	disown -ar
+	/bin/touch /var/lock/subsys/paservice
+	/sbin/pidof -o %PPID -x paservice > /var/run/paservice.pid
+	#status btseed &> /dev/null && echo_success || echo_failure
+	#RETVAL=$?
+	echo
+	;;
+  stop)
+	echo -n $"Shutting down paservice: "
+	killproc $prog
+	RETVAL=$?
+	[ $RETVAL -eq 0 ] && /bin/rm -f /var/lock/subsys/paservice /var/run/paservice.pid
+	echo
+	;;
+  restart|reload)
+        $0 stop
+        $0 start
+	RETVAL=$?
+        ;;
+  condrestart)
+        if [ -f /var/lock/subsys/paservice ]; then
+                $0 stop
+		$0 start
+        fi
+	RETVAL=$?
+        ;;
+  status)
+        status paservice 
+	RETVAL=$?
+        ;;
+  *)
+	echo $"Usage: $0 {start|stop|restart|reload|condrestart|status}"
+	exit 1
+esac
+
+exit $RETVAL

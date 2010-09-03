@@ -53,6 +53,8 @@ This is the ProActive Linux agent main entry point
 # The current XML namespace 
 xmlns = "urn:proactive:agent:linux:3.0"
 
+version = "0.90beta1"
+
 def _parse_config_file(fname):
     '''
     Parse the XML configuration file and return its XML tree
@@ -125,7 +127,13 @@ def main_func():
     parser.add_option("-v", "--verbose", action="store_true", dest="verbose", default=False, help="Enable verbose mode (print on stdout)", )
     #parser.add_option("-l", "--logConf",     action="store",      dest="log",     type="string", help="The logging configuration file to use")
     parser.add_option("-L", "--logFile", action="store",      dest="logFile", type="string", help="Path of the log file")
+    parser.add_option("-V", "--version", action="store_true", dest="version", default=False, help="Print version information")
+
     (options, args) = parser.parse_args();
+
+    if options.version is True:
+        print version
+        return 0
 
     if len(args) == 1:
         fname = args[0]

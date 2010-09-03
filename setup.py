@@ -67,25 +67,28 @@ setup(
       license="GPL",
 
       
-#      zip_safe=False,
+      zip_safe=False,
       include_package_data=True,
 
-      packages=find_packages(exclude=["*.tests", "*.tests.*", "tests.*", "tests"]),
-      namespace_packages=["palinagent"],
-
+#      namespace_packages=["palinagent"],
+#      packages=find_packages(exclude=["*.tests", "*.tests.*", "tests.*", "tests"]),
+      packages=find_packages(),
+#      packages=['palinagent', 'palinagent.daemon'],
+      package_dir={
+	'palinagent' : 'palinagent',
+	'palinagent.daemon' : 'palinagent/daemon',
+	},
       package_data={
-        '':['*.xsd'],
-        'palinagent.daemon':['data/*']
+	'palinagent.daemon':['xsd/*.xsd'],
         },
-      install_requires=[
-        ],
-      tests_require=[
-          ],
-          
-          
+
+      scripts = ['daemon.sh', 'rpm/paservice.sysconfig', 'rpm/paservice.init', 'rpm/agent.xml'],
+
       entry_points= {
         'console_scripts': [
-          'agent = palinagent.daemon:main_func',
+          'agent = palinagent.daemon.main:main_func',
           ],
         },
       )
+
+print find_packages()

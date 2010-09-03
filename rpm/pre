@@ -1,0 +1,12 @@
+/usr/bin/getent group paservice >/dev/null  \
+	|| /usr/sbin/groupadd -r paservice
+/usr/bin/getent passwd paservice >/dev/null \
+	|| /usr/sbin/useradd \
+		-r \
+		-s /sbin/nologin \
+		-d %{_localstatedir}/lib/paservice \
+		-g paservice \
+		-c "ProActive Linux Agent" \
+		paservice
+/usr/sbin/usermod --home -d %{_localstatedir}/lib/paservice paservice &>/dev/null
+exit 0
