@@ -38,7 +38,7 @@
 
 from setuptools import setup, find_packages
 
-version = "0.90beta1"
+version = "0.90beta2"
 
 setup(
       name="ProActive-LinuxAgent",
