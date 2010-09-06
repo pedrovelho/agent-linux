@@ -1,1 +1,1 @@
-/sbin/chkconfig --add rpm/paservice  || :
+/sbin/chkconfig --add rpm/proactive-agent || :

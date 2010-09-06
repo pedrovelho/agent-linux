@@ -4,14 +4,22 @@
 %{__install} -m 0644 -D rpm/agent.xml           %{buildroot}%{_sysconfdir}/proactive/agent.xml
 echo "%{_sysconfdir}/proactive/agent.xml" >> INSTALLED_FILES
 
-%{__install} -m 0644 -D rpm/paservice.sysconfig %{buildroot}%{_sysconfdir}/sysconfig/paservice
-echo "%{_sysconfdir}/sysconfig/paservice" >> INSTALLED_FILES
+%{__install} -m 0644 -D rpm/proactive-agent.sysconfig %{buildroot}%{_sysconfdir}/sysconfig/proactive-agent
+echo "%{_sysconfdir}/sysconfig/proactive-agent" >> INSTALLED_FILES
 
-%{__install} -m 0755 -D rpm/paservice.init      %{buildroot}%{_initrddir}/paservice
-echo "%{_initrddir}/paservice"            >> INSTALLED_FILES
+%{__install} -m 0755 -D rpm/proactive-agent.init      %{buildroot}%{_initrddir}/proactive-agent
+echo "%{_initrddir}/proactive-agent"            >> INSTALLED_FILES
 
-%{__install} -d %{buildroot}%{_localstatedir}/{run,log/paservice}
-echo "%attr(-,paservice,paservice) %dir %{_localstatedir}/log/paservice/" >> INSTALLED_FILES
+%{__install} -d %{buildroot}%{_localstatedir}/{run,log/proactive-agent}
+
+%{__install} -d %{buildroot}%{_localstatedir}/lib/proactive-agent
+echo "%attr(0700,paagent,paagent)  %{_localstatedir}/lib/proactive-agent/" >> INSTALLED_FILES
+
+%{__install} -d %{buildroot}%{_localstatedir}/lib/proactive-agent/cgroups
+echo "%attr(0700,paagent,paagent)  %{_localstatedir}/lib/proactive-agent/cgroups" >> INSTALLED_FILES
+
+echo "%{_localstatedir}/lib/proactive-agent"            >> INSTALLED_FILES
+echo "%attr(-,paagent,paagent)  %{_localstatedir}/log/proactive-agent/" >> INSTALLED_FILES
 
 
 

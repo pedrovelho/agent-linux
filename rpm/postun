@@ -1,3 +1,3 @@
 if [ $1 -gt 0 ]; then
-        %{_initrddir}/paservice  condrestart &>/dev/null || : 
+        %{_initrddir}/proactive-agent  condrestart &>/dev/null || : 
 fi

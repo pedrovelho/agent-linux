@@ -1,0 +1,5 @@
+LOGFILE="/var/log/proactive-agent/agent.log"
+AGENTOPTS="-d"
+AGENTUSER="paagent"
+
+
