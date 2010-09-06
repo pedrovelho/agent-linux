@@ -138,7 +138,7 @@ class EventConfig(object):
             raise errors.AgentInternalError("Last TCP port must be an integer between 0 and 65536")
         if self.portRange[0] > self.portRange[1]:
             raise errors.AgentInternalError("Last TCP port must be greater or equals to the first TCP port")
-        if self.portRange[1] - self.portRange[0] < self.nbRuntimes:
+        if self.portRange[1]+1 - self.portRange[0] < self.nbRuntimes:
             raise errors.AgentInternalError("The port range is too small according to the number of runtimes")
             
         if self.nice < -20 or self.nice > 19:
@@ -202,6 +202,8 @@ class EventConfig(object):
             # Mimic the Windows agent behavior, until next release
             self.memoryLimit = int(lx[0].text) * self.nbRuntimes
             self.cgroup_mnt_point = lx[0].get("cgroup_mount_point")
+            if self.cgroup_mnt_point is None:
+                self.cgroup_mnt_point = "/var/lib/proactive-agent/cgroups"
         
 
 
@@ -294,7 +296,7 @@ class JVMStarter():
         self.canceled = threading.Event()
       
     def schedule(self):
-        sleep_time = int(self.epoch_date - time.time())
+        sleep_time = max(0, int(self.epoch_date - time.time()))
         logger.info("Thread created to execute %s. Execution starts in %s seconds" % (self.cmd, sleep_time)) 
         self.canceled.wait(sleep_time)
        
@@ -313,12 +315,14 @@ class JVMStarter():
             if self.p is None or self.p.poll() is not None:
                 if self.p is not None:
                     try:
+                        pgid = os.getpgid(self.p.pid)
                         os.killpg(pgid, signal.SIGKILL)
                     except OSError as e:
                         if e.errno == errno.ESRCH:
                             pass # Ok, no process to be killed
                         else:
-                            logger.warning("Killing processes belonging to process group %s (pid:%s) failed: %s" % (pgid, pid, e))
+                            logger.warning("Killing processes belonging to process group %s (pid:%s) failed: %s" % (pgid, self.p.pid, e))
+                    
                     (nb_die, wait_time) = wait_time_gen.next()
                     logger.warning("Process %s exited with status code %s. Failure number %d waiting %s seconds before restarting" % (self.p.pid, self.p.poll(), nb_die, wait_time))
                     (stdout, stderr) = self.p.communicate()
@@ -327,11 +331,16 @@ class JVMStarter():
                     self.canceled.wait(wait_time)
                     
                 
-                self.p = subprocess.Popen(self.cmd, bufsize=4096, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE, preexec_fn=self._pinit)
-                pgid = os.getpgid(self.p.pid)
-                logger.info("Forked the process:%s to start command:%s" % (self.p.pid, self.cmd))
-            self.canceled.wait(1)
+                try:
+                    self.p = subprocess.Popen(self.cmd, bufsize=4096, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE, preexec_fn=self._pinit)
+                    logger.info("Forked the process:%s to start command:%s" % (self.p.pid, self.cmd))
+                except OSError as e:
+                    (nb_die, wait_time) = wait_time_gen.next()
+                    logger.info("Failed to fork the process for: %s. Failure number %d waiting %s seconds before restarting", self.cmd, nb_die, wait_time)
+                    self.canceled.wait(wait_time)
 
+            self.canceled.wait(1)
+            
         if self.p is not None:   
             self.p.terminate()
             os.killpg(pgid, signal.SIGKILL)
@@ -347,6 +356,8 @@ class JVMStarter():
     def _pinit(self):
         # Do not use logger in this function since it is executed in a forked process
         # stdout & stderr are monitored by the agent
+        
+        os.setpgrp()
         
         # CPU Nice
         if self.config.nice != 0:
@@ -372,7 +383,7 @@ class JVMStarter():
         # Memory limit
         if self.config.memoryLimit > 0:
             try:
-                group = "agent"
+                group = "proactive-agent"
                 p = os.path.join(self.cgroup_mnt_point, group)
                 m = os.path.join(p, "memory.limit_in_bytes")
                 with io.open(m, "w") as file:
@@ -392,10 +403,9 @@ class JVMStarter():
                     
             except IOError as e:
                 # TODO: Better diagnostic / error handling
-                print >> sys.stderr, "ERROR: Failed to configure cgroup to limit the available memory"
+                print >> sys.stderr, "ERROR: Failed to configure cgroup to limit the available memory: %s", e
                 os._exit(253) # Don't use sys.exit() here
 
-        os.setpgrp()
         
 class StartEvent(SpecificEvent):
    
@@ -552,7 +562,7 @@ class CalendarEventGenerator(object):
         self.action = action
 
     def __str__(self):
-        return "%s" % self.events[0]
+        return "%s" % self.events
     
     def __get_start_offset(self, eventNode):
         ''' Return the start offset of this event in seconds'''
@@ -603,9 +613,9 @@ class CalendarEventGenerator(object):
         for event in self.events:
             event.check()
 
-        self._checkOverlapping()
-    
-    def _checkOverlapping(self):
+        self.check_overlapping()
+
+    def check_overlapping(self):
         ''' Check if two events overlap'''
         if len(self.events) > 1:
             for i in range(len(self.events)-1):
@@ -649,9 +659,12 @@ class CalendarEventGenerator(object):
         for i in range(len(self.events)):
             if self.events[i].startOffset >= offset_in_origin_week(agent_time):
                 index = i ; wasStart = True
+                yield (StartEvent(self.events[index], agent_time.event_date_in_epoch(weeks, self.events[index].startOffset)), index)  
                 break
             if self.events[i].stopOffset >=  offset_in_origin_week(agent_time):
-                index = i ; wasStart = False
+                index = i ; wasStart = True
+#                yield (StartEvent(self.events[index], int(time.time())), index)  
+                yield (StartEvent(self.events[index], agent_time.event_date_in_epoch(weeks, self.events[index].startOffset)), index)  
                 break
 
         mustResetWeeks = False
@@ -659,16 +672,12 @@ class CalendarEventGenerator(object):
             weeks +=1
             if self.events[0].startOffset < self.events[-1].stopOffset: 
                 index = 0; wasStart = True
+                yield (StartEvent(self.events[index], agent_time.event_date_in_epoch(weeks, self.events[index].startOffset)), index)
             else:
                 index = len(self.events) - 1; wasStart = False
                 mustResetWeeks = True # Ugly  hack, to avoid double weeks increment
-                
-        # Everything is set. It's time to yield the first event 
-        if wasStart:
-            yield (StartEvent(self.events[index], agent_time.event_date_in_epoch(weeks, self.events[index].startOffset)), index)
-        else:
-            yield (StopEvent(self.events[index], agent_time.event_date_in_epoch(weeks, self.events[index].stopOffset)), index)
-        
+                yield (StopEvent(self.events[index], agent_time.event_date_in_epoch(weeks, self.events[index].stopOffset)), index)
+                        
         if mustResetWeeks: 
             weeks = 0
             

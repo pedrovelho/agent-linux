@@ -2,7 +2,7 @@
 <agent
   xmlns="urn:proactive:agent:linux:3.0"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="urn:proactive:agent:linux:3.0 ../../../xml/agent-linux.xsd">
+  xsi:schemaLocation="urn:proactive:agent:linux:3.0 ../xsd/agent-linux.xsd">
   
   <config>
     <proactiveHome>XXX</proactiveHome>
@@ -22,7 +22,6 @@
   <connections>
     <rmConnection enabled="true">
       <url>pamr://0</url>
-      <credential usedefault="true"/>
     </rmConnection>    
     <localBind enabled="true"/>
    </connections>

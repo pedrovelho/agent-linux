@@ -48,7 +48,7 @@ case "$1" in
 	echo -n $"Starting proactive-agent: "
 	if [ ! -e $AGENTHOME/cgroups/tasks ] ; then
 		mount -t cgroup -o memory proactive-agent $AGENTHOME/cgroups
-		cgcreate -t $AGENTUSER:$AGENTGROUP -a $AGENTUSER:$AGENTGROUP -g memory:/agent
+		cgcreate -t $AGENTUSER:$AGENTGROUP -a $AGENTUSER:$AGENTGROUP -g memory:/proactive-agent
 	fi 
 
 	/sbin/runuser -s /bin/sh -c "$PROG --logFile $LOGFILE $AGENTOPTS $CONFFILE" $AGENTUSER >> $LOGFILE.stdout 2>&1 &
@@ -65,11 +65,9 @@ case "$1" in
 	;;
   stop)
 	echo -n $"Shutting down proactive-agent: "
-	if [ -e $AGENTHOME/cgroups/agent/tasks ] ; then
-		rm -Rf $AGENTHOME/cgroups/agent
-		umount -t cgroup -o memory proactive-agent $AGENTHOME/cgroups
-	fi 
-	killproc $prog
+	rmdir  -- $AGENTHOME/cgroups/proactive-agent
+	umount $AGENTHOME/cgroups
+	killproc $PROG
 	RETVAL=$?
 	[ $RETVAL -eq 0 ] && /bin/rm -f /var/lock/subsys/proactive-agent /var/run/proactive-agent.pid
 	echo

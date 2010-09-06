@@ -85,7 +85,7 @@
     <xsd:complexType name="ConfMemoryLimitationType">
       <xsd:complexContent>
         <xsd:extension base="ConfMemoryLimitationType">
-          <xsd:attribute name="cgroup_mount_point" type="nonEmptyString" use="required"/>
+          <xsd:attribute name="cgroup_mount_point" type="nonEmptyString" use="optional"/>
         </xsd:extension>
       </xsd:complexContent>
     </xsd:complexType>

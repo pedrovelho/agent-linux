@@ -110,7 +110,7 @@ def configure_logging(level, print_on_stdout, log_fname=None):
       
 def _log_debug_info(logger):
     logger.debug("uname sysname:%s nodename:%s release:%s version:%s machine:%s" % os.uname())
-    logger.debug("uid:%s gid:%s euid:%s egid:%s" % (os.getuid, os.getgid(), os.geteuid(), os.getegid()))
+    logger.debug("uid:%s gid:%s euid:%s egid:%s" % (os.getuid(), os.getgid(), os.geteuid(), os.getegid()))
     logger.debug("environment: %s" % (os.environ))
     logger.debug("cwd: %s" % (os.getcwd()))
     logger.debug("agent path: %s" % (os.path.dirname(os.path.abspath(__file__))))
@@ -137,6 +137,8 @@ def main_func():
 
     if len(args) == 1:
         fname = args[0]
+    elif len(args) == 0:
+        fname = "/etc/proactive/agent.xml"
     else:
         parser.print_help()
         return 1 

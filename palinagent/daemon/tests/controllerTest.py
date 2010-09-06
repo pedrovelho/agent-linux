@@ -37,11 +37,15 @@
 #################################################################
 
 import unittest
-import controller
-from eventgenerator import StartEvent, StopEvent, EventConfig
 import time
-import eventgenerator
-from action import DummyConnection
+
+import palinagent.daemon.controller as controller
+
+import palinagent.daemon.eventgenerator as eventgenerator
+from palinagent.daemon.eventgenerator import EventConfig as EventConfig
+from palinagent.daemon.eventgenerator import StartEvent as StartEvent
+from palinagent.daemon.eventgenerator import StopEvent as StopEvent
+from palinagent.daemon.action import DummyConnection as DummyConnection
 
 #class TestStarter(unittest.TestCase):
 #    def testEchoStarter(self):

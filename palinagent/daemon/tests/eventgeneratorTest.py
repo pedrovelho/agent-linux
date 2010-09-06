@@ -37,12 +37,22 @@
 #################################################################
 
 
-import eventgenerator
-from eventgenerator import *
-from eventgenerator import _ONE_WEEK_IN_SECS
 import math
 import time
 import unittest
+
+from palinagent.daemon.errors import AgentError as AgentError
+from palinagent.daemon.errors import AgentInternalError as AgentInternalError
+
+import palinagent.daemon.eventgenerator as eventgenerator
+from palinagent.daemon.eventgenerator import _ONE_WEEK_IN_SECS as _ONE_WEEK_IN_SECS
+from palinagent.daemon.eventgenerator import StartEvent as StartEvent
+from palinagent.daemon.eventgenerator import StopEvent as StopEvent
+from palinagent.daemon.eventgenerator import Event as Event 
+from palinagent.daemon.eventgenerator import CalendarEventGenerator as CalendarEventGenerator 
+
+import palinagent.daemon.main as main 
+
 
 def almostEquals(value1, value2, sigma=2):
     ''' Some tests use current time so strict equality cannot be used '''
@@ -118,37 +128,37 @@ class TestCalendarEventGenerator(unittest.TestCase):
         ''' Check that an exception is raised if two events overlaps '''
         #Empty calendar
         evg = CalendarEventGenerator()
-        evg._checkOverlapping()
+        evg.check_overlapping()
         
         # Single event calendar 
         evg = CalendarEventGenerator()
         evg.events = [Event(0, 100, None, None)]
-        evg._checkOverlapping()
+        evg.check_overlapping()
         
         # No overlapping
         evg = CalendarEventGenerator()
         evg.events = [Event(0, 100, None, None), Event(200, 300, None, None), Event(500, 1000, None, None)]
-        evg._checkOverlapping()
+        evg.check_overlapping()
 
         # No overlapping but sunday / monday overlap
         evg = CalendarEventGenerator()
         evg.events = [Event(200, 100, None, None), Event(_ONE_WEEK_IN_SECS - 100, 200, None, None)]
-        evg._checkOverlapping()
+        evg.check_overlapping()
 
         # No overlapping but join
         evg = CalendarEventGenerator()
         evg.events = [Event(0, 100, None, None), Event(100, 300, None, None), Event(400, 1000, None, None)]
-        evg._checkOverlapping()
+        evg.check_overlapping()
 
         # Basic overlapping
         evg = CalendarEventGenerator()
         evg.events = [Event(0, 100, None, None), Event(50, 100, None, None)]
-        self.assertRaises(AgentError, evg._checkOverlapping)
+        self.assertRaises(AgentError, evg.check_overlapping)
 
         # End of week overlapping
         evg = CalendarEventGenerator()
         evg.events = [Event(0, 100, None, None), Event(_ONE_WEEK_IN_SECS - 1, 100, None, None)]
-        self.assertRaises(AgentError, evg._checkOverlapping)
+        self.assertRaises(AgentError, evg.check_overlapping)
 
     def testNextEvent(self):
         ''' Test the event generator '''
@@ -169,7 +179,7 @@ class TestCalendarEventGenerator(unittest.TestCase):
         # No event
         evg = CalendarEventGenerator(action)
         g  = evg.getActions()
-        self.assertRaises(StopIteration, g.next)
+        self.assertRaises(AgentInternalError, g.next)
 
         # One and only one event starting by start
         bias = eventgenerator._seconds_elespased_since_start_of_week()
@@ -190,6 +200,11 @@ class TestCalendarEventGenerator(unittest.TestCase):
         evg = CalendarEventGenerator(action)
         evg.events = [Event(bias - 100, 200, None, None)]
         g = evg.getActions()
+        
+        (event) = g.next()
+        assert almostEquals(0, event.seconds_remaining())
+        self.assertEqual(event.type, "START")
+        
         for i in range(1000):
             (event) = g.next()
             assert almostEquals((i * eventgenerator._ONE_WEEK_IN_SECS) + 100, event.seconds_remaining())
@@ -298,7 +313,7 @@ class TestParser(unittest.TestCase):
         self.assertEqual("proactiveHome1", event.config.proactiveHome)
         self.assertEqual("javaHome1", event.config.javaHome)
         self.assertEqual(["param1"], event.config.jvmParameters)
-        self.assertEqual(1, event.config.memoryLimit)
+#        self.assertEqual(1, event.config.memoryLimit)
         self.assertEqual(1, event.config.nbRuntimes)
         self.assertEqual("script1", event.config.onRuntimeExitScript)
         self.assertEqual((6000, 6002), event.config.portRange)
@@ -309,7 +324,7 @@ class TestParser(unittest.TestCase):
         self.assertEqual("proactiveHome2", event.config.proactiveHome)
         self.assertEqual("javaHome2", event.config.javaHome)
         self.assertEqual(["param2"], event.config.jvmParameters)
-        self.assertEqual(2, event.config.memoryLimit)
+#        self.assertEqual(2, event.config.memoryLimit)
         self.assertEqual(2, event.config.nbRuntimes)
         self.assertEqual("script2", event.config.onRuntimeExitScript)
         self.assertEqual((6003, 6007), event.config.portRange)
@@ -319,7 +334,7 @@ class TestParser(unittest.TestCase):
         self.assertEqual("proactiveHome1", event.config.proactiveHome)
         self.assertEqual("javaHome3", event.config.javaHome)
         self.assertEqual(["param1"], event.config.jvmParameters)
-        self.assertEqual(1, event.config.memoryLimit)
+#        self.assertEqual(1, event.config.memoryLimit)
         self.assertEqual(3, event.config.nbRuntimes)
         self.assertEqual("script3", event.config.onRuntimeExitScript)
         self.assertEqual((6000, 6002), event.config.portRange)

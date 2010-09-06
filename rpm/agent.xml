@@ -2,46 +2,27 @@
 <agent
   xmlns="urn:proactive:agent:linux:3.0"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="urn:proactive:agent:linux:3.0 xml/agent-linux.xsd">
+  xsi:schemaLocation="urn:proactive:agent:linux:3.0 ../palinagent/daemon/xsd/agent-linux.xsd">
   
   <config>
-    <proactiveHome>/home/cmathieu/Workspaces/PPS/programming-git</proactiveHome>
-    <javaHome>/home/cmathieu/java/x86_64/sun/jdk1.6.0_10</javaHome>
-    <jvmParameters>
-      <param>-Xmx512M</param>
-    </jvmParameters>  
-    <memoryLimit cgroup_mount_point="/home/cmathieu/cg">2000</memoryLimit>
-    <nbRuntimes>2</nbRuntimes>
-
+    <proactiveHome>/path/to/proactive/home</proactiveHome>
+    <javaHome>/etc/alternatives/jre</javaHome>
+    <memoryLimit>1000</memoryLimit>
+    <protocol>pnp</protocol>
     <nice>19</nice>
-    
+    <ionice class="idle"/>
   </config>
 
   <events>
     <event>
-      <start day="friday" hour="12"  minute="34" second="10" />
-      <duration hours="0" minutes="00" seconds="10" days="0"/>
-      <config>
-        <proactiveHome>/tmp/scheduling</proactiveHome>
-        <jvmParameters>
-         <param>-Xms128M</param>
-         <param>-Dtoto=${rank}</param>
-        </jvmParameters>
-        <protocol>http</protocol>
-        <ionice class="idle" classdata="1"/>
-      </config>
+      <start day="monday" hour="0"  minute="0" second="0" />
+      <duration days="6" hours="23" minutes="59" seconds="59" />
     </event>
   </events>
   
   <connections>
     <localBind enabled="true">
     <respawnIncrement>2</respawnIncrement>
-    <nodename>TOTO</nodename>
     </localBind>
-    
-    <rmConnection enabled="false">
-      <url>rmi://britany.activeeon.com:1099/</url>
-      <credential>/tmp/scheduling/config/authentication/rm.cred</credential>
-    </rmConnection>    
-   </connections>
+  </connections>
 </agent>

@@ -36,9 +36,9 @@
 # $$ACTIVEEON_INITIAL_DEV$$
 #################################################################
 
-from main import AgentError
-import action
-import main
+from palinagent.daemon.errors import AgentError as AgentError
+import palinagent.daemon.action as action
+import palinagent.daemon.main as main
 import unittest
 
 class TestEnabledAction(unittest.TestCase):

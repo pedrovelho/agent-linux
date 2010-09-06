@@ -2,7 +2,7 @@
 <agent
   xmlns="urn:proactive:agent:linux:3.0"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="urn:proactive:agent:linux:3.0 ../../../xml/agent-linux.xsd">
+  xsi:schemaLocation="urn:proactive:agent:linux:3.0 ../xsd/agent-linux.xsd">
   
   <config>
     <proactiveHome>proactiveHome1</proactiveHome>
@@ -10,7 +10,6 @@
     <jvmParameters>
       <param>param1</param>
     </jvmParameters>
-    <memoryManagement enabled="true">1</memoryManagement>  
     <nbRuntimes>1</nbRuntimes>
     <portRange last="6002" first="6000"/>
     <onRuntimeExitScript>script1</onRuntimeExitScript>
@@ -34,7 +33,6 @@
         <jvmParameters>
           <param>param2</param>
         </jvmParameters>
-        <memoryManagement enabled="true">2</memoryManagement>  
         <nbRuntimes>2</nbRuntimes>
         <portRange last="6007" first="6003"/>
         <onRuntimeExitScript>script2</onRuntimeExitScript>
@@ -58,7 +56,6 @@
   <connections>
     <rmConnection enabled="true">
       <url>pamr://0</url>
-      <credential usedefault="true"/>
     </rmConnection>    
    </connections>
 </agent>
