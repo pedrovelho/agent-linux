@@ -193,7 +193,7 @@ class EventConfig(object):
         assert len(lx) == 1 or len(lx) == 0
         if len(lx) == 1: 
             self.nbRuntimes = int(lx[0].text)
-            if self.nbRuntimes == "auto":
+            if self.nbRuntimes == 0:
                 self.nbRuntimes = utils.get_number_of_cpus()
 
         lx = confNode.xpath("./a:memoryLimit", namespaces = {'a' : main.xmlns})

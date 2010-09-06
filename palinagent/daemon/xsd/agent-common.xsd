@@ -369,7 +369,9 @@
     <xsd:annotation><xsd:documentation xml:lang="en">
 
     </xsd:documentation></xsd:annotation>
-    <xsd:union memberTypes="xsd:positiveInteger autoType"/>
+    <xsd:restriction base="xsd:integer">
+      <xsd:minInclusive value="0"/>    
+    </xsd:restriction>
   </xsd:simpleType>
       
   <xsd:simpleType name="ConfProtocolType">
