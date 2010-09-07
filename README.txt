@@ -1,1 +1,2 @@
-The ProActive Agent is very cool stuff bro !
+ProActive Agent is a system daemon to automatically starts ProActive runtimes according to a weekly schedule
+

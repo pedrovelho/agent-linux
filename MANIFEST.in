@@ -3,3 +3,4 @@ graft palinagent/daemon/data/
 include rpm/proactive-agent.sysconfig
 include rpm/proactive-agent.init
 include rpm/agent.xml
+include rpm/proactive-agent.1

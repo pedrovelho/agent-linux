@@ -21,8 +21,6 @@
   </events>
   
   <connections>
-    <localBind enabled="true">
-    <respawnIncrement>2</respawnIncrement>
-    </localBind>
+    <localBind enabled="true"/>
   </connections>
 </agent>

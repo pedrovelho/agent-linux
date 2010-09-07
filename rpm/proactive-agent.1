@@ -1,0 +1,309 @@
+.TH "proactive\-agent" "1" "0.90" "Activeeon" ""
+.SH "NAME"
+proactive\-agent \- Start ProActive runtimes according to a schedule
+.SH "SYNOPSIS"
+.sp
+\fIproactive\-agent\fR [\-d \-v] [\-L <log_file>] [<config_file>]
+.SH "DESCRIPTION"
+.sp
+
+proactive\-agent is a daemon allowing to start ProActive runtimes according to a schedule. It is usually started by the init process as a system daemon 
+and ran under the \fIpaagent\fR user. A common use case of the proactive\-agent is to provide computing resources to a ProActive Ressource Manager
+during idle periods like nights and weekends. 
+
+The agent behavior can be configured by an XML configuration file (\fI/etc/proactive/agent.xml\fR).
+.SH "OPTIONS"
+.TP
+\-d
+Enable debug mode. Loggers print debug statements.
+.TP
+\-v
+Enable verbose mode. By default all messages are logged into a file. When enabled, messages are printed on \fIstdout\fR too.
+.TP
+\-L log_file
+Write all log messages into this file
+ 
+.SH "CONFIGURATION FILE"
+ 
+proactive\-agent behavior is configured by an XML configuration file. The namespace of the XML file must be urn:proactive:agent:linux:3.0 and 
+the XSD is available here: \fIhttp://activeeon.com/FIXME\fR
+.PP
+The configuration file is split in three parts: config, events and connections
+
+.B CONFIG
+
+The top-level \fB<config>\fR 
+element describes the main agent configuration. This configuration applies to each started ProActive runtime. 
+It includes information like path to the ProActive installation, memory/cpu/IO limitation and ProActive configuration.
+.br
+
+Allowed child elements are:
+
+.TP
+.BI "<proactiveHome>" "/path" "</proactiveHome>"
+REQUIRED. The absolute path to the ProActive Programming or ProActive Ressourcing installation.
+
+.TP
+.BI "<javaHome>" "/path" "</javaHome>"
+REQUIRED. The absolute path to a Java 5 or latter JRE. On must linux distribution you can use the 
+.I /etc/alternatives/jre
+symlink.
+
+.TP
+.BI "<jvmParameters>" "<param>-Dparam1=xxx</param>" "</jvmParameters>"
+OPTIONAL. A list of java parameters to pass to the forked JVM. The 
+.B jvmParameters 
+element is optional. But if present it must contain at least one 
+.B param
+
+.TP 
+.BI "<memoryLimit>" "1000" "</memoryLimit>"
+OPTIONAL. The maximum amount of physical memory in megabytes to allocate to each forked JVM and its child processes.
+The processes are not allowed to swap. In case of memory shortage, the operating system OOM killer is invoked. 
+This feature rely on the cgroup subsytem. proactive-agent expects to find a dedicated cgroup with a memory controller at this location:
+\fI/var/lib/proactive-agent/cgroups/proactive-agent\fR. If the cgroup is at another location the attribute
+\fIcgroup_mount_point\fR must be used. If absent, there is no memory constraint.
+
+.TP
+.B <nbRuntimes>10</nbRuntimes>
+OPTIONAL. The number of ProActive runtimes to start during each event. If absent, the default value \fI1\fR is applied.
+If \fI0\fR, the value is automatically set to the number of available CPUs.
+
+.TP
+.B <protocol>proto</protocol>
+OPTIONAL. The name of the ProActive communication protocol to use (\fIrmi\fR\fIhttp\fR\fIpamr\fR\fIpnp\fR). If absent \fIrmi\fR is used. 
+
+.TP
+.B <portRange first="first" last="last" />
+OPTIONAL. The range of TCP port to be used by the ProActive runtimes. Each runtime uses a dedicated TCP port. The size of the port range must 
+be greater than the number of started runtimes. If absent the range is \fI1024-65535\fR
+
+.TP
+.B <onRuntimeExitScript>/path</onRuntimeExitScript>
+OPTIONAL. An executable to run after a ProActive runtime exits. It can be used to clean resources or free a license token. 
+The rank of the runtime is passed as first parameter. If absent, no executable is run.
+
+.TP
+.B <nice>19</nice>
+OPTIONAL. This option is specific to the Linux proactive-agent. It defines the CPU priority (niceness) of the
+forked processes. If absent, the forked processes use the same priority than the proactive-agent.
+
+.TP
+.B <ionice class="none" classdata="12"/>
+OPTIONAL. This option is specific to the Linux proactive-agent. It defines the I/O priority (ioniceness) of the
+forked processes. . Allowed class are \fInone\fR, \fIidle\fR, \fIrealtime\fR, \fIbesteffort\fR. 
+Only  \fIrealtime\fR, \fIbesteffort\fR take a classdata  attribute. See \fBionice(1)\fR for more information.
+If absent, the forked processes use the same priority than the proactive-agent
+
+
+.PP
+.B EVENTS
+
+The top-level \fB<events>\fR element defines the schedule. Child element are \fB<event>\fR. Each event describe an
+execution time slice. At the begining of the time slice the proactive-agent forks one or several ProActive runtimes.
+At the end of the time slice forked ProActive runtimes and all processes forked by the runtimes are killed. 
+.BR
+Time slices are defined according to a weekly planning. They start at a point in the week and last for a given amount of time.
+It is not possible to define a non weekly planning. 
+.BR
+Two time slice \fBmust not overlap\fR.
+
+.TP
+.B <start day="Day" hour="hour" minute="minute" second="second"/>
+REQUIRED. When the event start in the week. \fIDay\fR is the name of the day. This first caracter must be capitalized.
+\fIhour\fR is the hour in the day (\fI0-23\fR). \fIminute\fR is the minute in the hour (\fI0-60\fR). \fIsecond\fR is
+the second in the minute (\fI0-59\fR).
+
+.TP
+.B <duration days="days" hours="hours" minutes="minutes" seconds="seconds"/>
+REQUIRED. The duration of the time slice. A time slice cannot last more and 7 days minus one second. 
+\fIdays\fR is the number of days the event last (\fI0-6\fR). \fIhours\fR is the number of days the event last
+(\fI0-23). \fIminutes\fR is the number of minutes the event last (\fI0-59\fR). \fIseconds\fR is the number of seconds
+the event last (\fI0-59\fR).
+
+.TP
+\fB<config>\fR [see previous paragraph] \fB</config>\fR
+OPTIONAL. Each event can override the global configuration. The content of this element is the same than in the
+top-level \fBconfig\fR element described in the previous paragraph. The only difference is that 
+\fBjavaHome\fR and \fBproactiveHome\fR are also optional.
+
+.PP
+.B CONNECTIONS
+
+The top-level \fB<connections>\fR element describe which kind of connection to establish with the running ProActive
+infrastructure. 
+.BR
+Several kind of connections are available and the user can provide it's own connection by using a \fBcustomConnection\fR.
+.BR
+Several connection elements are allowed in the configuration file but one and only one is allowed to be \fBenabled\fR. Having no 
+or several connections enabled is rejected by the proactive-agent.
+.BR
+All connection accept the following child elements:
+
+.TP
+.BI "<respawnIncrement>" "inc" "</respawnIncrement>"
+OPTIONAL. Each time a forked ProActive runtime exits before the end of the time slice it is restarted. To avoid system overloading in case of 
+temporary failure or bad configuration the agent waits for a given amount of time before the restart. Each time a runtime exits this 
+amount of time is incremented by \fIrespawnIncrement\fR unless if it becomes greater than \fIthree minutes\fR.
+
+.TP
+.BI "<javaStarterClass>" "prefix.class" "</javaStarterClass>"
+OPTIONAL. The java class to start the connection. If absent the default class for the connection is used.
+
+.TP
+.BI "<nodeName>" "name" "</nodeName>"
+OPTIONAL. The name of the ProActive node to start. If absent a default node name is chosen.
+
+.PP
+.B localBind
+
+The local bind connection starts a ProActive node inside the ProActive runtime. It is up to the running infrastructure to
+discover the node by performing a lookup. 
+.BR
+It does not take any extra child element. 
+.BR
+By default the started class is \fIorg.objectweb.proactive.core.util.winagent.PAAgentServiceRMIStarter\fR
+
+.PP
+.B rmConnection
+
+A rmConnection registers the ProActive runtime into a running ProActive resource manager to add itself to 
+the available resource pool.  
+
+.TP
+.BI "<url>" "url" "</url>"
+REQUIRED. The URL of the ProActive resource manager.
+
+.TP
+.BI "<nodeSourceName>" "name" "</nodeSourceName>"
+OPTIONAL. The name of the node source to which the runtime must register. It allows to separate resources to 
+apply different policies according to the node source. If absent the default node source is selected.
+
+.TP
+.BI "<credential>" "/path" "</credential>"
+OPTIONAL. The path to the credential file required to connect to resource manager. If absent the 
+default location is used \fI$HOME/.proactive/security/creds.enc\fR
+
+
+.PP 
+.B customConnection
+
+The customConnection is dedicated to allow user to provide their own connections type. 
+\fBjavaStarterClass\fR is required an must be a class provided by the user. 
+
+.TP 
+.BI "<args><arg>" "arg1" "</arg><arg>" "arg2" "</arg>
+
+OPTIONAL. A list of arguements to pass to the starter class. 
+
+ 
+.SH "FILES"
+.TP
+\fI/etc/init.d/proactive-agent\fR
+The init SysV file to start the proactive-agent as a system deamon
+.TP
+\fI/etc/sysconfig/proactive-agent\fR
+Configure how the proactive-agent is started by the system
+.TP
+\fI/etc/proactive/agent.xml\fR
+proactive-agent XML configuration file. 
+.TP
+\fI/var/log/proactive-agent/agent.xml\fR
+Default log file
+.TP
+\fI/var/lib/proactive-agent\fR
+proactive-agent home directory
+.TP
+\fI/var/lib/proactive-agent/cgroups\fR
+Default mount point for the cgroup file system
+.TP
+\fI/var/lib/proactive-agent/cgroups/proactive-agent\fR
+The default cgroup to be used by the proactive-agent to enforce memory limitation. 
+
+.SH "EXAMPLES"
+Here are a few examples of configuration files.
+
+The first example runs a ProActive runtime all the time (7/7 24/24). It connects to remote ProActive Ressource Manager and try to have no impact on host by running with a low cpu and I/O priority. It will also not use more than one gigabyte of memory
+
+.nf
+<?xml version="1.0"?>
+<agent   
+  xmlns="urn:proactive:agent:linux:3.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema\-instance"
+  xsi:schemaLocation="urn:proactive:agent:linux:3.0 http://activeeon.com/schemas/agent/3.0/agent\-linux.xsd">
+  
+  <config>
+    <proactiveHome>/usr/share/proactive\-scheduling</proactiveHome>
+    <javaHome>/etc/alternatives/jre</javaHome>
+    <memoryLimit>1000</memoryLimit>
+    <protocol>pnp</protocol>
+    <nice>19</nice>
+    <ionice class="idle"/>
+  </config>
+
+  <events>
+    <event>
+      <start day="monday" hour="0"  minute="0" second="0" />
+      <duration days="6" hours="23" minutes="59" seconds="59" />
+    </event>
+  </events>
+  
+  <connections>
+    <rmConnection enabled="true">
+      <url>pnp://remote.activeeon.com:4444</url>
+      <credential>/etc/proactive/rm.cred</credential>
+    </rmConnection>
+  </connections> 
+</agent>
+.fi
+
+.SH "TIPS & TRICKS"
+
+.B Minimum impact on the host machine
+
+To have minimum impact on the host machine to agent must be configured to use the lowest CPU and I/O priorities.
+It is also a good pratice to limit the amount of memory available to the ProActive runtimes. The <config> element 
+should include the following lines:
+.nf
+	<memoryLimit>1000</memoryLimit>
+	<nice>19</nice>
+	<ionice class="idle"/>
+.fi
+
+It is also possible to bind the agent and all forked processes to a given set of cores with the 
+
+.B Always available
+
+An always available setup can be obtained by defining an event which start Monday at midnight and lasting
+6 days, 23 hours, 59 minutes and 59 seconds.
+
+.nf
+    <event>
+      <start day="monday" hour="0"  minute="0" second="0" />
+      <duration days="6" hours="23" minutes="59" seconds="59" />
+    </event>
+.fi 
+
+.BR taskset(1)
+command
+
+.SH "REPORTING BUGS"
+
+Report bug on the ProActive bugtracker: http://bugs.activeeon.com.
+.PP 
+Community help at proactive@objectweb.com
+.PP
+Contact Activeeon to get proffessional support.
+
+.SH "COPYRIGHT"
+Copyright © 2010 Activeeon.  License GPLv3: GNU GPL version 3 <http://gnu.org/licenses/gpl.html>.
+This is free software: you are free to change and redistribute it.  There is NO WARRANTY, to the extent permitted by law.
+
+.SH "SEE ALSO"
+The full documentation for the ProActive Parallel Suite is available online here: http://activeeon.com
+.br
+
+.br
+.BR nice(1)
+.BR ionice(1)
+.BR taskset(1)
