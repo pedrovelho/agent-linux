@@ -42,6 +42,8 @@ import os
 import time
 import shutil
 import subprocess
+import sys
+import signal
 
 class TestBlackBox(unittest.TestCase):
 
@@ -69,19 +71,21 @@ class TestBlackBox(unittest.TestCase):
         output.close()
         
     def test_blackbox(self):
+        
         args = []
-        args.append("python")
+        args.append(sys.executable)
         args.append(os.path.join(os.path.dirname(__file__), "../../main.py"))
         args.append("-d")
         args.append("-v")
         args.append("-L")
         args.append(os.path.join(self.tmp_dir, "agent.log"))
         args.append(os.path.join(self.tmp_dir, "agent.xml"))
+        print args
         p = subprocess.Popen(args)
         
         time.sleep(40)
         
-        p.terminate()
+        os.kill(p.pid, signal.SIGKILL) # 2.6: p.terminate()
         (out, err) = p.communicate()
         print "exitStatus: %s" % p.poll()
         print "out: %s" % out

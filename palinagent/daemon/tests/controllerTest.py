@@ -77,7 +77,7 @@ class TestController(unittest.TestCase):
         my_logger.addHandler(handler)
     
     def testBlackBox(self):
-        class EventGeneratorMock():
+        class EventGeneratorMock(object):
             def getActions(self):
                 config = EventConfig()
                 config.javaHome      = "/home/cmathieu/java/x86/sun/jdk1.6.0_10/"

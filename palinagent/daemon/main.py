@@ -66,17 +66,17 @@ def _parse_config_file(fname):
     try:
         schemaFname = os.path.join(os.path.dirname(__file__), "xsd/agent-linux.xsd")
         schema = etree.XMLSchema(file=schemaFname)
-    except etree.LxmlError as e:
+    except (etree.LxmlError), e:
         raise AgentSetupError("Unable to load XML Schema %s: %s" % (schemaFname, e))
     
     try: 
         parser = etree.XMLParser(schema=schema, no_network=True, compact=True)
         tree = etree.parse(fname, parser)
-    except IOError as e: # File not found or access right
+    except (IOError), e: # File not found or access right
         raise AgentConfigFileError("Unable to read configuration file: %s" % fname)
-    except etree.XMLSyntaxError as e: # Bad XSD declaration, Invalid or malformed XML
+    except (etree.XMLSyntaxError), e: # Bad XSD declaration, Invalid or malformed XML
         raise AgentConfigFileError("Unable to parse the user supplied configuration file %s: %s " % (fname, e))
-    except etree.LxmlError as e: # Catch all
+    except (etree.LxmlError), e: # Catch all
         raise AgentConfigFileError("Unable to parse the user supplied configuration file %s: %s " % (fname, e))
     
     return tree
@@ -153,7 +153,7 @@ def main_func():
         logger.debug("Agent is in debug mode !")
         if options.debug is True:
             _log_debug_info(logger)
-    except Exception as e:
+    except (Exception), e:
         print >> sys.stderr, "Failed to configure the logging module: %s" % e
         return 3
     
@@ -166,21 +166,21 @@ def main_func():
     
     try:
         tree = _parse_config_file(fname)
-    except (AgentError) as e:
+    except (AgentError), e:
         print_log_exit(e)
         
     # Parse connections
     try:
         import action
         act = action.parse(tree)
-    except (AgentError) as e:
+    except (AgentError), e:
         print_log_exit(e)
 
     # Parse the calendar
     try:
         import eventgenerator
         evg =  eventgenerator.parse(tree, act)
-    except AgentError as e:
+    except AgentError, e:
         print_log_exit(e)
 
     # Start the agent main loop

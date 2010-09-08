@@ -40,7 +40,6 @@ import time
 import main
 import os
 import subprocess
-import io
 import threading 
 import utils
 import logging
@@ -281,7 +280,7 @@ class SpecificEvent(object):
         '''
         return max(0, self.epoch_date - int(time.time()))
 
-class JVMStarter():
+class JVMStarter(object):
     '''
     This class is in  charge of spawning a new process for the JVM.
     '''
@@ -316,7 +315,7 @@ class JVMStarter():
                     try:
                         pgid = os.getpgid(self.p.pid)
                         os.killpg(pgid, signal.SIGKILL)
-                    except OSError as e:
+                    except (OSError), e:
                         if e.errno == errno.ESRCH:
                             pass # Ok, no process to be killed
                         else:
@@ -333,15 +332,15 @@ class JVMStarter():
                 try:
                     self.p = subprocess.Popen(self.cmd, bufsize=4096, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE, preexec_fn=self._pinit)
                     logger.info("Forked the process:%s to start command:%s" % (self.p.pid, self.cmd))
-                except OSError as e:
+                except (OSError), e:
                     (nb_die, wait_time) = wait_time_gen.next()
                     logger.info("Failed to fork the process: %s cause:%s. Failure number %d waiting %s seconds before restarting", self.cmd, e, nb_die, wait_time)
                     self.canceled.wait(wait_time)
 
             self.canceled.wait(1)
             
-        if self.p is not None:   
-            self.p.terminate()
+        if self.p is not None: 
+            os.kill(self.p.pid, signal.SIGKILL) # 2.6: self.p.terminate()
             pgid = os.getpgid(self.p.pid)
             os.killpg(pgid, signal.SIGKILL)
             logger.info("Terminated pid: %s" % self.p.pid)
@@ -363,7 +362,7 @@ class JVMStarter():
         if self.config.nice != 0:
             try:
                 os.nice(self.config.nice) # Can throw an OSError   
-            except OSError as e:
+            except (OSError), e:
                 print >> sys.stderr, "ERROR: nice call failed"
                 os._exit(253) # Don't use sys.exit() here
                 
@@ -376,7 +375,7 @@ class JVMStarter():
             try:
                 retcode = subprocess.call(ion_cmd)
                 assert retcode == 0
-            except OSError as e:
+            except (OSError), e:
                 print >> sys.stderr, "ERROR: ionice call failed: %s" % e
                 os._exit(253) # Don't use sys.exit() here
                 
@@ -386,22 +385,28 @@ class JVMStarter():
                 group = "proactive-agent"
                 p = os.path.join(self.cgroup_mnt_point, group)
                 m = os.path.join(p, "memory.limit_in_bytes")
-                with io.open(m, "w") as file:
-                    file.write(unicode(self.config.memoryLimit*1024*1024))
+                file = open(m, "w")
+                file.write(unicode(self.config.memoryLimit*1024*1024))
+                file.close()
                         
                 m = os.path.join(p, "memory.swappiness")
-                with io.open(m, "w") as file:
-                    file.write(unicode(0))
+                file = open(m, "w")
+                file.write(unicode(0))
+                file.close()
                     
                 m = os.path.join(p, "memory.memsw.limit_in_bytes")
-                with io.open(m, "w") as file:
-                    file.write(unicode(self.config.memoryLimit*1024*1024))
+                file = open(m, "w")
+                file.write(unicode(self.config.memoryLimit*1024*1024))
+                file.close()
                     
                 m = os.path.join(p, "tasks")
-                with io.open(m, "a") as file:
-                    file.write(unicode("%d" % os.getpid()))
+                file = open(m, "a")
+                file.write(unicode("%d" % os.getpid()))
+                file.close()
                     
-            except IOError as e:
+            except (IOError), e:
+                if file is not None:
+                    file.close()
                 # TODO: Better diagnostic / error handling
                 print >> sys.stderr, "ERROR: Failed to configure cgroup to limit the available memory: %s", e
                 os._exit(253) # Don't use sys.exit() here

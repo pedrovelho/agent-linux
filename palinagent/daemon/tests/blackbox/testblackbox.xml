@@ -28,7 +28,7 @@
 
     <event>
       %%START_NOW_PLUS_10_SECS%%
-      <duration days="0" hours="0" minutes="0" seconds="10" />
+      <duration days="0" hours="0" minutes="0" seconds="5" />
     </event>
 
     <event>
