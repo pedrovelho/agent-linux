@@ -309,7 +309,6 @@ class JVMStarter():
         
         wait_time_gen = get_wait_time_func(self.respawn_increment)
         self.p = None
-        pgid = None
         while not self.canceled.isSet():
             # Do we need to restart the process ? 
             if self.p is None or self.p.poll() is not None:
@@ -343,6 +342,7 @@ class JVMStarter():
             
         if self.p is not None:   
             self.p.terminate()
+            pgid = os.getpgid(self.p.pid)
             os.killpg(pgid, signal.SIGKILL)
             logger.info("Terminated pid: %s" % self.p.pid)
             (stdout, stderr) = self.p.communicate()
