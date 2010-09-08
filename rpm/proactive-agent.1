@@ -271,6 +271,8 @@ should include the following lines:
 .fi
 
 It is also possible to bind the agent and all forked processes to a given set of cores with the 
+.BR taskset(1)
+command.
 
 .B Always available
 
@@ -284,8 +286,32 @@ An always available setup can be obtained by defining an event which start Monda
     </event>
 .fi 
 
-.BR taskset(1)
-command
+
+.B Memory limitation
+
+It is possible to limit the amount of memory available for the agent and all forked processes. This feature
+relies on the Linux cgroup filesystem. If a such filesytem is not available and mounted, it is not possible
+to include a \fBmemoryLimit\fR element in the configuration file. The cgroup filesystem must be mounted and 
+properly configured before starting the proactive-agent. The following actions must be done:
+
+.nf
+	# mount -t cgroup -o memory proactive-agent /var/lib/proactive-aggent/cgroups
+	# cgcreate -t paagent:paagent -a paagent:paagent -g memory:/proactive-agent
+.fi
+
+If you decide to mount the cgroup filesystem at another mount point, you must put the
+\fIcgroup_mount_point\fR attribute in the \fBmemoryLimit\fR element.
+
+Please note that this limitation, is an operating system mechanism that restrict memory available to the forked 
+processes. It does NOT configure the amount of memory which can be used by the ProActive runtimes. JVM are started
+with \fI-Xms96m\fR which is the minimum amount of memory required to run a ProActive runtime. If you want to 
+java code inside the ProActive runtime you most likely want to configure the \fIXmx\fR value by adding theses 
+lines into the configuration file:
+.nf
+	<jvmParameters>
+		<param>-Xmx0000m</param>
+	</jvmParamters>
+.fi
 
 .SH "REPORTING BUGS"
 
