@@ -191,7 +191,7 @@ class CustomConnection(_AbstractConnection):
         return self._java_starter_class
     
     def getArguments(self):
-        return [self._nodename]
+        return self._args
 
     
 class LocalBindConnection(_AbstractConnection):
