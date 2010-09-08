@@ -121,7 +121,7 @@ class EventConfig(object):
             if len(self.cgroup_mnt_point) == 0:
                 raise errors.AgentInternalError("cgroup mount point lenght is 0 but memory limit is set")
             if not os.path.exists(self.cgroup_mnt_point):
-                raise errors.AgentConfigFileError("cgroup is not mounted at %s" % self.cgroup_mnt_point)
+                raise errors.AgentConfigFileError("cgroup is not mounted at %s. Please mount the cgroup filesystem or remove the <memoryLimit> element from the configuration file" % self.cgroup_mnt_point)
             
         if self.nbRuntimes < 0:
             raise errors.AgentInternalError("The number of runtimes must be a positive integer")
@@ -458,13 +458,48 @@ class StartEvent(SpecificEvent):
         cmd = []
         
         # Java
-        cmd.append(self.config.javaHome + "/bin/java")
+        java_path = os.path.join(self.config.javaHome, "bin", "java") 
+        cmd.append(java_path)
+        
         # Classpath
-        cmd.append("-classpath")
-        cmd.append(self.config.proactiveHome +  "/dist/lib/*")
+        def get_class_path():
+            pa_path = os.path.join(self.config.proactiveHome, "dist", "lib")
+            classpath=None        
+    
+            # Try to check if Java  6 to have a cleaner classpath by using the wildcard
+            try:
+                p = subprocess.Popen([java_path, "-version"], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+                (stdout, stderr) = p.communicate()
+                import re
+                m = re.search("java version \"(\d\.\d)\..*\"", stderr)
+                if m is not None and m.group(1) == "1.6":
+                    classpath = os.path.join(pa_path, "*")
+            except OSError:
+                pass # failed to execute java -version
             
-        cmd.append("-Dproactive.communication.protocol=%s" % self.config.protocol)
+            if classpath is None:            
+                try: # Not Java 6, build the full classpath by listing the pa_path directory     
+                    paths= os.listdir(pa_path)
+                    if len(paths) == 0:
+                        logger.warning("Unable to build the classpath. Directory is empty. proactiveHome: %s" % self.config.proactiveHome )
+                        classpath="emptyclasspath"
+                    elif len(paths) == 1:
+                        classpath = os.path.join(pa_path, paths[0])
+                    else:
+                        classpath = ""
+                        for index in xrange(len(paths) - 1):
+                            classpath += os.path.join(pa_path, paths[index]) + ":"
+                        classpath += os.path.join(pa_path, paths[-1])
+                except (OSError), e:
+                    logger.warning("Unable to build the classpath. cause: %s" % e)
+                    classpath="emptyclasspath"
+                
+            return classpath
+        
+        cmd.append("-classpath")
+        cmd.append(get_class_path())
 
+        cmd.append("-Dproactive.communication.protocol=%s" % self.config.protocol)
         cmd.append("-Xms96M")
     
         if self.config.protocol == "rmi":
