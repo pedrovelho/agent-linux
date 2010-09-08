@@ -36,37 +36,23 @@
 # $$ACTIVEEON_INITIAL_DEV$$
 #################################################################
 
+import os
+import subprocess
 
-class AgentError(Exception):
-    '''
-    Base class exception for the ProActive Linux agent
-    '''
-    pass
-
-class AgentInternalError(AgentError):
-    '''
-    ProActive Linux agent internal error
+if __name__ == "__main__":
     
-    A such exception is raised when the agent is in an unexpected or bad state. If a
-    such exception is encountered it means that you do a bug report ;)
-    '''
+    os.chdir(os.path.dirname(__file__))
+    java_home = os.getenv("JAVA_HOME", "/etc/alternatives/java_sdk")
     
-    def __str__(self):
-        return "%s (This is an internal error, please fill a bug report)" % self.args
+    javac = []
+    javac.append(os.path.join(java_home, "bin", "javac"))
+    javac.append("BlackBoxStarter.java")
+    subprocess.call(javac)
     
-        
-class AgentSetupError(AgentError):
-
-    def __str__(self):
-        return "%s (please check your installation)" % self.args
-    
-
-class AgentConfigFileError(AgentError):
-    
-    def __str__(self):
-        return  "Invalid configuration file: %s" % self.args
-    
-try :
-    raise AgentConfigFileError("blah blah blah")
-except Exception, e:
-    print e
+    jar = []
+    jar.append(os.path.join(java_home, "bin", "jar"))
+    jar.append("-cvf")
+    jar.append("BlackBoxStarter.jar")
+    jar.append("BlackBoxStarter.java")
+    jar.append("BlackBoxStarter.class")
+    subprocess.call(jar)
