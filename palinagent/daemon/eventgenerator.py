@@ -497,16 +497,9 @@ class StopEvent(SpecificEvent):
         pass
 
     
-class RestartEvent(SpecificEvent): 
+class RestartEvent(StartEvent): 
     # FIXME: SUPPORT RESTART
-    def __init__(self, old_event, new_event, epoch_date):
-        super(RestartEvent, self).__init__(new_event, epoch_date, "RESTART")
-        
-    def schedule(self):
-        pass
-
-    def cancel(self):
-        pass
+    pass
 
 
 class Event(object):
@@ -635,7 +628,7 @@ class CalendarEventGenerator(object):
             
             if nEvent.epoch_date == cEvent.epoch_date and cEvent.type == "STOP" and nEvent.type == "START": 
                 # Converts current and next action into a restart
-                yield (RestartEvent(cEvent, nEvent, nEvent.epoch_date))
+                yield (RestartEvent(nEvent, nEvent.epoch_date))
                 (cEvent, cIndex) = (nEvent, nIndex)
                 (nEvent, nIndex) = g.next()
             else:
