@@ -6,8 +6,7 @@
 #    Parallel, Distributed, Multi-Core Computing for
 #     Enterprise Grids & Clouds
 #
-# Copyright (C) 1997-2010 INRIA/University of 
-#                 Nice-Sophia Antipolis/ActiveEon
+# Copyright (C) 1997-2010 ActiveEon 
 # Contact: proactive@ow2.org or contact@activeeon.com
 #
 # This library is free software; you can redistribute it and/or
@@ -28,8 +27,7 @@
 # If needed, contact us to obtain a release under GPL Version 2 
 # or a different license than the GPL.
 #
-#  Initial developer(s):               The ProActive Team
-#                        http://proactive.inria.fr/team_members.htm
+#  Initial developer(s):               The ActiveEon Team
 #  Contributor(s):
 #
 #################################################################
