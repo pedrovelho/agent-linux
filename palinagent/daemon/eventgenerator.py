@@ -114,13 +114,14 @@ class EventConfig(object):
         if self.memoryLimit < 0:
             raise errors.AgentInternalError("Memory limit must be a positive integer")
         if self.memoryLimit != 0:
+            if self.memoryLimit < 128:
+                logger.warning("Warning memory limit is set below 128MB. JVMs will likely crash due to the memory constraint")
             if self.cgroup_mnt_point is None:
                 raise errors.AgentInternalError("cgroup mount point is not defined but memory limit is set")
             if len(self.cgroup_mnt_point) == 0:
                 raise errors.AgentInternalError("cgroup mount point lenght is 0 but memory limit is set")
             if not os.path.exists(self.cgroup_mnt_point):
                 raise errors.AgentConfigFileError("cgroup is not mounted at %s. Please mount the cgroup filesystem or remove the <memoryLimit> element from the configuration file" % self.cgroup_mnt_point)
-            
         if self.nbRuntimes < 0:
             raise errors.AgentInternalError("The number of runtimes must be a positive integer")
         
