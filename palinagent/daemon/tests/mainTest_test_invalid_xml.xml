@@ -2,7 +2,7 @@
 <agent
   xmlns="urn:proactive:agent:linux:3.0"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="urn:proactive:agent:linux:3.0 ../../../xml/agent-linux.xsd">
+  xsi:schemaLocation="urn:proactive:agent:linux:3.0 ../xsd/agent-linux.xsd">
   
   <config>
     <proactiveHome>XXX</proactiveHome>
@@ -10,7 +10,7 @@
 
   <events>
     <event>
-      <start hour="12" day="monday" second="00" minute="00"/>
+      <start hour="12" day="Monday" second="00" minute="00"/>
       <duration hours="1" minutes="0" seconds="0" days="0"/>
       <config>
         <proactiveHome></proactiveHome>

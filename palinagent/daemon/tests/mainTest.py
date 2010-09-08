@@ -36,10 +36,11 @@
 # $$ACTIVEEON_INITIAL_DEV$$
 #################################################################
 
-from main import AgentError
-import main
 import unittest
+import os
 
+from palinagent.daemon.errors import AgentError
+import palinagent.daemon.main as main
 
 class TestXMLLoading(unittest.TestCase):
     '''
@@ -52,13 +53,17 @@ class TestXMLLoading(unittest.TestCase):
         
     def test_bad_xsd(self):
         ''' Checks that an exception is thrown is the namespace is wrong'''
-        self.assertRaises(AgentError, main._parse_config_file, "./mainTest_test_bad_xsd.xml")
+        self.assertRaises(AgentError, main._parse_config_file, os.path.join(os.path.dirname(__file__), "./mainTest_test_bad_xsd.xml"))
         
     def test_invalid_xml(self):
         ''' Checks that an exception is thrown if the file is invalid'''
-        self.assertRaises(AgentError, main._parse_config_file, "./mainTest_test_invalid_xml.xml")
+        self.assertRaises(AgentError, main._parse_config_file, os.path.join(os.path.dirname(__file__), "./mainTest_test_invalid_xml.xml"))
         
     def test_valid_xml(self):
         ''' Checks that everything is fine when a valid file is given'''
-        a = main._parse_config_file("./mainTest_test_valid_xml.xml")
+        a = main._parse_config_file(os.path.join(os.path.dirname(__file__), "./mainTest_test_valid_xml.xml"))
         self.assertNotEqual(None, a)
+
+  
+if __name__ == "__main__":
+    unittest.main()            

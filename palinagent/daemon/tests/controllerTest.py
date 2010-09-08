@@ -36,16 +36,17 @@
 # $$ACTIVEEON_INITIAL_DEV$$
 #################################################################
 
+import logging
 import unittest
 import time
 
-import palinagent.daemon.controller as controller
-
+import palinagent.daemon.controller     as controller
 import palinagent.daemon.eventgenerator as eventgenerator
-from palinagent.daemon.eventgenerator import EventConfig as EventConfig
-from palinagent.daemon.eventgenerator import StartEvent as StartEvent
-from palinagent.daemon.eventgenerator import StopEvent as StopEvent
-from palinagent.daemon.action import DummyConnection as DummyConnection
+
+from palinagent.daemon.eventgenerator import EventConfig     as EventConfig
+from palinagent.daemon.eventgenerator import StartEvent      as StartEvent
+from palinagent.daemon.eventgenerator import StopEvent       as StopEvent
+from palinagent.daemon.action         import DummyConnection as DummyConnection
 
 #class TestStarter(unittest.TestCase):
 #    def testEchoStarter(self):
@@ -67,6 +68,14 @@ from palinagent.daemon.action import DummyConnection as DummyConnection
         
 class TestController(unittest.TestCase):
     
+    def setUp(self):           
+        my_logger = logging.getLogger('agent')
+        my_logger.setLevel(logging.DEBUG)
+        formatter = logging.Formatter("%(asctime)s - %(name)-10s - %(levelname)-8s - %(message)s", "%Y-%m-%d %H:%M:%S")
+        handler = logging.StreamHandler()
+        handler.setFormatter(formatter)
+        my_logger.addHandler(handler)
+    
     def testBlackBox(self):
         class EventGeneratorMock():
             def getActions(self):
@@ -84,4 +93,8 @@ class TestController(unittest.TestCase):
                 yield (StopEvent( eventgenerator.Event(-1, -1, config, action), now + 25))
 
         evg = EventGeneratorMock()
-        controller.mainloop(evg, 1, 0)                
+        controller.mainloop(evg, 1, 0)        
+        
+        
+if __name__ == "__main__":
+    unittest.main()            

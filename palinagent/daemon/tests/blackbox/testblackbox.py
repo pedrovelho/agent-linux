@@ -51,21 +51,23 @@ class TestBlackBox(unittest.TestCase):
         print self.tmp_dir
         xml_fname = os.path.join(os.path.dirname(__file__), "testblackbox.xml")
 
-        with open(xml_fname, 'r') as input:
-            txt = input.read()
-            
-            os.makedirs(os.path.join(self.tmp_dir, "dist", "lib"))
-            shutil.copy(os.path.join(os.path.dirname(__file__), "BlackBoxStarter.jar"), os.path.join(self.tmp_dir, "dist", "lib", "BlackBoxStarter.jar"))
-            txt = txt.replace("%%PROACTIVE_HOME%%", "%s" % self.tmp_dir)
-            
-            txt = txt.replace("%%START_NOW_MINUS_20_SECS%%", "<start day=\"%s\" hour=\"%s\" minute=\"%s\" second=\"%s\"  />" % self.__get_split_date(-20))
-            txt = txt.replace("%%START_NOW_MINUS_10_SECS%%", "<start day=\"%s\" hour=\"%s\" minute=\"%s\" second=\"%s\"  />" % self.__get_split_date(-10))
-            txt = txt.replace("%%START_NOW_PLUS_10_SECS%%", "<start day=\"%s\" hour=\"%s\" minute=\"%s\" second=\"%s\"  />"  % self.__get_split_date( 10))
-            txt = txt.replace("%%START_NOW_PLUS_20_SECS%%", "<start day=\"%s\" hour=\"%s\" minute=\"%s\" second=\"%s\"  />"  % self.__get_split_date( 20))
+        input = open(xml_fname, 'r')
+        txt = input.read()
         
-        with open(os.path.join(self.tmp_dir, "agent.xml"), 'w') as output:
-            output.write(txt)
-            
+        os.makedirs(os.path.join(self.tmp_dir, "dist", "lib"))
+        shutil.copy(os.path.join(os.path.dirname(__file__), "BlackBoxStarter.jar"), os.path.join(self.tmp_dir, "dist", "lib", "BlackBoxStarter.jar"))
+        txt = txt.replace("%%PROACTIVE_HOME%%", "%s" % self.tmp_dir)
+        
+        txt = txt.replace("%%START_NOW_MINUS_20_SECS%%", "<start day=\"%s\" hour=\"%s\" minute=\"%s\" second=\"%s\"  />" % self.__get_split_date(-20))
+        txt = txt.replace("%%START_NOW_MINUS_10_SECS%%", "<start day=\"%s\" hour=\"%s\" minute=\"%s\" second=\"%s\"  />" % self.__get_split_date(-10))
+        txt = txt.replace("%%START_NOW_PLUS_10_SECS%%", "<start day=\"%s\" hour=\"%s\" minute=\"%s\" second=\"%s\"  />"  % self.__get_split_date( 10))
+        txt = txt.replace("%%START_NOW_PLUS_20_SECS%%", "<start day=\"%s\" hour=\"%s\" minute=\"%s\" second=\"%s\"  />"  % self.__get_split_date( 20))
+        input.close()
+        
+        output =  open(os.path.join(self.tmp_dir, "agent.xml"), 'w')
+        output.write(txt)
+        output.close()
+        
     def test_blackbox(self):
         args = []
         args.append("python")

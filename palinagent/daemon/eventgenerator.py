@@ -279,7 +279,7 @@ class SpecificEvent(object):
         '''
         Return the number of seconds remaining until the event
         '''
-        return self.epoch_date - int(time.time())
+        return max(0, self.epoch_date - int(time.time()))
 
 class JVMStarter():
     '''
@@ -499,7 +499,9 @@ class StopEvent(SpecificEvent):
     
 class RestartEvent(StartEvent): 
     # FIXME: SUPPORT RESTART
-    pass
+    def __init__(self, generic_event, epoch_date):
+        super(RestartEvent, self).__init__(generic_event, epoch_date)
+        self.type = "RESTART"
 
 
 class Event(object):

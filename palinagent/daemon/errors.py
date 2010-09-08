@@ -65,8 +65,3 @@ class AgentConfigFileError(AgentError):
     
     def __str__(self):
         return  "Invalid configuration file: %s" % self.args
-    
-try :
-    raise AgentConfigFileError("blah blah blah")
-except Exception, e:
-    print e

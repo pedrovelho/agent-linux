@@ -36,10 +36,12 @@
 # $$ACTIVEEON_INITIAL_DEV$$
 #################################################################
 
+import unittest
+import os 
+
 from palinagent.daemon.errors import AgentError as AgentError
 import palinagent.daemon.action as action
-import palinagent.daemon.main as main
-import unittest
+import palinagent.daemon.main   as main
 
 class TestEnabledAction(unittest.TestCase):
     ''' 
@@ -49,10 +51,13 @@ class TestEnabledAction(unittest.TestCase):
     
     def test_no_enabled(self):
         ''' Checks that an exception is thrown when no connection is enabled'''
-        tree = main._parse_config_file("./actionTest_test_no_enabled.xml")
+        tree = main._parse_config_file(os.path.join(os.path.dirname(__file__), "./actionTest_test_no_enabled.xml"))
         self.assertRaises(AgentError, action.parse, tree)
 
     def test_too_many_enabled(self):
         ''' Checks that an exception is thrown when several connections are enabled '''
-        tree = main._parse_config_file("./actionTest_test_too_many_enabled.xml")
+        tree = main._parse_config_file(os.path.join(os.path.dirname(__file__), "./actionTest_test_too_many_enabled.xml"))
         self.assertRaises(AgentError, action.parse, tree)
+
+if __name__ == "__main__":
+    unittest.main()    

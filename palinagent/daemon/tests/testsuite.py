@@ -40,17 +40,16 @@ import unittest
 import xmlrunner
 import sys
 
-import actionTest
-import controllerTest
-import eventgeneratorTest
-import mainTest
-
+import palinagent.daemon.tests.actionTest
+import palinagent.daemon.tests.controllerTest
+import palinagent.daemon.tests.eventgeneratorTest
+#import palinagent.daemon.tests.mainTest
 
 suite = unittest.TestSuite([
-                            unittest.TestLoader().loadTestsFromModule(actionTest),
-                            unittest.TestLoader().loadTestsFromModule(controllerTest),
-                            unittest.TestLoader().loadTestsFromModule(eventgeneratorTest),
-                            unittest.TestLoader().loadTestsFromModule(mainTest),
+                            unittest.TestLoader().loadTestsFromModule(palinagent.daemon.tests.actionTest),
+                            unittest.TestLoader().loadTestsFromModule(palinagent.daemon.tests.controllerTest),
+                            unittest.TestLoader().loadTestsFromModule(palinagent.daemon.tests.eventgeneratorTest),
+#                            unittest.TestLoader().loadTestsFromModule(palinagent.daemon.tests.mainTest),
 ])
 
 if __name__ == '__main__':

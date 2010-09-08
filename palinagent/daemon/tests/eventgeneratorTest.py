@@ -40,15 +40,16 @@
 import math
 import time
 import unittest
+import os
 
-from palinagent.daemon.errors import AgentError as AgentError
+from palinagent.daemon.errors import AgentError         as AgentError
 from palinagent.daemon.errors import AgentInternalError as AgentInternalError
 
 import palinagent.daemon.eventgenerator as eventgenerator
 from palinagent.daemon.eventgenerator import _ONE_WEEK_IN_SECS as _ONE_WEEK_IN_SECS
-from palinagent.daemon.eventgenerator import StartEvent as StartEvent
-from palinagent.daemon.eventgenerator import StopEvent as StopEvent
-from palinagent.daemon.eventgenerator import Event as Event 
+from palinagent.daemon.eventgenerator import StartEvent        as StartEvent
+from palinagent.daemon.eventgenerator import StopEvent         as StopEvent
+from palinagent.daemon.eventgenerator import Event             as Event 
 from palinagent.daemon.eventgenerator import CalendarEventGenerator as CalendarEventGenerator 
 
 import palinagent.daemon.main as main 
@@ -305,7 +306,7 @@ class TestParser(unittest.TestCase):
     '''
     
     def testParseFile(self):
-        tree = main._parse_config_file("./eventgeneratorTest_test_parse_file.xml")
+        tree = main._parse_config_file(os.path.join(os.path.dirname(__file__), "./eventgeneratorTest_test_parse_file.xml"))
         evg = eventgenerator.parse(tree, None)
         
         # This event does not redefine the configuration
@@ -341,6 +342,10 @@ class TestParser(unittest.TestCase):
 
     
     def testCoherentState(self):
-        tree = main._parse_config_file("./eventgeneratorTest_test_parse_file.xml")
+        tree = main._parse_config_file(os.path.join(os.path.dirname(__file__), "./eventgeneratorTest_test_parse_file.xml"))
         evg = eventgenerator.parse(tree, None)
         evg.check()
+        
+        
+if __name__ == "__main__":
+    unittest.main()            

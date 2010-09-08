@@ -15,7 +15,7 @@
 
   <events>
     <event>
-      <start day="monday" hour="0"  minute="0" second="0" />
+      <start day="Monday" hour="0"  minute="0" second="0" />
       <duration days="6" hours="23" minutes="59" seconds="59" />
     </event>
   </events>

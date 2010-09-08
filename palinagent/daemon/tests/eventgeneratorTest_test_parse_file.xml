@@ -20,12 +20,12 @@
   <events>
 
     <event>
-      <start hour="0" day="monday" second="0" minute="0"/>
+      <start hour="0" day="Monday" second="0" minute="0"/>
       <duration hours="0" minutes="0" seconds="1" days="0"/>
     </event>
 
     <event>
-      <start hour="0" day="tuesday" second="0" minute="0"/>
+      <start hour="0" day="Tuesday" second="0" minute="0"/>
       <duration hours="0" minutes="0" seconds="1" days="0"/>
       <config>
         <proactiveHome>proactiveHome2</proactiveHome>
@@ -41,7 +41,7 @@
 
 
     <event>
-      <start hour="0" day="wednesday" second="1" minute="0"/>
+      <start hour="0" day="Wednesday" second="1" minute="0"/>
       <duration hours="0" minutes="0" seconds="1" days="0"/>
       <config>
         <javaHome>javaHome3</javaHome>
