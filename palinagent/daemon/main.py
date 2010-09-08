@@ -49,7 +49,7 @@ This is the ProActive Linux agent main entry point
 # We should store them somewhere else, but here they are
 
 # The current XML namespace 
-xmlns = "urn:proactive:agent:linux:3.0"
+xmlns = "urn:proactive:agent:0.90:linux"
 
 version = "0.90beta3"
 
@@ -62,7 +62,7 @@ def _parse_config_file(fname):
     #
     # TODO: Handle user error (wrong schema, invalid XML etc.) as nicely as possible
     try:
-        schemaFname = os.path.join(os.path.dirname(__file__), "xsd/agent-linux.xsd")
+        schemaFname = os.path.join(os.path.dirname(__file__), "xsd/0.90/agent-linux.xsd")
         schema = etree.XMLSchema(file=schemaFname)
     except (etree.LxmlError), e:
         raise AgentSetupError("Unable to load XML Schema %s: %s" % (schemaFname, e))

@@ -1,8 +1,8 @@
 <?xml version="1.0"?>
 <agent
-  xmlns="urn:proactive:agent:linux:3.0"
+  xmlns="urn:proactive:agent:0.90:linux"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="urn:proactive:agent:linux:3.0 ../xsd/agent-linux.xsd">
+  xsi:schemaLocation="urn:proactive:agent:0.90:linux ../xsd/0.90/agent-linux.xsd">
   
   <config>
     <proactiveHome>XXX</proactiveHome>
