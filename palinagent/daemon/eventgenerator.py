@@ -336,7 +336,7 @@ class JVMStarter():
                     logger.info("Forked the process:%s to start command:%s" % (self.p.pid, self.cmd))
                 except OSError as e:
                     (nb_die, wait_time) = wait_time_gen.next()
-                    logger.info("Failed to fork the process for: %s. Failure number %d waiting %s seconds before restarting", self.cmd, nb_die, wait_time)
+                    logger.info("Failed to fork the process: %s cause:%s. Failure number %d waiting %s seconds before restarting", self.cmd, e, nb_die, wait_time)
                     self.canceled.wait(wait_time)
 
             self.canceled.wait(1)
