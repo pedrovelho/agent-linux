@@ -465,6 +465,7 @@ class StartEvent(SpecificEvent):
             
         cmd.append("-Dproactive.communication.protocol=%s" % self.config.protocol)
 
+        cmd.append("-Xms96M")
     
         if self.config.protocol == "rmi":
             cmd.append("-Dproactive.rmi.port=%d" % tcp_port)
