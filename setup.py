@@ -35,8 +35,9 @@
 #################################################################
 
 from setuptools import setup, find_packages
+from palinagent.daemon.main import version as agent_version
 
-version = "0.90beta3"
+version = agent_version
 
 setup(
       name="ProActive-LinuxAgent",
