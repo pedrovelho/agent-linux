@@ -1,5 +1,9 @@
 %{__rm} -rf %{buildroot}
-%{__python} setup.py install -O1 --skip-build --root %{buildroot} --record=INSTALLED_FILES
+%{__python} setup.py install -O2 --skip-build --root %{buildroot} --record=INSTALLED_FILES
+
+# Remove tests from the RPM
+find %{buildroot} -type d -a -name "tests" | xargs rm -Rf 
+sed -i 's@.*/tests/.*@@' INSTALLED_FILES
 
 %{__install} -m 0644 -D rpm/agent.xml           %{buildroot}%{_sysconfdir}/proactive/agent.xml
 echo "%{_sysconfdir}/proactive/agent.xml" >> INSTALLED_FILES
