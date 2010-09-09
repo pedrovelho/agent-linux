@@ -91,8 +91,8 @@ class TestController(unittest.TestCase):
                 yield (StopEvent( eventgenerator.Event(-1, -1, config, action), now + 25))
 
         evg = EventGeneratorMock()
-        controller.mainloop(evg, 1, 0)        
-        
+        ctrl = controller.Controller(evg)
+        ctrl.start()
         
 if __name__ == "__main__":
     unittest.main()            

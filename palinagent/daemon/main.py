@@ -51,7 +51,7 @@ This is the ProActive Linux agent main entry point
 # The current XML namespace 
 xmlns = "urn:proactive:agent:0.90:linux"
 
-version = "0.90beta3"
+version = "0.90rc1"
 
 def _parse_config_file(fname):
     '''
@@ -181,10 +181,23 @@ def main_func():
     except AgentError, e:
         print_log_exit(e)
 
+
     # Start the agent main loop
     import controller
-    controller.mainloop(evg)
-
+    ctrl = controller.Controller(evg)
+    import signal
+    
+    def sigfunc(ctrl):
+        def call_ctrl(signum, frame):
+            logger.info("Received signal: %s. Exiting !" % signum)
+            ctrl.stop()
+        return call_ctrl
+    
+    func = sigfunc(ctrl)    
+    
+    for sig in [signal.SIGINT, signal.SIGQUIT, signal.SIGHUP,  signal.SIGTERM, signal.SIGILL, signal.SIGABRT, signal.SIGPIPE, signal.SIGALRM]:
+        signal.signal(sig, func)
+    ctrl.start()
     return 0
     
 if __name__ == '__main__':

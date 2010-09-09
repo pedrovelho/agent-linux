@@ -34,46 +34,50 @@
 # $$ACTIVEEON_INITIAL_DEV$$
 #################################################################
 
-import time
 import logging
+import threading
+import time
 
 logger = logging.getLogger("agent.ctr")
 
 
-def mainloop(eventGenerator, speedup=1, bias=0):
-    '''
-    The main loop of the agent.
-    '''
-
-    gen = eventGenerator.getActions()
+class Controller(object):
     
-    event     = None
-    old_event = None
-    
-    while True:
-        try:
-            old_event = event
-            event = gen.next()
-            
-            if old_event is not None:
-                old_event.cancel()
-            
-            logger.debug("Controller is scheduling an event -> type:%s start:%s duration:%s" % (event.type, event.epoch_date, event.duration)) 
-            event.schedule()
-            
-            # FIXME: sleep shouldn't be used. It should be event based ! 
-            sleep_time = max(0, int((event.epoch_date + event.duration) - time.time()))
-            logger.debug("Controller will sleep for %s seconds" % sleep_time)
-            time.sleep(sleep_time)
-            
-        except StopIteration:
-            logger.critical("Controller failed to get the next event for the event generator.")
-            break
-        except (KeyboardInterrupt, SystemExit):
-            # Terminate all the processes then exit
-            logger.info("Daemon exiting...")
-            if old_event is not None:
-                old_event.cancel()
-            if event is not None:
-                event.cancel()
-                return
+    def __init__(self, event_generator):
+        self.evg       = event_generator.getActions()
+        self.cur_event = None
+        self.old_event = None
+        self.must_stop = threading.Event()
+        
+    def start(self):
+        while not self.must_stop.isSet():
+            try:
+                self.old_event = self.cur_event
+                self.cur_event = self.evg.next()
+                                
+                if self.old_event is not None:
+                    self.old_event.cancel()
+                
+                logger.debug("Controller is scheduling an event -> type:%s start:%s duration:%s" % (self.cur_event.type, self.cur_event.epoch_date, self.cur_event.duration)) 
+                self.cur_event.schedule()
+                
+                # FIXME: sleep shouldn't be used. It should be event based ! 
+                sleep_time = max(0, int((self.cur_event.epoch_date + self.cur_event.duration) - time.time()))
+                logger.debug("Controller will sleep for %s seconds" % sleep_time)
+                self.must_stop.wait(sleep_time)
+            except StopIteration:
+                logger.critical("Controller failed to get the next event for the event generator.")
+                break
+            except (KeyboardInterrupt, SystemExit):
+                # Terminate all the processes then exit
+                logger.info("Daemon exiting...")
+                break
+        
+        # Exiting. Clean everything
+        if self.old_event is not None:
+            self.old_event.cancel()
+        if self.cur_event is not None:
+            self.cur_event.cancel()
+                
+    def stop(self):
+        self.must_stop.set()
