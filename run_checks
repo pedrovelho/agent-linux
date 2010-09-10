@@ -1,2 +1,0 @@
-valgrind  --gen-suppressions=yes --leak-check=full --track-origins=yes --read-var-info=yes -v  --show-reachable=yes   --log-file=valgrind_cheks ./paagent-tests
-#valgrind  --suppressions=/usr/lib/valgrind/default.supp --leak-check=full --track-origins=yes --read-var-info=yes -v  --show-reachable=yes   --log-file=valgrind_cheks ./paagent-tests

@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<agent
+  xmlns="urn:proactive:agent:0.90:linux"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="urn:proactive:agent:0.90:linux ../xsd/0.90/agent-linux.xsd">
+  
+  <config>
+    <proactiveHome>XXX</proactiveHome>
+    <javaHome>/opt/java</javaHome>  
+  </config>
+  
+  <events>
+    <event>
+      <start hour="12" day="Monday" second="00" minute="00"/>
+      <duration hours="1" minutes="0" seconds="0" days="0"/>
+      <config>
+        <proactiveHome></proactiveHome>
+      </config>
+    </event>
+  </events>
+  
+  <connections>
+    <rmConnection enabled="true">
+      <url>pamr://0</url>
+    </rmConnection>    
+    <localBind enabled="true"/>
+   </connections>
+</agent>

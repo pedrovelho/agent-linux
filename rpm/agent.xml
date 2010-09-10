@@ -1,0 +1,26 @@
+<?xml version="1.0"?>
+<agent
+  xmlns="urn:proactive:agent:0.90:linux"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="urn:proactive:agent:0.90:linux http://www.activeeon.com/public_content/schemas/proactive/agent/0.90/agent-linux.xsd">
+  
+  <config>
+    <proactiveHome>/path/to/proactive/home</proactiveHome>
+    <javaHome>/etc/alternatives/jre</javaHome>
+    <memoryLimit>1000</memoryLimit>
+    <protocol>pnp</protocol>
+    <nice>19</nice>
+    <ionice class="idle"/>
+  </config>
+
+  <events>
+    <event>
+      <start day="Monday" hour="0"  minute="0" second="0" />
+      <duration days="6" hours="23" minutes="59" seconds="59" />
+    </event>
+  </events>
+  
+  <connections>
+    <localBind enabled="true"/>
+  </connections>
+</agent>

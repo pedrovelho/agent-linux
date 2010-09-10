@@ -1,0 +1,61 @@
+<?xml version="1.0"?>
+<agent
+  xmlns="urn:proactive:agent:0.90:linux"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="urn:proactive:agent:0.90:linux ../xsd/0.90/agent-linux.xsd">
+  
+  <config>
+    <proactiveHome>proactiveHome1</proactiveHome>
+    <javaHome>javaHome1</javaHome>
+    <jvmParameters>
+      <param>param1</param>
+    </jvmParameters>
+    <nbRuntimes>1</nbRuntimes>
+    <portRange last="6002" first="6000"/>
+    <onRuntimeExitScript>script1</onRuntimeExitScript>
+    <nice>5</nice>
+    <ionice class="idle"/>
+  </config>
+  
+  <events>
+
+    <event>
+      <start hour="0" day="Monday" second="0" minute="0"/>
+      <duration hours="0" minutes="0" seconds="1" days="0"/>
+    </event>
+
+    <event>
+      <start hour="0" day="Tuesday" second="0" minute="0"/>
+      <duration hours="0" minutes="0" seconds="1" days="0"/>
+      <config>
+        <proactiveHome>proactiveHome2</proactiveHome>
+        <javaHome>javaHome2</javaHome>
+        <jvmParameters>
+          <param>param2</param>
+        </jvmParameters>
+        <nbRuntimes>2</nbRuntimes>
+        <portRange last="6007" first="6003"/>
+        <onRuntimeExitScript>script2</onRuntimeExitScript>
+      </config>
+    </event>
+
+
+    <event>
+      <start hour="0" day="Wednesday" second="1" minute="0"/>
+      <duration hours="0" minutes="0" seconds="1" days="0"/>
+      <config>
+        <javaHome>javaHome3</javaHome>
+        <nbRuntimes>3</nbRuntimes>
+        <portRange last="6002" first="6000"/>
+        <onRuntimeExitScript>script3</onRuntimeExitScript>
+      </config>
+    </event>
+
+  </events>
+  
+  <connections>
+    <rmConnection enabled="true">
+      <url>pamr://0</url>
+    </rmConnection>    
+   </connections>
+</agent>

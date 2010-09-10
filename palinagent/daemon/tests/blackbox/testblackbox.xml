@@ -1,0 +1,51 @@
+<?xml version="1.0"?>
+<agent
+  xmlns="urn:proactive:agent:0.90:linux"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="urn:proactive:agent:0.90:linux ../xsd/0.90/agent-linux.xsd">
+  
+  <config>
+    <proactiveHome>%%PROACTIVE_HOME%%</proactiveHome>
+    <javaHome>/etc/alternatives/jre</javaHome>
+    <protocol>pnp</protocol>
+    <nice>19</nice>
+    <ionice class="idle"/>
+  </config>
+  
+  <events>
+
+    <!-- Test that the JVM is NOT started -->
+    <event>
+      %%START_NOW_MINUS_20_SECS%%
+      <duration days="0" hours="0" minutes="0" seconds="10" />
+    </event>
+
+    <!-- Test that the JVM IS started when the agent starts -->
+    <event>
+      %%START_NOW_MINUS_10_SECS%%
+      <duration days="0" hours="0" minutes="0" seconds="20" />
+    </event>
+
+    <event>
+      %%START_NOW_PLUS_10_SECS%%
+      <duration days="0" hours="0" minutes="0" seconds="5" />
+    </event>
+
+    <event>
+      %%START_NOW_PLUS_20_SECS%%
+      <duration days="0" hours="0" minutes="0" seconds="10" />
+    </event>
+
+  </events>
+  
+  <connections>
+    <customConnection enabled="true">
+      <respawnIncrement>2</respawnIncrement>
+      <javaStarterClass>BlackBoxStarter</javaStarterClass>
+      <args>
+        <arg>token</arg>
+        <arg>10</arg>
+      </args>
+    </customConnection>
+  </connections>
+</agent>
