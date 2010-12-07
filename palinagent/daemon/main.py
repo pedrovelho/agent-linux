@@ -120,7 +120,8 @@ def main_func():
     
     Parse the option, read the configurations file, and do everything
     '''
-    parser = optparse.OptionParser()
+    usage = "usage: %prog [options] config_file"
+    parser = optparse.OptionParser(usage=usage)
     parser.add_option("-d", "--debug",   action="store_true", dest="debug",   default=False, help="Enable debug level messages", )
     parser.add_option("-v", "--verbose", action="store_true", dest="verbose", default=False, help="Enable verbose mode (print on stdout)", )
     #parser.add_option("-l", "--logConf",     action="store",      dest="log",     type="string", help="The logging configuration file to use")
