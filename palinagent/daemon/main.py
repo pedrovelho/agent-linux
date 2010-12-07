@@ -33,13 +33,18 @@
 #################################################################
 # $$ACTIVEEON_INITIAL_DEV$$
 #################################################################
-from lxml import etree
 import optparse
 import sys
 import os
 import logging.handlers
 from errors import *
 import utils
+
+try:
+    from lxml import etree
+except (ImportError), e:
+    print >> sys.stderr, AgentSetupError("lxml not available: %s" % e)
+    sys.exit(7)
 
 '''
 This is the ProActive Linux agent main entry point
