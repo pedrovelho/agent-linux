@@ -68,7 +68,8 @@ def _parse_config_file(fname):
     # TODO: Handle user error (wrong schema, invalid XML etc.) as nicely as possible
     try:
         schemaFname = os.path.join(os.path.dirname(__file__), "xsd/0.90/agent-linux.xsd")
-        schema = etree.XMLSchema(file=schemaFname)
+        tree = etree.parse(schemaFname)
+        schema = etree.XMLSchema(tree)
     except (etree.LxmlError), e:
         raise AgentSetupError("Unable to load XML Schema %s: %s" % (schemaFname, e))
     
