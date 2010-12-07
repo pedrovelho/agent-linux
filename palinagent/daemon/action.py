@@ -135,7 +135,6 @@ class RessourceManagerConnection(_AbstractConnection):
             self._credential = lx[0].text
 
         assert(self._url is not None)
-        assert(self._credential is not None)
 
     def getClass(self):
         if self._java_starter_class is None:
