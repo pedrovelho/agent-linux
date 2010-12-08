@@ -88,7 +88,7 @@ if __name__ == "__main__":
         if options.coverage == "html":
             cov.html_report(directory='covhtml')
         elif options.coverage == "xml":
-            cov.xml_report(directory='covxml')
+            cov.xml_report(outfile='coverage.xml')
         else:
             sys.exit(1)
             print >> sys.stderr, "Unsupported coverage output format"
