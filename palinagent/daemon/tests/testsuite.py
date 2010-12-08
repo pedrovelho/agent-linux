@@ -61,8 +61,8 @@ if __name__ == "__main__":
     import optparse
     
     parser = optparse.OptionParser()
-    parser.add_option("-o", "--output",  action="store", dest="output", default="text",   help="Format of the output", )
-    parser.add_option("-c", "--coverage",action="store", dest="coverage", default="None", help="Enable code coverage", )
+    parser.add_option("-o", "--output",  action="store", dest="output", default="text", help="Format of the output", )
+    parser.add_option("-c", "--coverage",action="store_true", dest="coverage", default="False", help="Enable code coverage", )
    
     (options, args) = parser.parse_args();
     
@@ -76,14 +76,14 @@ if __name__ == "__main__":
         sys.exit(1)
     
     cov = None
-    if options.coverage is not None:
+    if options.coverage is True:
         import coverage
         cov = coverage.coverage()
         cov.start()
         
     runner.run(suite)
 
-    if cov is not None:
+    if cov is True:
         cov.stop()
         if options.coverage == "html":
             cov.html_report(directory='covhtml')
@@ -92,4 +92,3 @@ if __name__ == "__main__":
         else:
             sys.exit(1)
             print >> sys.stderr, "Unsupported coverage output format"
-    
