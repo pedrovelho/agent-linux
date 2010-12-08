@@ -42,6 +42,7 @@ import sys
 
 import helpers
 import palinagent.daemon.main
+import palinagent.daemon.action
 from palinagent.daemon.errors import AgentConfigFileError
 
 
@@ -136,6 +137,46 @@ class TestHelpersXMLFile(unittest.TestCase):
 
     def test_non_existant_config_xml(self):
         self.assertRaises(AgentConfigFileError, palinagent.daemon.main._parse_config_file, "/very/invalid/path/")
+  
+    
+    def test_no_enabled(self):
+        ''' Checks that an exception is thrown when no connection is enabled'''
+        
+        (config, events, connection) = _get_simplest_config()
+        self.file = helpers.write_config_file(config, events, connection)
+            
+        # Randomly removed some lines
+        updated_fname = tempfile.mktemp()
+        updated = open(updated_fname, 'w')
+        orig = open(self.file, 'r')
+        for line in orig.readlines():
+            updated.write(line.replace('enabled="true"' , 'enabled="false"'))
+        orig.close()
+        updated.close()
+        os.remove(self.file)
+        self.file = updated_fname
+        
+        tree = palinagent.daemon.main._parse_config_file(self.file)
+        self.assertRaises(palinagent.daemon.errors.AgentConfigFileError, palinagent.daemon.action.parse, tree)
+
+    def test_too_many_enabled(self):
+        ''' Checks that an exception is thrown when several connections are enabled '''
+        (config, events, connection) = _get_simplest_config()
+        self.file = helpers.write_config_file(config, events, connection)
+            
+        # Randomly removed some lines
+        updated_fname = tempfile.mktemp()
+        updated = open(updated_fname, 'w')
+        orig = open(self.file, 'r')
+        for line in orig.readlines():
+            updated.write(line.replace('</connections>' , '<localBind enabled="true"/></connections>'))
+        orig.close()
+        updated.close()
+        os.remove(self.file)
+        self.file = updated_fname
+        
+        tree = palinagent.daemon.main._parse_config_file(self.file)
+        self.assertRaises(palinagent.daemon.errors.AgentConfigFileError, palinagent.daemon.action.parse, tree)
         
     def tearDown(self):
         try:
@@ -144,6 +185,8 @@ class TestHelpersXMLFile(unittest.TestCase):
         except (OSError), e:
             print e
         
+        
+    
 
 def _get_simplest_config():
     config = helpers.ConfigElement()

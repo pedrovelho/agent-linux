@@ -79,6 +79,7 @@ if __name__ == "__main__":
     if options.coverage is not None:
         import coverage
         cov = coverage.coverage()
+        cov.erase()
         cov.start()
         
     runner.run(suite)
