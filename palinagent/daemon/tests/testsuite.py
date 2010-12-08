@@ -61,8 +61,8 @@ if __name__ == "__main__":
     import optparse
     
     parser = optparse.OptionParser()
-    parser.add_option("-o", "--output",  action="store", dest="output", default="text", help="Format of the output", )
-    parser.add_option("-c", "--coverage",action="store_true", dest="coverage", default="False", help="Enable code coverage", )
+    parser.add_option("-o", "--output",  action="store", dest="output", default="text",   help="Format of the output", )
+    parser.add_option("-c", "--coverage",action="store", dest="coverage", default="None", help="Enable code coverage", )
    
     (options, args) = parser.parse_args();
     
@@ -76,7 +76,7 @@ if __name__ == "__main__":
         sys.exit(1)
     
     cov = None
-    if options.coverage is True:
+    if options.coverage is not None:
         import coverage
         cov = coverage.coverage()
         cov.start()
