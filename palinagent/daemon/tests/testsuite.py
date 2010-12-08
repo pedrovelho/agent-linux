@@ -61,8 +61,8 @@ if __name__ == "__main__":
     import optparse
     
     parser = optparse.OptionParser()
-    parser.add_option("-o", "--output",  action="store", dest="output", default="text", help="Format of the output", )
-    parser.add_option("-c", "--coverage",action="store_true", dest="coverage", default="False", help="Enable code coverage", )
+    parser.add_option("-o", "--output",  action="store", dest="output", default="text",   help="Format of the output", )
+    parser.add_option("-c", "--coverage",action="store", dest="coverage", default="None", help="Enable code coverage", )
    
     (options, args) = parser.parse_args();
     
@@ -72,10 +72,11 @@ if __name__ == "__main__":
     elif options.output == "xml":
         runner = xmlrunner.XMLTestRunner()
     else:
-        print >> sys.stderr, "Unsupported output format"
+        print >> sys.stderr, "Unsupported unittest output format"
+        sys.exit(1)
     
     cov = None
-    if options.coverage is True:
+    if options.coverage is not None:
         import coverage
         cov = coverage.coverage()
         cov.start()
@@ -84,6 +85,11 @@ if __name__ == "__main__":
 
     if cov is not None:
         cov.stop()
-        cov.html_report(directory='covhtml')
-    
+        if options.coverage == "html":
+            cov.html_report(directory='covhtml')
+        elif options.coverage == "xml":
+            cov.xml_report(directory='covxml')
+        else:
+            sys.exit(1)
+            print >> sys.stderr, "Unsupported coverage output format"
     
