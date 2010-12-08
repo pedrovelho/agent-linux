@@ -62,6 +62,8 @@ if __name__ == "__main__":
     
     parser = optparse.OptionParser()
     parser.add_option("-o", "--output",  action="store", dest="output", default="text", help="Format of the output", )
+    parser.add_option("-c", "--coverage",action="store_true", dest="coverage", default="False", help="Enable code coverage", )
+   
     (options, args) = parser.parse_args();
     
     runner = None
@@ -71,5 +73,17 @@ if __name__ == "__main__":
         runner = xmlrunner.XMLTestRunner()
     else:
         print >> sys.stderr, "Unsupported output format"
-
+    
+    cov = None
+    if options.coverage is True:
+        import coverage
+        cov = coverage.coverage()
+        cov.start()
+        
     runner.run(suite)
+
+    if cov is not None:
+        cov.stop()
+        cov.html_report(directory='covhtml')
+    
+    
