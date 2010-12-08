@@ -84,7 +84,7 @@ if __name__ == "__main__":
         
     runner.run(suite)
 
-    if cov is True:
+    if cov is not None:
         cov.stop()
         if options.coverage == "html":
             cov.html_report(directory='covhtml')
