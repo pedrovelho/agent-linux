@@ -35,7 +35,8 @@
 #################################################################
 
 from setuptools import setup, find_packages
-from palinagent.daemon.main import version as agent_version
+from palinagent.daemon.main  import version   as agent_version
+import palinagent.daemon.tests.testsuite 
 
 version = agent_version
 
@@ -77,5 +78,7 @@ setup(
           'proactive-agent = palinagent.daemon.main:main_func',
           ],
         },
+        
+      test_suite = "palinagent.daemon.tests.testsuite.get_testsuite"
       )
 

@@ -35,41 +35,28 @@
 #################################################################
 
 import unittest
-import sys
 
-from palinagent.daemon.tests import xmlrunner
+import palinagent.daemon.errors
 
-import palinagent.daemon.tests.testXMLConfig
-import palinagent.daemon.tests.testEventGenerator
-import palinagent.daemon.tests.testUtils
-import palinagent.daemon.tests.testErrors
+class TestErrors(unittest.TestCase):
+    
+    def test_error(self):
+        self.assertRaises(palinagent.daemon.errors.AgentError, raise_it, palinagent.daemon.errors.AgentError, "Oops")
 
+    def test_config_file_error(self):
+        self.assertRaises(palinagent.daemon.errors.AgentConfigFileError, raise_it, palinagent.daemon.errors.AgentConfigFileError, "Oops")
+        self.assertRaises(palinagent.daemon.errors.AgentError, raise_it, palinagent.daemon.errors.AgentConfigFileError, "Oops")
 
-loader = unittest.TestLoader()
-suite = unittest.TestSuite([
-    loader.loadTestsFromModule(palinagent.daemon.tests.testXMLConfig),
-    loader.loadTestsFromModule(palinagent.daemon.tests.testEventGenerator),
-    loader.loadTestsFromModule(palinagent.daemon.tests.testUtils),
-    loader.loadTestsFromModule(palinagent.daemon.tests.testErrors),
-])
+    def test_internal_error(self):
+        self.assertRaises(palinagent.daemon.errors.AgentInternalError, raise_it, palinagent.daemon.errors.AgentInternalError, "Oops")
+        self.assertRaises(palinagent.daemon.errors.AgentError, raise_it, palinagent.daemon.errors.AgentConfigFileError, "Oops")
 
-def get_testsuite():
-    return suite
+    def test_setup_error(self):
+        self.assertRaises(palinagent.daemon.errors.AgentSetupError, raise_it, palinagent.daemon.errors.AgentSetupError, "Oops")
+        self.assertRaises(palinagent.daemon.errors.AgentError, raise_it, palinagent.daemon.errors.AgentConfigFileError, "Oops")
 
+def raise_it(error, msg):
+    raise error(msg)
 
 if __name__ == "__main__":
-    import optparse
-    
-    parser = optparse.OptionParser()
-    parser.add_option("-o", "--output",  action="store", dest="output", default="text", help="Format of the output", )
-    (options, args) = parser.parse_args();
-    
-    runner = None
-    if options.output == "text":
-        runner = unittest.TextTestRunner(verbosity=2)
-    elif options.output == "xml":
-        runner = xmlrunner.XMLTestRunner()
-    else:
-        print >> sys.stderr, "Unsupported output format"
-
-    runner.run(suite)
+    unittest.main()

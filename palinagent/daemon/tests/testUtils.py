@@ -35,41 +35,27 @@
 #################################################################
 
 import unittest
-import sys
+import subprocess
 
-from palinagent.daemon.tests import xmlrunner
+import palinagent.daemon.utils
 
-import palinagent.daemon.tests.testXMLConfig
-import palinagent.daemon.tests.testEventGenerator
-import palinagent.daemon.tests.testUtils
-import palinagent.daemon.tests.testErrors
-
-
-loader = unittest.TestLoader()
-suite = unittest.TestSuite([
-    loader.loadTestsFromModule(palinagent.daemon.tests.testXMLConfig),
-    loader.loadTestsFromModule(palinagent.daemon.tests.testEventGenerator),
-    loader.loadTestsFromModule(palinagent.daemon.tests.testUtils),
-    loader.loadTestsFromModule(palinagent.daemon.tests.testErrors),
-])
-
-def get_testsuite():
-    return suite
-
-
+class TestNumberOfCPU(unittest.TestCase):
+    
+    def test_get_number_of_cpus(self):
+        n = palinagent.daemon.utils.get_number_of_cpus()
+        
+        try:
+            p = subprocess.Popen(["lscpu", '--parse'], stdout=subprocess.PIPE)
+            (stdout, stderr) = p.communicate()
+            count = 0
+            for line in stdout.split('\n'):
+                if not line.startswith('#'):
+                    count += 1
+                    
+            self.assertEqual(n, count - 1)
+                    
+        except (OSError), e:
+            raise Exception( "lscpu not available" % e)
+            
 if __name__ == "__main__":
-    import optparse
-    
-    parser = optparse.OptionParser()
-    parser.add_option("-o", "--output",  action="store", dest="output", default="text", help="Format of the output", )
-    (options, args) = parser.parse_args();
-    
-    runner = None
-    if options.output == "text":
-        runner = unittest.TextTestRunner(verbosity=2)
-    elif options.output == "xml":
-        runner = xmlrunner.XMLTestRunner()
-    else:
-        print >> sys.stderr, "Unsupported output format"
-
-    runner.run(suite)
+    unittest.main()
