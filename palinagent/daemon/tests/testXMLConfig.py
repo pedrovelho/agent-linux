@@ -51,10 +51,20 @@ class TestValideAllXMLInProject(unittest.TestCase):
     Check that all XML files in the project validate against the agent schema
     '''
     def test_validate_all_xml(self):
+        def must_check(fname):
+            if fname.find('invalid') != -1:
+                return False
+            if fname.find("TEST-") != -1:
+                return False
+            if fname.endswith("coverage.xml"):
+                return False
+            return True
+            
+        
         invalid_files = []
         for root, dirs, files in os.walk(os.path.join(os.path.abspath(os.path.dirname(__file__)), "../../../")):
             for file in files:
-                if file.endswith(".xml") and  file.find('invalid') == -1 :
+                if file.endswith(".xml") and  must_check(file) :
                     try:
                         _check_validity_with_xmllint(os.path.join(root, file))
                     except (Exception):
