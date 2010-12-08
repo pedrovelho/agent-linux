@@ -292,7 +292,8 @@ class JVMStarter(object):
         self.cgroup_mnt_point = cgroup_mnt_point
 
         self.canceled = threading.Event()
-      
+        self.p = None
+        
     def schedule(self):
         sleep_time = max(0, int(self.epoch_date - time.time()))
         logger.info("Thread created to execute %s. Execution starts in %s seconds" % (self.cmd, sleep_time)) 
@@ -423,7 +424,7 @@ class StartEvent(SpecificEvent):
         for i in xrange(self.config.nbRuntimes):
             cmd = self._build_java_cmd(i, ports[i], i)
             
-            starter = JVMStarter(self.config, cmd, self.epoch_date, self.action._respawn_increment, i, self.config.cgroup_mnt_point)
+            starter = JVMStarter(self.config, cmd, self.epoch_date, self.action.respawn_increment, i, self.config.cgroup_mnt_point)
             thread = threading.Thread(None, starter.schedule, "THREAD%s" % i, (), {})
             thread.start()
             self.forks.append((starter, thread))
@@ -565,12 +566,6 @@ class Event(object):
         '''
         Check this event is in a coherent state
         '''
-        def raiseError(message, internal=False):
-            if internal:
-                raise errors.AgentInternalError("Invalid event state")
-            else:
-                raise errors.AgentError("Invalid event state: " + message)
-  
         if self.startOffset < 0:
             raise errors.AgentInternalError("Start offset must be positive")
         if self.startOffset > _ONE_WEEK_IN_SECS:
@@ -660,8 +655,8 @@ class CalendarEventGenerator(object):
             if (self.events[-1].stopOffset <= self.events[-1].startOffset) and (self.events[-1].stopOffset > self.events[0].startOffset):
                 raise errors.AgentConfigFileError("Calendar events %s and %s overlap (not enforced by XSD)" % (self.events[-1], self.events[0]))
       
-    def getActions(self, timebias=0):
-        g = self.__getActions(timebias) 
+    def getActions(self):
+        g = self.__getActions() 
 
         (nEvent, nIndex) = g.next()
         while True:
@@ -676,7 +671,7 @@ class CalendarEventGenerator(object):
             else:
                 yield (cEvent)
             
-    def __getActions(self, timebias=0): 
+    def __getActions(self): 
        
         def offset_in_origin_week(agent_time):
             now = int(time.time())

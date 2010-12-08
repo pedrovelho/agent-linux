@@ -45,7 +45,7 @@ def  get_number_of_cpus():
         res = int(os.sysconf('SC_NPROCESSORS_ONLN'))
 
         if res > 0:
-                return res
+            return res
     except (AttributeError,ValueError):
         pass
 
@@ -54,7 +54,7 @@ def  get_number_of_cpus():
         res = int(os.environ['NUMBER_OF_PROCESSORS'])
 
         if res > 0:
-                return res
+            return res
     except (KeyError, ValueError):
         pass
 
@@ -66,7 +66,7 @@ def  get_number_of_cpus():
         res = int(scStdout)
 
         if res > 0:
-                return res
+            return res
     except (OSError, ValueError):
         pass
 
@@ -75,7 +75,7 @@ def  get_number_of_cpus():
         res = open('/proc/cpuinfo').read().count('processor\t:')
 
         if res > 0:
-                return res
+            return res
     except IOError:
         pass
 
@@ -87,21 +87,21 @@ def  get_number_of_cpus():
 
         res = 0
         for pd in pseudoDevices:
-                if expr.match(pd) != None:
-                        res += 1
+            if expr.match(pd) != None:
+                res += 1
 
         if res > 0:
-                return res
+            return res
     except OSError:
         pass
 
     # Other UNIXes (heuristic)
     try:
         try:
-                dmesg = open('/var/run/dmesg.boot').read()
+            dmesg = open('/var/run/dmesg.boot').read()
         except IOError:
-                dmesgProcess = subprocess.Popen(['dmesg'], stdout=subprocess.PIPE)
-                dmesg = dmesgProcess.communicate()[0]
+            dmesgProcess = subprocess.Popen(['dmesg'], stdout=subprocess.PIPE)
+            dmesg = dmesgProcess.communicate()[0]
 
         res = 0
         while '\ncpu' + str(res) + ':' in dmesg:
