@@ -134,7 +134,7 @@ class RessourceManagerConnection(_AbstractConnection):
         if len(lx) == 1:
             self.credential = lx[0].text
 
-        assert(self._url is not None)
+        assert(self.url is not None)
 
     def getClass(self):
         if self.java_starter_class is None:
@@ -211,7 +211,7 @@ class LocalBindConnection(_AbstractConnection):
         
     def getArguments(self):
         if self.nodename == None:
-            return [self.nodename.next()]
+            return [_nodename.next()]
         else:
             return [self.nodename]
 
