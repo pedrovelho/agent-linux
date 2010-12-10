@@ -77,11 +77,13 @@ if __name__ == "__main__":
     
     cov = None
     if options.coverage is not None:
-        import coverage
-        cov = coverage.coverage()
-        cov.erase()
-        cov.start()
-        
+        try :
+            import coverage
+            cov = coverage.coverage()
+            cov.erase()
+            cov.start()
+        except ImportError:
+            print >> sys.stderr, "Coverage module not available"
     runner.run(suite)
 
     if cov is not None:

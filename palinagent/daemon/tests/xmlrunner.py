@@ -5,7 +5,6 @@ XML Test Runner for PyUnit
 # Written by Sebastian Rittau <srittau@jroger.in-berlin.de> and placed in
 # the Public Domain. With contributions by Paolo Borelli and others.
 
-from __future__ import with_statement
 
 __version__ = "0.1"
 
@@ -37,24 +36,24 @@ class _TestInfo(object):
         self._error = None
         self._failure = None
 
-    @staticmethod
     def create_success(test, time):
         """Create a _TestInfo instance for a successful test."""
         return _TestInfo(test, time)
+    create_success = staticmethod(create_success)
 
-    @staticmethod
     def create_failure(test, time, failure):
         """Create a _TestInfo instance for a failed test."""
         info = _TestInfo(test, time)
         info._failure = failure
         return info
+    create_failure = staticmethod(create_failure)
 
-    @staticmethod
     def create_error(test, time, error):
         """Create a _TestInfo instance for an erroneous test."""
         info = _TestInfo(test, time)
         info._error = error
         return info
+    create_error = staticmethod(create_error)
 
     def print_report(self, stream):
         """Print information about this test case in XML format to the
@@ -169,6 +168,17 @@ class XMLTestRunner(object):
     def __init__(self, stream=None):
         self._stream = stream
         self._path = "."
+    
+    def _with_fake_std_streams(self, callback):
+        _orig_stdout = sys.stdout
+        _orig_stderr = sys.stderr
+        sys.stdout = StringIO()
+        sys.stderr = StringIO()
+        try:
+            callback()
+        finally:
+            sys.stdout = _orig_stdout
+            sys.stderr = _orig_stderr
 
     def run(self, test):
         """Run the given test case or test suite."""
@@ -184,16 +194,15 @@ class XMLTestRunner(object):
         result = _XMLTestResult(classname)
         start_time = time.time()
 
-        with _fake_std_streams():
-            test(result)
-            try:
-                out_s = sys.stdout.getvalue()
-            except AttributeError:
-                out_s = ""
-            try:
-                err_s = sys.stderr.getvalue()
-            except AttributeError:
-                err_s = ""
+        self._with_fake_std_streams(lambda : test(result))
+        try:
+            out_s = sys.stdout.getvalue()
+        except AttributeError:
+            out_s = ""
+        try:
+            err_s = sys.stderr.getvalue()
+        except AttributeError:
+            err_s = ""
 
         time_taken = time.time() - start_time
         result.print_report(stream, time_taken, out_s, err_s)
@@ -211,19 +220,7 @@ class XMLTestRunner(object):
             This property is ignored when the XML file is written to a file
             stream.""")
 
-
-class _fake_std_streams(object):
-
-    def __enter__(self):
-        self._orig_stdout = sys.stdout
-        self._orig_stderr = sys.stderr
-        sys.stdout = StringIO()
-        sys.stderr = StringIO()
-
-    def __exit__(self, exc_type, exc_val, exc_tb):
-        sys.stdout = self._orig_stdout
-        sys.stderr = self._orig_stderr
-
+   
 
 class XMLTestRunnerTest(unittest.TestCase):
 
