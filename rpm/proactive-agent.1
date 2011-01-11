@@ -8,7 +8,7 @@ proactive\-agent \- Start ProActive runtimes according to a schedule
 .sp
 
 proactive\-agent is a daemon allowing to start ProActive runtimes according to a schedule. It is usually started by the init process as a system daemon 
-and ran under the \fIpaagent\fR user. A common use case of the proactive\-agent is to provide computing resources to a ProActive Ressource Manager
+and ran under the \fIpaagent\fR user. A common use case of the proactive\-agent is to provide computing resources to a ProActive Resource Manager
 during idle periods like nights and weekends. 
 
 The agent behavior can be configured by an XML configuration file (\fI/etc/proactive/agent.xml\fR).
@@ -41,7 +41,7 @@ Allowed child elements are:
 
 .TP
 .BI "<proactiveHome>" "/path" "</proactiveHome>"
-REQUIRED. The absolute path to the ProActive Programming or ProActive Ressourcing installation.
+REQUIRED. The absolute path to the ProActive Programming or ProActive Resourcing installation.
 
 .TP
 .BI "<javaHome>" "/path" "</javaHome>"
@@ -110,7 +110,7 @@ Two time slice \fBmust not overlap\fR.
 
 .TP
 .B <start day="Day" hour="hour" minute="minute" second="second"/>
-REQUIRED. When the event start in the week. \fIDay\fR is the name of the day. This first caracter must be capitalized.
+REQUIRED. When the event start in the week. \fIDay\fR is the name of the day. This first character must be capitalized.
 \fIhour\fR is the hour in the day (\fI0-23\fR). \fIminute\fR is the minute in the hour (\fI0-60\fR). \fIsecond\fR is
 the second in the minute (\fI0-59\fR).
 
@@ -194,7 +194,7 @@ The customConnection is dedicated to allow user to provide their own connections
 .TP 
 .BI "<args><arg>" "arg1" "</arg><arg>" "arg2" "</arg>
 
-OPTIONAL. A list of arguements to pass to the starter class. 
+OPTIONAL. A list of arguments to pass to the starter class. 
 
  
 .SH "FILES"
@@ -223,7 +223,7 @@ The default cgroup to be used by the proactive-agent to enforce memory limitatio
 .SH "EXAMPLES"
 Here are a few examples of configuration files.
 
-The first example runs a ProActive runtime all the time (7/7 24/24). It connects to remote ProActive Ressource Manager and try to have no impact on host by running with a low cpu and I/O priority. It will also not use more than one gigabyte of memory
+The first example runs a ProActive runtime all the time (7/7 24/24). It connects to remote ProActive Resource Manager and try to have no impact on host by running with a low cpu and I/O priority. It will also not use more than one gigabyte of memory
 
 .nf
 <?xml version="1.0"?>
@@ -262,7 +262,7 @@ The first example runs a ProActive runtime all the time (7/7 24/24). It connects
 .B Minimum impact on the host machine
 
 To have minimum impact on the host machine to agent must be configured to use the lowest CPU and I/O priorities.
-It is also a good pratice to limit the amount of memory available to the ProActive runtimes. The <config> element 
+It is also a good practice to limit the amount of memory available to the ProActive runtimes. The <config> element 
 should include the following lines:
 .nf
 	<memoryLimit>1000</memoryLimit>
@@ -319,7 +319,7 @@ Report bug on the ProActive bugtracker: http://bugs.activeeon.com.
 .PP 
 Community help at proactive@objectweb.com
 .PP
-Contact Activeeon to get proffessional support.
+Contact Activeeon to get professional support.
 
 .SH "COPYRIGHT"
 Copyright © 2010 Activeeon.  License AGPLv3: GNU Affero GPL version 3 <http://gnu.org/licenses/gpl.html>.
