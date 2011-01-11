@@ -218,7 +218,7 @@ def _check_validity_with_xmllint(file):
     argv.append('xmllint')
     argv.append('--noout')
     argv.append('--schema')
-    argv.append(os.path.join(os.path.abspath(os.path.dirname(__file__)), "../xsd/0.90/agent-linux.xsd"))
+    argv.append(os.path.join(os.path.abspath(os.path.dirname(__file__)), "../xsd/1.0/agent-linux.xsd"))
     argv.append(file)
     p = subprocess.Popen(argv, stdin=subprocess.PIPE, stderr=subprocess.PIPE)
     (stdout, stderr) = p.communicate()
