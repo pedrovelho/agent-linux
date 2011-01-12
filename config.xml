@@ -2,12 +2,12 @@
 <agent
   xmlns="urn:proactive:agent:1.0:linux"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="urn:proactive:agent:1.0:linux http://www.activeeon.com/public_content/schemas/proactive/agent/0.90/agent-linux.xsd">
+  xsi:schemaLocation="urn:proactive:agent:1.0:linux http://www.activeeon.com/public_content/schemas/proactive/agent/1.0/agent-linux.xsd">
   
   <config>
     <proactiveHome>/path/to/proactive/home</proactiveHome>
     <javaHome>/etc/alternatives/jre</javaHome>
-    <memoryLimit>1000</memoryLimit>
+    <!-- <memoryLimit>1000</memoryLimit> -->
     <protocol>pnp</protocol>
     <nice>19</nice>
     <ionice class="idle"/>
