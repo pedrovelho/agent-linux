@@ -89,7 +89,7 @@ OPTIONAL. This option is specific to the Linux proactive-agent. It defines the C
 forked processes. If absent, the forked processes use the same priority than the proactive-agent.
 
 .TP
-.B <ionice class="none" classdata="12"/>
+.B <ionice class="besteffort" classdata="7"/>
 OPTIONAL. This option is specific to the Linux proactive-agent. It defines the I/O priority (ioniceness) of the
 forked processes. . Allowed class are \fInone\fR, \fIidle\fR, \fIrealtime\fR, \fIbesteffort\fR. 
 Only  \fIrealtime\fR, \fIbesteffort\fR take a classdata  attribute. See \fBionice(1)\fR for more information.

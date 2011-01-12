@@ -232,7 +232,7 @@ class EventConfig(object):
         if len(lx) == 1:
             classes = {'none' : 0, 'realtime' : 1, 'besteffort' : 2, 'idle' : 3}
             clazz = classes[lx[0].get("class")]
-            data = lx[0].get("data")
+            data = lx[0].get("classdata")
             self.ionice = {"class" : clazz, "classdata" : data}
             
 
