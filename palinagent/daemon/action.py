@@ -140,26 +140,26 @@ class RessourceManagerConnection(_AbstractConnection):
 
     def getClass(self):
         if self.java_starter_class is None:
-            return "org.ow2.proactive.resourcemanager.utils.PAAgentServiceRMStarter"
+            return "org.ow2.proactive.resourcemanager.utils.RMNodeStarter"
         else:
             return self.java_starter_class
     
     def getArguments(self):
         args = []
 
-        args.append("--rmURL")
+        args.append("-r")
         args.append(self.url)
         
         if self.nodename is not None:
-            args.append("--nodeName")
+            args.append("-n")
             args.append(self.nodename)
             
         if self.node_source_name is not None:
-            args.append("--sourceName")
+            args.append("-s")
             args.append(self.node_source_name)
         
         if self.credential is not None:
-            args.append("--credentialFile")
+            args.append("-f")
             args.append(self.credential)
         
         return args
