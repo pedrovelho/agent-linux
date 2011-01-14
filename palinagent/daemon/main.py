@@ -56,7 +56,7 @@ This is the ProActive Linux agent main entry point
 # The current XML namespace 
 xmlns = "urn:proactive:agent:1.0:linux"
 
-version = "1.0.0"
+version = "1.0.1"
 
 def _parse_config_file(fname):
     '''
