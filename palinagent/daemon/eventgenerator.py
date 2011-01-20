@@ -373,7 +373,7 @@ class JVMStarter(object):
             io_class = self.config.ionice['class']
             ion_cmd  = ["/usr/bin/ionice", "-p %s" % os.getpid() , "-c %s" % io_class]
             if self.config.ionice['classdata'] is not None:
-                ion_cmd.append("-n" % self.config.ionice['classdata'])
+                ion_cmd.append("-n %s" % self.config.ionice['classdata'])
             try:
                 retcode = subprocess.call(ion_cmd)
                 if retcode != 0:
