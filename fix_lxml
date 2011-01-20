@@ -1,0 +1,14 @@
+#! /bin/sh
+
+# This wrapper allows to use an alternative lxml package to workaround
+# a bug in old libxml2 releases.
+#
+# Before using this wrapper libxml2, libxslt and lxml must be recompiled
+# from sources and installed locally. This can be done by running the 
+# script build_lxml
+
+AGENT_DIR=$(readlink -e $(dirname $0))
+
+export LD_LIBRARY_PATH=${AGENT_DIR}
+export PYTHON_PATH=${AGENT_DIR}
+exec "$@"

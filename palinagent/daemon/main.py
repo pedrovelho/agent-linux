@@ -39,6 +39,7 @@ import os
 import logging.handlers
 from errors import *
 import utils
+import re
 
 try:
     from lxml import etree
@@ -58,6 +59,9 @@ xmlns = "urn:proactive:agent:1.0:linux"
 
 version = "1.0.1"
 
+# The default config file location
+defaultConfFile = "/etc/proactive/agent.xml"
+
 def _parse_config_file(fname):
     '''
     Parse the XML configuration file and return its XML tree
@@ -71,13 +75,19 @@ def _parse_config_file(fname):
         tree = etree.parse(schemaFname)
         schema = etree.XMLSchema(tree)
     except (etree.LxmlError), e:
-        raise AgentSetupError("Unable to load XML Schema %s: %s" % (schemaFname, e))
-    
+	mo = re.search("complex type 'ConfMemoryLimitationType': The content type must specify a particle." , str(e))
+	if mo is None:
+            raise AgentSetupError("Unable to load XML Schema %s: %s" % (schemaFname, e))
+        else: 
+            raise AgentSetupError("Unable to load XML Schema %s: %s. Please check you libxml2 and read the documentation", e.message)
     try: 
         parser = etree.XMLParser(schema=schema, no_network=True, compact=True)
         tree = etree.parse(fname, parser)
     except (IOError), e: # File not found or access right
-        raise AgentConfigFileError("Unable to read configuration file: %s" % fname)
+        if fname == defaultConfFile:
+	    raise AgentConfigFileError("Unable to read the default configuration file: %s. An alternative configuration file can be specified as an argument (see -h)" % fname)
+        else:        
+	    raise AgentConfigFileError("Unable to read configuration file: %s" % fname)
     except (etree.XMLSyntaxError), e: # Bad XSD declaration, Invalid or malformed XML
         raise AgentConfigFileError("Unable to parse the user supplied configuration file %s: %s " % (fname, e))
     except (etree.LxmlError), e: # Catch all
@@ -143,7 +153,7 @@ def main_func():
     if len(args) == 1:
         fname = args[0]
     elif len(args) == 0:
-        fname = "/etc/proactive/agent.xml"
+        fname = defaultConfFile
     else:
         parser.print_help()
         return 1 
