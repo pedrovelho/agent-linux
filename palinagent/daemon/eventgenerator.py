@@ -376,9 +376,10 @@ class JVMStarter(object):
                 ion_cmd.append("-n" % self.config.ionice['classdata'])
             try:
                 retcode = subprocess.call(ion_cmd)
-                assert retcode == 0
+                if retcode != 0:
+                    raise OSError("exit code: %s" % retcode)
             except (OSError), e:
-                print >> sys.stderr, "ERROR: ionice call failed: %s" % e
+                print >> sys.stderr, "ERROR: ionice call failed: %s . Cmd= %s" % (e, ion_cmd)
                 os._exit(253) # Don't use sys.exit() here
                 
         # Memory limit
