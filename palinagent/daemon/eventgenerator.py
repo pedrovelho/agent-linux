@@ -325,15 +325,19 @@ class JVMStarter(object):
                     
                     (nb_die, wait_time) = wait_time_gen.next()
                     logger.warning("Process %s exited with status code %s. Failure number %d waiting %s seconds before restarting" % (self.p.pid, self.p.poll(), nb_die, wait_time))
-                    (stdout, stderr) = self.p.communicate()
-                    logger.info("Standard output of %s is: %s" % (self.p.pid, stdout))
-                    logger.info("Standard error of %s is: %s" % (self.p.pid, stderr))
                     self.canceled.wait(wait_time)
-                    
                 
                 try:
                     self.p = subprocess.Popen(self.cmd, bufsize=4096, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE, preexec_fn=self._pinit)
                     logger.info("Forked the process:%s to start command:%s" % (self.p.pid, self.cmd))
+                    
+                    # Monitor std(out|err)
+                    # Threads exit by themself on process termination
+                    out = threading.Thread(target=self.__monitor_output, name="Stdout monitor: %s" % self.cmd, args=["stdout", self.p.stdout, self.p.pid])
+                    err = threading.Thread(target=self.__monitor_output, name="Stdout monitor: %s" % self.cmd, args=["stderr", self.p.stderr, self.p.pid])
+                    out.start()
+                    err.start()
+                    
                 except (OSError), e:
                     (nb_die, wait_time) = wait_time_gen.next()
                     logger.info("Failed to fork the process: %s cause:%s. Failure number %d waiting %s seconds before restarting", self.cmd, e, nb_die, wait_time)
@@ -346,11 +350,17 @@ class JVMStarter(object):
             pgid = os.getpgid(self.p.pid)
             os.killpg(pgid, signal.SIGKILL)
             logger.info("Terminated pid: %s" % self.p.pid)
-            (stdout, stderr) = self.p.communicate()
-            logger.info("Standard output of %s is:\n %s" % (self.p.pid, stdout))
-            logger.info("Standard error  of %s is:\n %s" % (self.p.pid, stderr))
         logger.debug("Thread to execute %s exited" % (self.cmd)) 
 
+    def __monitor_output(self, name, stdout, pid): 
+        while True:
+            r = stdout.readline()
+            if r == '':
+                break
+            logger.info("%s %s : %s" % (name, pid, r.rstrip('\n')))
+            
+        logger.debug("EOF on %s for %s" % (name, pid))
+        
     def cancel(self):
         self.canceled.set()
         
