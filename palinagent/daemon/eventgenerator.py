@@ -48,6 +48,7 @@ import sys
 import errors
 import signal
 import errno
+import re
 
 logger = logging.getLogger("agent.evg")
 
@@ -474,23 +475,65 @@ class StartEvent(SpecificEvent):
         java_path = os.path.join(self.config.javaHome, "bin", "java") 
         cmd.append(java_path)
         
-        # Classpath
+        # Get the classpath
+        # 
+        # The way to get the classpath is hacky and is tightly tied to programming and
+        # scheduling releases. But env scripts behavior must be clarified and homogenized 
+        # 
+        # 1- Ask to scheduling through bin/unix/env
+        # 2- Ask to programming through bin/env.sh
+        # 3- List everything in dist/lib
         def get_class_path():
             pa_path = os.path.join(self.config.proactiveHome, "dist", "lib")
             classpath=None        
-    
-            # Try to check if Java  6 to have a cleaner classpath by using the wildcard
+
+            # Scheduling
             try:
-                p = subprocess.Popen([java_path, "-version"], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-                (stdout, stderr) = p.communicate()
-                import re
-                m = re.search("java version \"(\d\.\d)\..*\"", stderr)
-                if m is not None and m.group(1) == "1.6":
-                    classpath = os.path.join(pa_path, "*")
-            except OSError:
-                pass # failed to execute java -version
-            
-            if classpath is None:            
+                path = os.path.join(self.config.proactiveHome, "bin/unix");
+                cmd = ["/bin/sh", "-c", "workingDir=%s ; . %s/env ; env | grep CLASSPATH" % (path, path)]
+                p = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+                retcode = p.wait() 
+                if retcode == 0:
+                    (out, err) = p.communicate()
+                    mo = re.match("CLASSPATH=(.*)", out)
+                    if mo is not None:
+                        classpath = mo.group(1) # Success
+                        logger.debug("Extracting CLASSPATH from scheduling succeeded")
+                    else:
+                        logger.info("Extracting CLASSPATH from scheduling failed with invalid output: %s" % out)
+                else:
+                    # In scheduling but env failed
+                    (out, err)  = p.communicate()
+                    logger.debug("Extracting CLASSPATH from scheduling failed with exit code: %s out: %s err: %s" % (retcode, out, err))
+            except OSError as e:
+                logger.warn("Extracting CLASSPATH from scheduling failed on: %s" % e)
+                
+            # Programming
+            if classpath is None:
+                try:
+                    path = os.path.join(self.config.proactiveHome, "bin/");
+                    cmd = ["/bin/sh", "-c", "workingDir=%s ; . %s/env.sh ; env | grep CLASSPATH" % (path, path)]
+                    p = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+                    retcode = p.wait() 
+                    if retcode == 0:
+                        (out, err) = p.communicate()
+                        mo = re.match("CLASSPATH=(.*)", out)
+                        if mo is not None:
+                            classpath = mo.group(1) # Success
+                            logger.debug("Extracting CLASSPATH from programming succeeded")
+                        else:
+                            logger.info("Extracting CLASSPATH from programming failed with invalid output: %s" % out)
+                    else:
+                        # In scheduling but env failed
+                        (out, err)  = p.communicate()
+                        logger.debug("Extracting CLASSPATH from programming failed with exit code: %s out: %s err: %s" % (retcode, out, err))
+                except OSError as e:
+                    # Most likely not scheduling
+                    logger.warn("Extracting CLASSPATH from programming failed on: %s" % e)
+                
+            # dist/lib    
+            if classpath is None:
+                logger.debug("Failed to extract CLASSPATH from scheduling or programming, using listdir ")            
                 try: # Not Java 6, build the full classpath by listing the pa_path directory     
                     paths= os.listdir(pa_path)
                     if len(paths) == 0:
