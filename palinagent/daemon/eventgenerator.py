@@ -505,7 +505,7 @@ class StartEvent(SpecificEvent):
                     # In scheduling but env failed
                     (out, err)  = p.communicate()
                     logger.debug("Extracting CLASSPATH from scheduling failed with exit code: %s out: %s err: %s" % (retcode, out, err))
-            except OSError as e:
+            except (OSError), e:
                 logger.warn("Extracting CLASSPATH from scheduling failed on: %s" % e)
                 
             # Programming
@@ -527,7 +527,7 @@ class StartEvent(SpecificEvent):
                         # In scheduling but env failed
                         (out, err)  = p.communicate()
                         logger.debug("Extracting CLASSPATH from programming failed with exit code: %s out: %s err: %s" % (retcode, out, err))
-                except OSError as e:
+                except (OSError), e:
                     # Most likely not scheduling
                     logger.warn("Extracting CLASSPATH from programming failed on: %s" % e)
                 
