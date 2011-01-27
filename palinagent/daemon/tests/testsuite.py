@@ -45,6 +45,7 @@ import palinagent.daemon.tests.testXMLConfig
 import palinagent.daemon.tests.testEventGenerator
 import palinagent.daemon.tests.testUtils
 import palinagent.daemon.tests.testErrors
+from coverage.misc import CoverageException
 
 
 loader = unittest.TestLoader()
@@ -81,7 +82,11 @@ if __name__ == "__main__":
     if options.coverage is not None:
         try :
             import coverage
-            cov = coverage.coverage()
+            try:
+                cov = coverage.coverage()
+            except CoverageException:
+                # Old releases does not allow to invoke the ctor but use a singleton
+                cov = coverage.the_coverage
             cov.erase()
             cov.start()
         except ImportError:
