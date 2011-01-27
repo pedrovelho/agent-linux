@@ -64,7 +64,7 @@ if __name__ == "__main__":
     
     parser = optparse.OptionParser()
     parser.add_option("-o", "--output",  action="store", dest="output", default="text",   help="Format of the output", )
-    parser.add_option("-c", "--coverage",action="store", dest="coverage", default="None", help="Enable code coverage", )
+    parser.add_option("-c", "--coverage",action="store", dest="coverage", default=None, help="Enable code coverage", )
    
     (options, args) = parser.parse_args();
     
@@ -99,5 +99,7 @@ if __name__ == "__main__":
         elif options.coverage == "xml":
             cov.xml_report(outfile='coverage.xml')
         else:
-            sys.exit(1)
             print >> sys.stderr, "Unsupported coverage output format"
+            sys.exit(1)
+
+    sys.exit(0)
