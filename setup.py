@@ -83,6 +83,8 @@ setup(
           ],
         },
         
-      test_suite = "palinagent.daemon.tests.testsuite.get_testsuite"
+      test_suite = "palinagent.daemon.tests.testsuite.get_testsuite",
+      scripts = ["build_lxml", "fix_lxml"],
+      data_files = ["AUTHORS.txt", "LICENSE.txt", "README.txt"]
       )
 
