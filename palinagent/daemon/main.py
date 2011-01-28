@@ -57,7 +57,7 @@ This is the ProActive Linux agent main entry point
 # The current XML namespace 
 xmlns = "urn:proactive:agent:1.0:linux"
 
-version = "1.0.0-dev"
+version = "1.1.0-dev"
 
 # The default config file location
 defaultConfFile = "/etc/proactive/agent.xml"
