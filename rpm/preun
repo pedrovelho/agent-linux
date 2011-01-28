@@ -1,4 +1,0 @@
-if [ $1 -eq 0 ]; then
-        %{_initrddir}/proactive-agent stop &>/dev/null || : 
-        /sbin/chkconfig --del proactive-agent  || :
-fi

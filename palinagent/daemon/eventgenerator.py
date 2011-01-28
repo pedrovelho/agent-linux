@@ -204,7 +204,7 @@ class EventConfig(object):
             self.memoryLimit = int(lx[0].text) * self.nbRuntimes
             self.cgroup_mnt_point = lx[0].get("cgroup_mount_point")
             if self.cgroup_mnt_point is None:
-                self.cgroup_mnt_point = "/var/lib/proactive-agent/cgroups"
+                self.cgroup_mnt_point = "/var/lib/proactive/agent/cgroups"
         
 
 
