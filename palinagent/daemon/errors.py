@@ -50,18 +50,24 @@ class AgentInternalError(AgentError):
     A such exception is raised when the agent is in an unexpected or bad state. If a
     such exception is encountered it means that you do a bug report ;)
     '''
-    
+    def __init(self):
+        self.message = message
+
     def __str__(self):
-        return "%s (This is an internal error, please fill a bug report)" % self.args
+        return "%s (This is an internal error, please fill a bug report)" % self.message
     
         
 class AgentSetupError(AgentError):
+    def __init__(self, message):
+        self.message = message
 
     def __str__(self):
-        return "%s (please check your installation)" % self.args
+        return "%s (please check your installation)" % self.message
     
 
 class AgentConfigFileError(AgentError):
-    
+    def __init__(self, message):
+        self.message = message
+
     def __str__(self):
-        return  "Invalid configuration file: %s" % self.args
+        return  "Invalid configuration file: %s" % self.message
