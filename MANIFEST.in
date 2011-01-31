@@ -10,6 +10,8 @@ include fix_lxml
 include build_lxml
 include proactive-agent
 
+include config.xml
+
 include redhat/proactive-agent.sysconfig
 include redhat/proactive-agent.init
 include redhat/agent.xml
