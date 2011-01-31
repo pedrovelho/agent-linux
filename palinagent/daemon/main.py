@@ -77,9 +77,9 @@ def _parse_config_file(fname):
     except (etree.LxmlError), e:
 	mo = re.search("complex type 'ConfMemoryLimitationType': The content type must specify a particle." , str(e))
 	if mo is None:
-            raise AgentSetupError("Unable to load XML Schema %s: %s" % (schemaFname, e))
+            raise AgentSetupError("Unable to load XML Schema %s: %s" % (schemaFname, str(e)))
         else: 
-            raise AgentSetupError("Unable to load XML Schema %s: %s. Please check you libxml2 and read the documentation", e.message)
+            raise AgentSetupError("Unable to load XML Schema %s. Please check you libxml2 and read the documentation" % str(e))
     try: 
         parser = etree.XMLParser(schema=schema, no_network=True, compact=True)
         tree = etree.parse(fname, parser)
