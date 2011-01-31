@@ -33,26 +33,29 @@ D_AGENT=$(readlink -e $(dirname $0))
 D_TMP=$(mktemp -d)
 
 VER_LIBXML2=libxml2-2.7.8
-URL_LIBXML2_FTP=ftp://xmlsoft.org/libxml2/${VER_LIBXML2}.tar.gz
-URL_LIBXML2_HTTP=http://fr.rpmfind.net/pub/libxml/${VER_LIBXML2}.tar.gz
+URL_LIBXML2_HTTP1=http://forge.activeeon.com/data/lxml/${VER_LIBXML2}.tar.gz
+URL_LIBXML2_HTTP2=ftp://xmlsoft.org/libxml2/${VER_LIBXML2}.tar.gz
 
 VER_LIBXSLT=libxslt-1.1.26
-URL_LIBXSLT_FTP=ftp://xmlsoft.org/libxml2/${VER_LIBXSLT}.tar.gz
-URL_LIBXSLT_HTTP=http://fr.rpmfind.net/pub/libxml/${VER_LIBXSLT}.tar.gz
+URL_LIBXSLT_HTTP1=http://forge.activeeon.com/data/lxml/${VER_LIBXSLT}.tar.gz
+URL_LIBXSLT_HTTP2=ftp://xmlsoft.org/libxml2/${VER_LIBXSLT}.tar.gz
 
 VER_LXML=lxml-2.2.8
-URL_LXML=http://codespeak.net/lxml/${VER_LXML}.tgz
+URL_LXML1=http://forge.activeeon.com/data/lxml/${VER_LXML}.tgz
+URL_LXML2=http://codespeak.net/lxml/${VER_LXML}.tgz
 
 cd ${D_TMP}
 
-wget ${URL_LIBXML2_FTP} || wget ${URL_LIBXML2_HTTP} || fail "Failed to download ${URL_LIBXML2_FTP} ${URL_LIBXML2_HTTP}"
-wget ${URL_LIBXSLT_FTP} || wget ${URL_LIBXSLT_HTTP} || fail "Failed to download ${URL_LIBXSLT_FTP} ${URL_LIBXSLT_HTTP}"
-wget ${URL_LXML} || fail "Faild to download ${URL_LXML}"
+wget ${URL_LIBXML2_HTTP1} || wget ${URL_LIBXML2_HTTP2} || fail "Failed to download  ${URL_LIBXML2_HTTP1} ${URL_LIBXML2_HTTP2}"
+wget ${URL_LIBXSLT_HTTP1} || wget ${URL_LIBXSLT_HTTP1} || fail "Failed to download  ${URL_LIBXSLT_HTTP1} ${URL_LIBXSLT_HTTP2}"
+wget ${URL_LXML1} || wget ${URL_LXML2} || fail "Faild to download ${URL_LXML1} ${URL_LXML2}"
 
 mkdir ${D_TMP}/libxml2
 tar xvfz ${VER_LIBXML2}.tar.gz
 cd ${D_TMP}/${VER_LIBXML2} 
 ./configure --prefix=${D_TMP}/libxml2 || fail "Failed to configure ${VER_LIBXML2}"
+sed -i 's|^hardcode_libdir_flag_spec=.*|hardcode_libdir_flag_spec=""|g' libtool
+sed -i 's|^runpath_var=LD_RUN_PATH|runpath_var=DIE_RPATH_DIE|g' libtool
 make || fail "Failed to build ${VER_LIBXML2}"
 make install || fail "Failed to install ${VER_LIBXML2}"
 
@@ -61,6 +64,8 @@ cd ${D_TMP}
 tar xvfz ${VER_LIBXSLT}.tar.gz
 cd ${D_TMP}/${VER_LIBXSLT}
 ./configure --prefix=${D_TMP}/libxslt --with-libxml-prefix=${D_TMP}/libxml2 || fail "Failed to configure ${VER_LIBXSLT}"
+sed -i 's|^hardcode_libdir_flag_spec=.*|hardcode_libdir_flag_spec=""|g' libtool
+sed -i 's|^runpath_var=LD_RUN_PATH|runpath_var=DIE_RPATH_DIE|g' libtool
 make || fail "Failed to build ${VER_LIBXSLT}"
 make install || fail "Failed to install ${VER_LIBXSLT}"
 
