@@ -7,10 +7,20 @@
   <config>
     <proactiveHome>/path/to/proactive/home</proactiveHome>
     <javaHome>/etc/alternatives/jre</javaHome>
-    <!-- <memoryLimit>1000</memoryLimit> -->
     <protocol>pnp</protocol>
+    
+    <!-- cgroup must be available and configured to set memoryLimit
+
+    	<memoryLimit>1000</memoryLimit>
+    -->
+
     <nice>19</nice>
-    <ionice class="idle"/>
+
+    <!-- idle class required linux kernel >= 2.6.25 
+        
+        <ionice class="idle"/>
+    -->
+
   </config>
 
   <events>

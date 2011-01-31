@@ -5,3 +5,5 @@ include rpm/proactive-agent.init
 include rpm/agent.xml
 include rpm/proactive-agent.1
 include proactive-agent
+
+include config.xml
