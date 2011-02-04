@@ -395,6 +395,7 @@ class JVMStarter(object):
                 
         # Memory limit
         if self.config.memoryLimit > 0:
+            file = None
             try:
                 group = "proactive-agent"
                 p = os.path.join(self.cgroup_mnt_point, group)
