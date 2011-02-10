@@ -7,10 +7,21 @@
   <config>
     <proactiveHome>/path/to/proactive/home</proactiveHome>
     <javaHome>/etc/alternatives/jre</javaHome>
-    <memoryLimit>1000</memoryLimit>
+
+    <!-- 
+         If cgroups are available. The following tag can be used to restrict
+         the amount of memory available for the proactive-agent and its child processes
+    -->
+    <!--     <memoryLimit>1000</memoryLimit> -->
+
     <protocol>pnp</protocol>
     <nice>19</nice>
-    <ionice class="idle"/>
+
+    <!--
+         Since Linux kernel 2.6.25 the IO class idle is available.
+         It can be used for better IO isolation
+    -->
+    <ionice class="besteffort" classdata="7"/>
   </config>
 
   <events>
