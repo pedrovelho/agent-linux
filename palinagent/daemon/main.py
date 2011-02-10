@@ -37,9 +37,12 @@ import optparse
 import sys
 import os
 import logging.handlers
-from errors import *
 import utils
 import re
+import traceback
+import atexit
+
+from errors import *
 
 try:
     from lxml import etree
@@ -130,6 +133,69 @@ def _log_debug_info(logger):
     logger.debug("agent path: %s" % (os.path.dirname(os.path.abspath(__file__))))
     logger.debug("#core: %s" % utils.get_number_of_cpus())
 
+def daemonize(pidfile=None, stdin='/dev/null', stdout='/dev/null', stderr='/dev/null'):
+    """
+    the UNIX double-fork magic, see Stevens' "Advanced
+    in the UNIX Environment" for details (ISBN 0201563177)
+    http://www.erlenstar.demon.co.uk/unix/faq_2.html#SEC16
+    """
+    
+    try:
+        pid = os.fork()
+        if pid > 0:
+            # exit first parent
+            sys.exit(0)
+    except OSError, e:
+            sys.stderr.write("fork #1 failed: %d (%s)\n" % (e.errno, e.strerror))
+            sys.exit(1)
+
+    # decouple from parent environment
+    os.chdir("/")
+    os.setsid()
+    os.umask(0)
+
+    # do second fork
+    try:
+        pid = os.fork()
+        if pid > 0:
+            # exit from second parent
+            sys.exit(0)
+    except OSError, e:
+            sys.stderr.write("fork #2 failed: %d (%s)\n" % (e.errno, e.strerror))
+            sys.exit(1)
+
+    # redirect standard file descriptors
+    sys.stdout.flush()
+    sys.stderr.flush()
+    si = file(stdin, 'r')
+    so = file(stdout, 'a+')
+    se = file(stderr, 'a+', 0)
+    os.dup2(si.fileno(), sys.stdin.fileno())
+    os.dup2(so.fileno(), sys.stdout.fileno())
+    os.dup2(se.fileno(), sys.stderr.fileno())
+
+    # write pidfile
+    if pidfile is not None:
+        atexit.register(os.remove, pidfile)
+        pid = str(os.getpid())
+        file(pidfile, 'w+').write("%s\n" % pid)
+
+def handle_exception(logger, exc_type, exc_value, exc_traceback):
+  """ handle all exceptions """
+
+  ## KeyboardInterrupt is a special case.
+  ## We don't raise the error dialog when it occurs.
+  if issubclass(exc_type, KeyboardInterrupt):
+      return 
+  logger.error("Unhandled exception occured:\n %s ", "".join(traceback.format_exception(exc_type, exc_value, exc_traceback)))  
+
+#  filename, line, dummy, dummy = traceback.extract_tb( exc_traceback ).pop()
+#  filename = os.path.basename( filename )
+#  error    = "%s: %s" % ( exc_type.__name__, exc_value )
+#  print "".join(traceback.format_exception(exc_type, exc_value, exc_traceback))
+#  sys.exit(1)
+
+
 def main_func():
     '''
     Linux agent entry point
@@ -143,7 +209,8 @@ def main_func():
     #parser.add_option("-l", "--logConf",     action="store",      dest="log",     type="string", help="The logging configuration file to use")
     parser.add_option("-L", "--logFile", action="store",      dest="logFile", type="string", help="Path of the log file")
     parser.add_option("-V", "--version", action="store_true", dest="version", default=False, help="Print version information")
-
+    parser.add_option("-D", "--daemon",  action="store_true", dest="daemon",  default=False, help="Daemonize the agent")
+    parser.add_option("-p", "--pidfile", action="store",      dest="pidfile", type="string", help="Pidfile for the daemon (requires --daemon)")
     (options, args) = parser.parse_args();
 
     if options.version is True:
@@ -202,8 +269,8 @@ def main_func():
     # Start the agent main loop
     import controller
     ctrl = controller.Controller(evg)
+   
     import signal
-    
     def sigfunc(ctrl):
         def call_ctrl(signum, frame):
             logger.info("Received signal: %s. Exiting !" % signum)
@@ -211,11 +278,20 @@ def main_func():
         return call_ctrl
     
     func = sigfunc(ctrl)    
-    
     for sig in [signal.SIGINT, signal.SIGQUIT, signal.SIGHUP,  signal.SIGTERM, signal.SIGILL, signal.SIGABRT, signal.SIGPIPE, signal.SIGALRM]:
         signal.signal(sig, func)
+
+    # Replace the default hook to log all unhandled exceptions then exit
+    sys.excepthook = lambda type, value, traceback: handle_exception(logger, type, value, traceback)
+    
+    if options.daemon is True:
+        logger.info("Switching to daemon mode")
+        daemonize(pidfile=options.pidfile)
+    
     ctrl.start()
     return 0
+
+
     
 if __name__ == '__main__':
     sys.exit(main_func())
