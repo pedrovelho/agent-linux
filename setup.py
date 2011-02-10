@@ -75,7 +75,7 @@ setup(
       include_package_data=True,
 
       namespace_packages=["palinagent"],
-      packages=find_packages(),
+      packages=find_packages(exclude=["lxml.*", "lxml"]),
 
       entry_points= {
         'console_scripts': [
