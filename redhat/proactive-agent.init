@@ -31,12 +31,12 @@
 
 # default values
 PROG="/usr/bin/proactive-agent"
-LOGFILE="/var/log/proactive-agent/agent.log"
+LOGFILE="/var/log/proactive/agent/agent.log"
 AGENTOPTS="-d"
-AGENTUSER="paagent"
-AGENTGROUP="paagent"
-CONFFILE="/etc/proactive/agent.xml"
-AGENTHOME="/var/lib/proactive-agent"
+AGENTUSER="proactive"
+AGENTGROUP="proactive"
+CONFFILE="/etc/proactive/agent/agent.xml"
+AGENTHOME="/var/lib/proactive/agent"
 
 # source the config
 . /etc/sysconfig/proactive-agent

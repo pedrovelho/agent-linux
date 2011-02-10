@@ -84,7 +84,7 @@ setup(
         },
         
       test_suite = "palinagent.daemon.tests.testsuite.get_testsuite",
-      scripts = ["build_lxml", "fix_lxml"],
-      data_files = ["AUTHORS.txt", "LICENSE.txt", "README.txt"]
+      data_files = [('share/man/man1', ['redhat/proactive-agent.1'])]
+      
       )
 
