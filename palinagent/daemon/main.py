@@ -63,7 +63,7 @@ xmlns = "urn:proactive:agent:1.0:linux"
 version = "1.1.0-dev"
 
 # The default config file location
-defaultConfFile = "/etc/proactive/agent.xml"
+defaultConfFile = "/etc/proactive/agent/agent.xml"
 
 def _parse_config_file(fname):
     '''
