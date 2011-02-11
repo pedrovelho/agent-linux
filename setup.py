@@ -84,7 +84,7 @@ setup(
         },
         
       test_suite = "palinagent.daemon.tests.testsuite.get_testsuite",
-      data_files = [('share/man/man1', ['redhat/proactive-agent.1'])]
+      data_files = [('share/man/man1', ['proactive-agent.1'])]
       
       )
 
