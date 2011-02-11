@@ -1,3 +1,5 @@
+prune   doc/
+
 graft   palinagent/daemon/xsd/
 graft   palinagent/daemon/data/
 
