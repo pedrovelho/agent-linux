@@ -55,7 +55,7 @@ class Controller(object):
         while not self.must_stop.isSet():
             try:
                 self.old_event = self.cur_event
-                self.cur_event = self.evg.next()
+                self.cur_event = next(self.evg)
                                 
                 if self.old_event is not None:
                     self.old_event.cancel()

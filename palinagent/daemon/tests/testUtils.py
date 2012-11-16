@@ -56,8 +56,8 @@ class TestNumberOfCPU(unittest.TestCase):
                     
             self.assertEqual(n, count - 1)
                     
-        except (OSError), e:
-            print "Test disabled.lscpu not available: %s" % e
+        except (OSError) as e:
+            print("Test disabled.lscpu not available: %s" % e)
             
 if __name__ == "__main__":
     unittest.main()

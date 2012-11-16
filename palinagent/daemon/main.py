@@ -37,17 +37,17 @@ import optparse
 import sys
 import os
 import logging.handlers
-import utils
+from . import utils
 import re
 import traceback
 import atexit
 
-from errors import *
+from .errors import *
 
 try:
     from lxml import etree
-except (ImportError), e:
-    print >> sys.stderr, AgentSetupError("lxml not available: %s" % e)
+except (ImportError) as e:
+    print(AgentSetupError("lxml not available: %s" % e), file=sys.stderr)
     sys.exit(7)
 
 '''
@@ -60,7 +60,7 @@ This is the ProActive Linux agent main entry point
 # The current XML namespace 
 xmlns = "urn:proactive:agent:1.0:linux"
 
-version = "1.1.0-dev"
+version = "1.0.2"
 
 # The default config file location
 defaultConfFile = "/etc/proactive/agent/agent.xml"
@@ -82,23 +82,23 @@ def _parse_config_file(fname):
 
         tree = etree.parse(schemaFname)
         schema = etree.XMLSchema(tree)
-    except (etree.LxmlError), e:
-	mo = re.search("complex type 'ConfMemoryLimitationType': The content type must specify a particle." , str(e))
-	if mo is None:
+    except (etree.LxmlError) as e:
+        mo = re.search("complex type 'ConfMemoryLimitationType': The content type must specify a particle." , str(e))
+        if mo is None:
             raise AgentSetupError("Unable to load XML Schema %s: %s" % (schemaFname, str(e)))
         else: 
             raise AgentSetupError("Unable to load XML Schema %s. Please check you libxml2 and read the documentation" % str(e))
     try: 
         parser = etree.XMLParser(schema=schema, no_network=True, compact=True)
         tree = etree.parse(fname, parser)
-    except (IOError), e: # File not found or access right
+    except (IOError) as e: # File not found or access right
         if fname == defaultConfFile:
-	    raise AgentConfigFileError("Unable to read the default configuration file: %s. An alternative configuration file can be specified as an argument (see -h)" % fname)
-        else:        
-	    raise AgentConfigFileError("Unable to read configuration file: %s" % fname)
-    except (etree.XMLSyntaxError), e: # Bad XSD declaration, Invalid or malformed XML
+            raise AgentConfigFileError("Unable to read the default configuration file: %s. An alternative configuration file can be specified as an argument (see -h)" % fname)
+        else:         
+            raise AgentConfigFileError("Unable to read configuration file: %s" % fname)
+    except (etree.XMLSyntaxError) as e: # Bad XSD declaration, Invalid or malformed XML
         raise AgentConfigFileError("Unable to parse the user supplied configuration file %s: %s " % (fname, e))
-    except (etree.LxmlError), e: # Catch all
+    except (etree.LxmlError) as e: # Catch all
         raise AgentConfigFileError("Unable to parse the user supplied configuration file %s: %s " % (fname, e))
     
     return tree
@@ -150,7 +150,7 @@ def daemonize(pidfile=None, stdin='/dev/null', stdout='/dev/null', stderr='/dev/
         if pid > 0:
             # exit first parent
             sys.exit(0)
-    except OSError, e:
+    except OSError as e:
             sys.stderr.write("fork #1 failed: %d (%s)\n" % (e.errno, e.strerror))
             sys.exit(1)
 
@@ -165,16 +165,16 @@ def daemonize(pidfile=None, stdin='/dev/null', stdout='/dev/null', stderr='/dev/
         if pid > 0:
             # exit from second parent
             sys.exit(0)
-    except OSError, e:
+    except OSError as e:
             sys.stderr.write("fork #2 failed: %d (%s)\n" % (e.errno, e.strerror))
             sys.exit(1)
 
     # redirect standard file descriptors
     sys.stdout.flush()
     sys.stderr.flush()
-    si = file(stdin, 'r')
-    so = file(stdout, 'a+')
-    se = file(stderr, 'a+', 0)
+    si = open(stdin, 'r')
+    so = open(stdout, 'a+')
+    se = open(stderr, 'a+')
     os.dup2(si.fileno(), sys.stdin.fileno())
     os.dup2(so.fileno(), sys.stdout.fileno())
     os.dup2(se.fileno(), sys.stderr.fileno())
@@ -219,7 +219,7 @@ def main_func():
     (options, args) = parser.parse_args();
 
     if options.version is True:
-        print version
+        print(version)
         return 0
 
     if len(args) == 1:
@@ -240,39 +240,39 @@ def main_func():
         logger.debug("Agent is in debug mode !")
         if options.debug is True:
             _log_debug_info(logger)
-    except (Exception), e:
-        print >> sys.stderr, "Failed to configure the logging module: %s" % e
+    except (Exception) as e:
+        print("Failed to configure the logging module: %s" % e, file=sys.stderr)
         return 3
     
     
     def print_log_exit(error):
         logger.critical(error)
         if not options.verbose:
-            print >> sys.stderr, error
+            print(error, file=sys.stderr)
         sys.exit(5)
     
     try:
         tree = _parse_config_file(fname)
-    except (AgentError), e:
+    except (AgentError) as e:
         print_log_exit(e)
         
     # Parse connections
     try:
-        import action
+        from . import action
         act = action.parse(tree)
-    except (AgentError), e:
+    except (AgentError) as e:
         print_log_exit(e)
 
     # Parse the calendar
     try:
-        import eventgenerator
+        from . import eventgenerator
         evg =  eventgenerator.parse(tree, act)
-    except AgentError, e:
+    except AgentError as e:
         print_log_exit(e)
 
 
     # Start the agent main loop
-    import controller
+    from . import controller
     ctrl = controller.Controller(evg)
    
     import signal

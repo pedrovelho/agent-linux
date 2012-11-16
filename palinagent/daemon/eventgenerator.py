@@ -37,15 +37,15 @@
 #################################################################
 
 import time
-import main
+from . import main
 import os
 import subprocess
 import threading 
-import utils
+from . import utils
 import logging
 from IN import AF_INET
 import sys
-import errors
+from . import errors
 import signal
 import errno
 import re
@@ -318,13 +318,13 @@ class JVMStarter(object):
                     try:
                         pgid = os.getpgid(self.p.pid)
                         os.killpg(pgid, signal.SIGKILL)
-                    except (OSError), e:
+                    except (OSError) as e:
                         if e.errno == errno.ESRCH:
                             pass # Ok, no process to be killed
                         else:
                             logger.warning("Killing processes belonging to process group %s (pid:%s) failed: %s" % (pgid, self.p.pid, e))
                     
-                    (nb_die, wait_time) = wait_time_gen.next()
+                    (nb_die, wait_time) = next(wait_time_gen)
                     logger.warning("Process %s exited with status code %s. Failure number %d waiting %s seconds before restarting" % (self.p.pid, self.p.poll(), nb_die, wait_time))
                     self.canceled.wait(wait_time)
                 
@@ -339,8 +339,8 @@ class JVMStarter(object):
                     out.start()
                     err.start()
                     
-                except (OSError), e:
-                    (nb_die, wait_time) = wait_time_gen.next()
+                except (OSError) as e:
+                    (nb_die, wait_time) = next(wait_time_gen)
                     logger.info("Failed to fork the process: %s cause:%s. Failure number %d waiting %s seconds before restarting", self.cmd, e, nb_die, wait_time)
                     self.canceled.wait(wait_time)
 
@@ -375,8 +375,8 @@ class JVMStarter(object):
         if self.config.nice != 0:
             try:
                 os.nice(self.config.nice) # Can throw an OSError   
-            except (OSError), e:
-                print >> sys.stderr, "ERROR: nice call failed"
+            except (OSError) as e:
+                print("ERROR: nice call failed", file=sys.stderr)
                 os._exit(253) # Don't use sys.exit() here
                 
         # IONice
@@ -389,8 +389,8 @@ class JVMStarter(object):
                 retcode = subprocess.call(ion_cmd)
                 if retcode != 0:
                     raise OSError("exit code: %s" % retcode)
-            except (OSError), e:
-                print >> sys.stderr, "ERROR: ionice call failed: %s . Cmd= %s" % (e, ion_cmd)
+            except (OSError) as e:
+                print("ERROR: ionice call failed: %s . Cmd= %s" % (e, ion_cmd), file=sys.stderr)
                 os._exit(253) # Don't use sys.exit() here
                 
         # Memory limit
@@ -401,29 +401,29 @@ class JVMStarter(object):
                 p = os.path.join(self.cgroup_mnt_point, group)
                 m = os.path.join(p, "memory.limit_in_bytes")
                 file = open(m, "w")
-                file.write(unicode(self.config.memoryLimit*1024*1024))
+                file.write(str(self.config.memoryLimit*1024*1024))
                 file.close()
                         
                 m = os.path.join(p, "memory.swappiness")
                 file = open(m, "w")
-                file.write(unicode(0))
+                file.write(str(0))
                 file.close()
                     
                 m = os.path.join(p, "memory.memsw.limit_in_bytes")
                 file = open(m, "w")
-                file.write(unicode(self.config.memoryLimit*1024*1024))
+                file.write(str(self.config.memoryLimit*1024*1024))
                 file.close()
                     
                 m = os.path.join(p, "tasks")
                 file = open(m, "a")
-                file.write(unicode("%d" % os.getpid()))
+                file.write(str("%d" % os.getpid()))
                 file.close()
                     
-            except (IOError), e:
+            except (IOError) as e:
                 if file is not None:
                     file.close()
                 # TODO: Better diagnostic / error handling
-                print >> sys.stderr, "ERROR: Failed to configure cgroup to limit the available memory: %s", e
+                print("ERROR: Failed to configure cgroup to limit the available memory: %s", e, file=sys.stderr)
                 os._exit(253) # Don't use sys.exit() here
 
         
@@ -436,7 +436,7 @@ class StartEvent(SpecificEvent):
     def schedule(self):
         (ports) = self._chose_tcp_ports()
 
-        for i in xrange(self.config.nbRuntimes):
+        for i in range(self.config.nbRuntimes):
             cmd = self._build_java_cmd(i, ports[i], i)
             
             starter = JVMStarter(self.config, cmd, self.epoch_date, self.action.respawn_increment, i, self.config.cgroup_mnt_point)
@@ -506,7 +506,7 @@ class StartEvent(SpecificEvent):
                     # In scheduling but env failed
                     (out, err)  = p.communicate()
                     logger.debug("Extracting CLASSPATH from scheduling failed with exit code: %s out: %s err: %s" % (retcode, out, err))
-            except (OSError), e:
+            except (OSError) as e:
                 logger.warn("Extracting CLASSPATH from scheduling failed on: %s" % e)
                 
             # Programming
@@ -528,7 +528,7 @@ class StartEvent(SpecificEvent):
                         # In scheduling but env failed
                         (out, err)  = p.communicate()
                         logger.debug("Extracting CLASSPATH from programming failed with exit code: %s out: %s err: %s" % (retcode, out, err))
-                except (OSError), e:
+                except (OSError) as e:
                     # Most likely not scheduling
                     logger.warn("Extracting CLASSPATH from programming failed on: %s" % e)
                 
@@ -544,10 +544,10 @@ class StartEvent(SpecificEvent):
                         classpath = os.path.join(pa_path, paths[0])
                     else:
                         classpath = ""
-                        for index in xrange(len(paths) - 1):
+                        for index in range(len(paths) - 1):
                             classpath += os.path.join(pa_path, paths[index]) + ":"
                         classpath += os.path.join(pa_path, paths[-1])
-                except (OSError), e:
+                except (OSError) as e:
                     logger.warning("Unable to build the classpath. cause: %s" % e)
                     classpath="emptyclasspath"
                 
@@ -568,7 +568,7 @@ class StartEvent(SpecificEvent):
         elif self.config.protocol == "pnp":
             cmd.append("-Dproactive.pnp.port=%d" % tcp_port)
         else:
-            print "TCP port is not supported for protocol: %s" % self.config.protocol
+            print("TCP port is not supported for protocol: %s" % self.config.protocol)
 
         cmd.append("-Djava.security.manager")
 
@@ -584,7 +584,7 @@ class StartEvent(SpecificEvent):
             cmd.append(param.replace('${rank}', "%d" % rank))
 
         cmd.append(self.action.getClass())
-        map(cmd.append, self.action.getArguments())
+        list(map(cmd.append, self.action.getArguments()))
         return cmd
 
     
@@ -721,16 +721,16 @@ class CalendarEventGenerator(object):
     def getActions(self):
         g = self.__getActions() 
 
-        (nEvent, nIndex) = g.next()
+        (nEvent, nIndex) = next(g)
         while True:
             (cEvent, cIndex) = (nEvent, nIndex)
-            (nEvent, nIndex) = g.next()
+            (nEvent, nIndex) = next(g)
             
             if nEvent.epoch_date == cEvent.epoch_date and cEvent.type == "STOP" and nEvent.type == "START": 
                 # Converts current and next action into a restart
                 yield (RestartEvent(nEvent, nEvent.epoch_date))
                 (cEvent, cIndex) = (nEvent, nIndex)
-                (nEvent, nIndex) = g.next()
+                (nEvent, nIndex) = next(g)
             else:
                 yield (cEvent)
             

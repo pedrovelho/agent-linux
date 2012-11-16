@@ -40,7 +40,7 @@ import tempfile
 import random
 import sys
 
-import helpers
+from . import helpers
 import palinagent.daemon.main
 import palinagent.daemon.action
 from palinagent.daemon.errors import AgentConfigFileError
@@ -192,8 +192,8 @@ class TestHelpersXMLFile(unittest.TestCase):
         try:
             if self.file is not None:
                 os.remove(self.file)
-        except (OSError), e:
-            print e
+        except (OSError) as e:
+            print(e)
         
         
     
@@ -222,8 +222,8 @@ def _check_validity_with_xmllint(file):
     argv.append(file)
     p = subprocess.Popen(argv, stdin=subprocess.PIPE, stderr=subprocess.PIPE)
     (stdout, stderr) = p.communicate()
-    print stdout
-    print >> sys.stderr, stderr
+    print(stdout)
+    print(stderr, file=sys.stderr)
     if p.returncode != 0:
         raise Exception("XML file %s is not valid" % file)
 

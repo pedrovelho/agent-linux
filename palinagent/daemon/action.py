@@ -38,8 +38,8 @@
 
 import random
 import logging
-import main
-import errors
+from . import main
+from . import errors
 
 ''' 
 This module is responsible for parsing the events from the agent configuration file
@@ -213,7 +213,7 @@ class LocalBindConnection(_AbstractConnection):
         
     def getArguments(self):
         if self.nodename == None:
-            return [_nodename.next()]
+            return [next(_nodename)]
         else:
             return [self.nodename]
 
