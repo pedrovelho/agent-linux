@@ -74,7 +74,12 @@ def _parse_config_file(fname):
     #
     # TODO: Handle user error (wrong schema, invalid XML etc.) as nicely as possible
     try:        
-        schemaFname = os.path.join(os.path.dirname(__file__), "xsd/1.0/agent-linux.xsd")          
+        # If frozen (ie in standalone mode)
+        if getattr(sys, 'frozen', False):
+            schemaFname = os.path.join(os.path.dirname(sys.executable), "xsd/1.0/agent-linux.xsd")
+        elif __file__:   
+            schemaFname = os.path.join(os.path.dirname(__file__), "xsd/1.0/agent-linux.xsd")
+        
         tree = etree.parse(schemaFname)
         schema = etree.XMLSchema(tree)
     except (etree.LxmlError) as e:
