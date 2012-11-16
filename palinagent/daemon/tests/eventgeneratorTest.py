@@ -100,20 +100,20 @@ class TestEvent(unittest.TestCase):
 class TestSpecificEvent(unittest.TestCase):
     
     def test_epoch_date(self):
-        print int(time.time())
-        print time.asctime(time.localtime(time.time()))
+        print(int(time.time()))
+        print(time.asctime(time.localtime(time.time())))
                                           
         event = Event(0, 10, None, None)
         start_event = StartEvent(event, 0)
-        print time.asctime(time.localtime(start_event.epoch_date))
+        print(time.asctime(time.localtime(start_event.epoch_date)))
         stop_event = StopEvent(event, 0)
-        print time.asctime(time.localtime(stop_event.epoch_date))
+        print(time.asctime(time.localtime(stop_event.epoch_date)))
         
         event = Event(_ONE_WEEK_IN_SECS - 20, 10, None, None)
         start_event = StartEvent(event, 0)
-        print time.asctime(time.localtime(start_event.epoch_date))
+        print(time.asctime(time.localtime(start_event.epoch_date)))
         stop_event = StopEvent(event, 0)
-        print time.asctime(time.localtime(stop_event.epoch_date))
+        print(time.asctime(time.localtime(stop_event.epoch_date)))
         
         
         
@@ -180,7 +180,7 @@ class TestCalendarEventGenerator(unittest.TestCase):
         # No event
         evg = CalendarEventGenerator(action)
         g  = evg.getActions()
-        self.assertRaises(AgentInternalError, g.next)
+        self.assertRaises(AgentInternalError, g.__next__)
 
         # One and only one event starting by start
         bias = eventgenerator._seconds_elespased_since_start_of_week()
@@ -188,11 +188,11 @@ class TestCalendarEventGenerator(unittest.TestCase):
         evg.events = [Event(0+bias, 100, None, None)]
         g = evg.getActions()
         for i in range(1000):
-            (event) = g.next()
+            (event) = next(g)
             assert almostEquals(i * eventgenerator._ONE_WEEK_IN_SECS, event.seconds_remaining())
             self.assertEqual(event.type, "START")
         
-            (event) = g.next()
+            (event) = next(g)
             assert almostEquals((i * eventgenerator._ONE_WEEK_IN_SECS) + 100,  event.seconds_remaining())
             self.assertEqual(event.type, "STOP")
             
@@ -202,16 +202,16 @@ class TestCalendarEventGenerator(unittest.TestCase):
         evg.events = [Event(bias - 100, 200, None, None)]
         g = evg.getActions()
         
-        (event) = g.next()
+        (event) = next(g)
         assert almostEquals(0, event.seconds_remaining())
         self.assertEqual(event.type, "START")
         
         for i in range(1000):
-            (event) = g.next()
+            (event) = next(g)
             assert almostEquals((i * eventgenerator._ONE_WEEK_IN_SECS) + 100, event.seconds_remaining())
             self.assertEqual(event.type, "STOP")
             
-            (event) = g.next()
+            (event) = next(g)
             assert almostEquals((i+1) * eventgenerator._ONE_WEEK_IN_SECS - 100, event.seconds_remaining())
             self.assertEqual(event.type, "START")
 
@@ -221,11 +221,11 @@ class TestCalendarEventGenerator(unittest.TestCase):
         evg.events = [Event(0, 10, None, None)]
         g = evg.getActions()
         for i in range(1000):
-            (event) = g.next()
+            (event) = next(g)
             assert almostEquals(eventgenerator._ONE_WEEK_IN_SECS - bias + (i*eventgenerator._ONE_WEEK_IN_SECS), event.seconds_remaining())
             self.assertEqual(event.type, "START")
 
-            (event) = g.next()
+            (event) = next(g)
             assert almostEquals(eventgenerator._ONE_WEEK_IN_SECS - bias + (i*eventgenerator._ONE_WEEK_IN_SECS) + 10, event.seconds_remaining())
             self.assertEqual(event.type, "STOP")
             
@@ -235,19 +235,19 @@ class TestCalendarEventGenerator(unittest.TestCase):
         evg.events = [Event(bias + 100, 200, None, None), Event(bias + 1000, 400, None, None)]
         g = evg.getActions()
         for i in range(1000):
-            (event) = g.next()
+            (event) = next(g)
             assert almostEquals((i * eventgenerator._ONE_WEEK_IN_SECS) + 100, event.seconds_remaining())
             self.assertEqual(event.type, "START")
             
-            (event) = g.next()
+            (event) = next(g)
             assert almostEquals(i * eventgenerator._ONE_WEEK_IN_SECS + 300, event.seconds_remaining())
             self.assertEqual(event.type, "STOP")
             
-            (event) = g.next()
+            (event) = next(g)
             assert almostEquals(i * eventgenerator._ONE_WEEK_IN_SECS + 1000, event.seconds_remaining())
             self.assertEqual(event.type, "START")
                         
-            (event) = g.next()
+            (event) = next(g)
             assert almostEquals(i * eventgenerator._ONE_WEEK_IN_SECS + 1400, event.seconds_remaining())
             self.assertEqual(event.type, "STOP")
             
@@ -258,27 +258,27 @@ class TestCalendarEventGenerator(unittest.TestCase):
         g = evg.getActions()
  
         for i in range(1000):
-            (event) = g.next()
+            (event) = next(g)
             assert almostEquals(eventgenerator._ONE_WEEK_IN_SECS - 1100 + (i*eventgenerator._ONE_WEEK_IN_SECS), event.seconds_remaining())
             self.assertEqual(event.type, "STOP")
 
-            (event) = g.next()
+            (event) = next(g)
             assert almostEquals((i+1)*eventgenerator._ONE_WEEK_IN_SECS -500, event.seconds_remaining())
             self.assertEqual(event.type, "START")
                                 
-            (event) = g.next()
+            (event) = next(g)
             assert almostEquals((i+1)*eventgenerator._ONE_WEEK_IN_SECS -400, event.seconds_remaining())
             self.assertEqual(event.type, "STOP")
             
-            (event) = g.next()
+            (event) = next(g)
             assert almostEquals((i+1)*eventgenerator._ONE_WEEK_IN_SECS -300, event.seconds_remaining())
             self.assertEqual(event.type, "START")
                                 
-            (event) = g.next()
+            (event) = next(g)
             assert almostEquals((i+1)*eventgenerator._ONE_WEEK_IN_SECS -199, event.seconds_remaining())
             self.assertEqual(event.type, "STOP")
                      
-            (event) = g.next()
+            (event) = next(g)
             assert almostEquals((i+1)*eventgenerator._ONE_WEEK_IN_SECS -100, event.seconds_remaining())
             self.assertEqual(event.type, "START")
                                     
@@ -288,15 +288,15 @@ class TestCalendarEventGenerator(unittest.TestCase):
         evg.events = [Event(0+bias, 100, None, None), Event(100+bias, 100, None, None)]
         g = evg.getActions()
         for i in range(1000):
-            (event) = g.next()
+            (event) = next(g)
             assert almostEquals(i * eventgenerator._ONE_WEEK_IN_SECS, event.seconds_remaining())
             self.assertEqual(event.type, "START")
                                     
-            (event) = g.next()
+            (event) = next(g)
             assert almostEquals(i * eventgenerator._ONE_WEEK_IN_SECS + 100, event.seconds_remaining())
             self.assertEqual(event.type, "RESTART")
         
-            (event) = g.next()
+            (event) = next(g)
             assert almostEquals((i * eventgenerator._ONE_WEEK_IN_SECS) + 200, event.seconds_remaining())
             self.assertEqual(event.type, "STOP")
 

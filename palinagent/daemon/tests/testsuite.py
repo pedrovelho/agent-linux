@@ -74,7 +74,7 @@ if __name__ == "__main__":
     elif options.output == "xml":
         runner = xmlrunner.XMLTestRunner()
     else:
-        print >> sys.stderr, "Unsupported unittest output format"
+        print("Unsupported unittest output format", file=sys.stderr)
         sys.exit(1)
     
     cov = None
@@ -89,7 +89,7 @@ if __name__ == "__main__":
             cov.erase()
             cov.start()
         except ImportError:
-            print >> sys.stderr, "Coverage module not available"
+            print("Coverage module not available", file=sys.stderr)
     runner.run(suite)
 
     if cov is not None:
@@ -99,7 +99,7 @@ if __name__ == "__main__":
         elif options.coverage == "xml":
             cov.xml_report(outfile='coverage.xml')
         else:
-            print >> sys.stderr, "Unsupported coverage output format"
+            print("Unsupported coverage output format", file=sys.stderr)
             sys.exit(1)
 
     sys.exit(0)
