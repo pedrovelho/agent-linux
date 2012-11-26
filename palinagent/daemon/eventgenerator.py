@@ -571,8 +571,14 @@ class StartEvent(SpecificEvent):
             print "TCP port is not supported for protocol: %s" % self.config.protocol
 
         cmd.append("-Djava.security.manager")
-        cmd.append("-Djava.security.policy="     + os.path.join(os.path.dirname(__file__), "data/agent.java.policy"))
-#       cmd.append("-Dlog4j.configuration=file:" + os.path.join(os.path.dirname(__file__), "../../agent.log4j"))
+
+        # If frozen (ie in standalone mode)
+        if getattr(sys, 'frozen', False):
+            cmd.append("-Djava.security.policy=" + os.path.join(os.path.dirname(sys.executable), "data/agent.java.policy"))
+        elif __file__:   
+            cmd.append("-Djava.security.policy=" + os.path.join(os.path.dirname(__file__), "data/agent.java.policy"))
+
+#        cmd.append("-Dlog4j.configuration=file:" + os.path.join(os.path.dirname(__file__), "../../agent.log4j"))
         cmd.append("-Dproactive.agent.rank=%d" % rank)
         for param in self.config.jvmParameters:
             cmd.append(param.replace('${rank}', "%d" % rank))
