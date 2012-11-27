@@ -55,6 +55,9 @@ setup(
                 ("palinagent/daemon/data/agent.java.policy", "data/agent.java.policy"),
                 #("palinagent/daemon/data/loggers.ini", "data/loggers.ini"),
                 ],
+            "replace_paths": [
+                ("*", "<paagent_python_installation_path>/"),
+                ],
            },
        },
       executables = [Executable(
