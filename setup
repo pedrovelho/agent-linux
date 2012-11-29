@@ -2,8 +2,8 @@
 
 export PAUSER='proactive'
 export PAPASS='$1$$5MIRDEBG29XfuMhju0UWl/' # crypt('community1')
-export DESTDIR="/opt/proactive-agent/"
-export DESTDIRSCHEDULING="/opt/proactive-scheduling/"
+export PAGROUP='proactivegroup'
+export DESTDIRSCHEDULING="proactive-scheduling/"
 
 CONFIGXMLBASE=config-base.xml
 CONFIGXMLOUT=config.xml
@@ -38,7 +38,7 @@ assertnotempty(){
 	fi
 }
 
-checkuser(){
+setupuser(){
 	# $1 PAUSER $2 PAPASS
 
 	set +e 
@@ -48,11 +48,29 @@ checkuser(){
 
         if [ "$CODEOUTPUT" -eq 0 ]
         then
-		echo "User $1 already exists. Remove it to proceed."
-		exit 1
+		echo "User $1 already exists."
 	else
 		echo "User $1 DOES NOT exist, creating..."
 		createuser "$1" "$2"
+	fi	
+}
+
+setupgroup(){
+	# $1 PAGROUP $2 USER 
+
+        if [ $(egrep -i "^$1" /etc/group) ]
+        then
+		echo "Group $1 already exists."
+	else
+		echo "Group $1 DOES NOT exist, creating..."
+		echo "Creating group $1..."
+		groupadd $1 
+		echo "Adding user $2 to group $1 ..."
+		usermod -G $1 $2
+		#useradd -G $1 $2 
+		echo "Adding user $SUDO_USER to group $1 ..."
+		usermod -G $1 $SUDO_USER
+		#useradd -G $1 $SUDO_USER 
 	fi	
 }
 
@@ -63,19 +81,12 @@ createuser(){
 	echo "Done."
 }
 
-createdestdir(){
+createdir(){
 	mkdir -p $1
 	chown $PAUSER $1
 }
 
-copyagent(){
-
-	# $1 DESTDIR
-	cp -r $CURRDIR/* $1 
-	chown -R $PAUSER $1
-}
-
-checkproactive(){
+inflateandcheckproactive(){
 	# $1 PROACTIVEZIP $2 DESTDIR
         if [ -z "$1" ]
 	then
@@ -88,7 +99,8 @@ checkproactive(){
 			echo "Found already an installation of ProActive in $2. Skipping inflating: $1 "
 		else
 			echo "Using the following ProActive Scheduling Resourcing zip file: $1"
-			sudo -u $PAUSER unzip $1 -d $2 
+			sudo -u "$PAUSER" unzip "$1" -d "$2"
+			chown -R :"$PAGROUP" "$2"
 		fi
 
 		BTEMP=$(find $2 -name 'LICENSE_EXCEPTION.txt')
@@ -125,8 +137,9 @@ checkjava(){
 }
 
 setupconfigxml(){
-	# $1 JAVA_HOME $2 PROACTIVEHOME $3 CREDENTIAL
-	sudo -u $PAUSER cp $CURRDIR/$CONFIGXMLBASE $DESTDIR/$CONFIGXMLOUT 
+	# $1 JAVA_HOME $2 PROACTIVEHOME $3 CREDENTIAL $4 BASECONFIG $5 DESTCONFIG
+	cp -f "$4" "$5"
+	chown "$PAUSER":"$PAGROUP" "$5"
 
 	JAVAHOMEA=$(     echo "$1" | sed 's/(/\\\(/g' | sed 's/)/\\\)/g'| sed 's/\//\\\//g')
 	PROACTIVEHOMEA=$(echo "$2" | sed 's/(/\\\(/g' | sed 's/)/\\\)/g'| sed 's/\//\\\//g')
@@ -136,10 +149,10 @@ setupconfigxml(){
 	echo "PROACTIVE_HOME is: $PROACTIVEHOMEA"
 	echo "CREDENTIAL is:     $CREDENTIALA"
 
-	sudo -u $PAUSER sed -i \
+	sed -i \
             -e "s/JAVAHOMEXXX/$JAVAHOMEA/g" \
             -e "s/PROACTIVEHOMEXXX/$PROACTIVEHOMEA/g" \
-            -e "s/CREDENTIALXXX/$CREDENTIALA/g" "$DESTDIR/$CONFIGXMLOUT" 
+            -e "s/CREDENTIALXXX/$CREDENTIALA/g" "$5" 
 }
 
 checkrmcred(){
@@ -148,6 +161,13 @@ checkrmcred(){
 	assertnotempty "$CREDENTIAL" "ERROR: credential file not found (rm.cred)."
 		
 }
+
+setupcurrdirperm(){
+	# $1 CURRDIR 
+	chown -R $PAUSER:$PAGROUP $CURRDIR/*
+	chmod -R ug+rw $CURRDIR/..
+}
+
 set -e 
 
 checkifroot
@@ -156,7 +176,7 @@ export CURRDIR="$(dirname $0)"
 export CURRLINUXDIST="$(cat /etc/issue)"
 export CURRUNAME="$(uname -a)"
 
-echo "This script will install and configure the standalone version of the ProActive Agent for Linux."
+echo "#### This script will configure and run the standalone version of the ProActive Agent for Linux."
 
 echo "Current directory is:          $CURRDIR"
 echo "Current Linux distribution is: $CURRLINUXDIST"
@@ -164,28 +184,26 @@ echo "Current uname is:              $CURRUNAME"
 
 checkcurrdir $CURRDIR
 
-echo "Checking if user $PAUSER is created, or create if needed..."
-checkuser "$PAUSER" "$PAPASS"
+echo "#### Checking if user $PAUSER is created, or create if needed..."
+setupuser "$PAUSER" "$PAPASS" 
 
-echo "Checking if JAVA_HOME is set..."
+echo "#### Checking if group $PAGROUP is created, or create if needed..."
+setupgroup "$PAGROUP" "$PAUSER" 
+
+echo "#### Checking if JAVA_HOME is set..."
 checkjava "$JAVA_HOME" 
 
-
-echo "Copying agent to $DESTDIR"
-createdestdir "$DESTDIR"
-copyagent "$DESTDIR" 
-
-echo "Downloading ProActive Scheduling Resourcing..."
+echo "#### Downloading ProActive Scheduling Resourcing..."
 echo "   Skipping this... ZIP file already in: $PROACTIVEZIP"
 
-echo "Inflating ProActive Scheduling Resourcing..."
-createdestdir "$DESTDIRSCHEDULING"
-checkproactive "$CURRDIR/$PROACTIVEZIP" "$DESTDIRSCHEDULING"
+echo "#### Inflating ProActive Scheduling Resourcing..."
+createdir "$CURRDIR/$DESTDIRSCHEDULING"
+inflateandcheckproactive "$CURRDIR/$PROACTIVEZIP" "$CURRDIR/$DESTDIRSCHEDULING"
 
-echo "Looking for Resource Manager credential..."
+echo "#### Looking for Resource Manager credential..."
 checkrmcred "$PROACTIVE_HOME"
 
-echo "Setting up JAVA_HOME, PROACTIVE_HOME and CREDENTIAL tags in ProActive Agent file config.xml."
+echo "#### Setting up JAVA_HOME, PROACTIVE_HOME and CREDENTIAL tags in ProActive Agent file config.xml."
 echo "   Using:"
 echo "      JAVA_HOME        $JAVA_HOME"
 echo "      PROACTIVE_HOME   $PROACTIVE_HOME"
@@ -195,8 +213,11 @@ assertnotempty "$JAVA_HOME"      "ERROR: environment variable JAVA_HOME not set.
 assertnotempty "$PROACTIVE_HOME" "ERROR: environment variable PROACTIVE_HOME not set."
 assertnotempty "$CREDENTIAL"     "ERROR: environment variable CREDENTIAL not set."
 
-setupconfigxml "$JAVA_HOME" "$PROACTIVE_HOME" "$CREDENTIAL"
+setupconfigxml "$JAVA_HOME" "$PROACTIVE_HOME" "$CREDENTIAL" "$CURRDIR/$CONFIGXMLBASE" "$CURRDIR/$CONFIGXMLOUT"
 
-echo "Starting the agent..."
-sudo -u $PAUSER $DESTDIR/proactive-agent -v $DESTDIR/config.xml -L $DESTDIR/log.conf
+echo "#### Setting up permissions of the current directory..."
+setupcurrdirperm "$CURRDIR"
+
+echo "#### Starting the agent..."
+sudo -u $PAUSER $CURRDIR/proactive-agent -v $CURRDIR/$CONFIGXMLOUT 
 
