@@ -53,6 +53,9 @@ setup(
                 ("palinagent/daemon/xsd/1.0/agent-common.xsd", "xsd/1.0/agent-common.xsd"),
                 ("palinagent/daemon/xsd/1.0/agent-linux.xsd", "xsd/1.0/agent-linux.xsd"),
                 ("palinagent/daemon/data/agent.java.policy", "data/agent.java.policy"),
+                ("setup", "setup"),
+                ("config-base.xml", "config-base.xml"),
+                ("log.conf", "log.conf"),
                 #("palinagent/daemon/data/loggers.ini", "data/loggers.ini"),
                 ],
             "replace_paths": [

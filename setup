@@ -1,16 +1,37 @@
 #/bin/bash
 
-USER=proactive
-PASS='$1$$5MIRDEBG29XfuMhju0UWl/' # crypt('community1')
+export PAUSER='proactive'
+export PAPASS='$1$$5MIRDEBG29XfuMhju0UWl/' # crypt('community1')
+export DESTDIR="/opt/proactive-agent/"
+export DESTDIRSCHEDULING="/opt/proactive-scheduling/"
+
 CONFIGXMLBASE=config-base.xml
 CONFIGXMLOUT=config.xml
-CONFIGXMLTEMP=configa.xml
-PROACTIVEZIP='/tmp/ProActiveScheduling-3.1.2_worker(FUT).zip'
+PROACTIVEZIP='proactive/proactive.zip'
+
+checkcurrdir(){ 
+	#1 CURRDIR
+	if [ -e $CURRDIR/proactive-agent ]
+	then
+		echo "Current directory checked."
+	else
+		echo "ERROR: please go to the root of the project before running the script."
+		exit 1
+	fi 
+}
+
+checkifroot(){
+	LUID=$(id -u)
+	if [[ $LUID -ne 0 ]]; then
+		echo "This script must be run as root"
+		exit 1
+	fi
+}
 
 assertnotempty(){
 	# $1 variable $2 errormessageifempty
 	# assert the variable is not empty
-	if [ "$1" == '' ]
+	if [ -z "$1" ]
 	then
 		echo $2 
 		exit 1
@@ -18,40 +39,59 @@ assertnotempty(){
 }
 
 checkuser(){
-	# $1 USER $2 PASS
+	# $1 PAUSER $2 PAPASS
 
 	set +e 
 	OUTPUT=$(id $1)
 	CODEOUTPUT=$?
 	set -e 
 
-        if [ "$CODEOUTPUT" == '0' ]
+        if [ "$CODEOUTPUT" -eq 0 ]
         then
-		echo User $USER already exists, creation will be skipped.
+		echo "User $1 already exists. Remove it to proceed."
+		exit 1
 	else
-		echo User $USER DOES NOT exist, creating...
-		createuser $USER $PASS
+		echo "User $1 DOES NOT exist, creating..."
+		createuser "$1" "$2"
 	fi	
 }
 
 createuser(){
-	# $1 USER $2 PASS
-	echo Creating user $1...
-	sudo useradd -d /home/$1 -m -s /bin/bash $1 --password $2
-	echo Done.
+	# $1 PAUSER $2 PASS
+	echo "Creating user $1..."
+	useradd -m -s /bin/bash $1 --password $2
+	echo "Done."
+}
+
+createdestdir(){
+	mkdir -p $1
+	chown $PAUSER $1
+}
+
+copyagent(){
+
+	# $1 DESTDIR
+	cp -r $CURRDIR/* $1 
+	chown -R $PAUSER $1
 }
 
 checkproactive(){
-	# $1 PROACTIVEZIP
-        if [ "$1" == '' ]
+	# $1 PROACTIVEZIP $2 DESTDIR
+        if [ -z "$1" ]
 	then
 		echo "ERROR: ProActive Scheduling Resourcing zip file not provided."
 		exit 1
 	else
-		echo "Using the following ProActive Scheduling Resourcing zip file: $1"
-		unzip $1 -d $CURRDIR/proactive
+		echo "Looking for ProActive Scheduling Resourcing installations in $2..."
+		if [ $(find $2 -name "rm-start-node") ]
+		then 
+			echo "Found already an installation of ProActive in $2. Skipping inflating: $1 "
+		else
+			echo "Using the following ProActive Scheduling Resourcing zip file: $1"
+			sudo -u $PAUSER unzip $1 -d $2 
+		fi
 
-		BTEMP=$(find $CURRDIR/proactive -name 'LICENSE_EXCEPTION.txt')
+		BTEMP=$(find $2 -name 'LICENSE_EXCEPTION.txt')
 		export BTEMP2=$(dirname $BTEMP)
 		export PROACTIVE_HOME=$(readlink -e $BTEMP2)
 		echo PROACTIVE_HOME found: $PROACTIVE_HOME
@@ -68,7 +108,7 @@ checkproactive(){
 
 checkjava(){
 	# $1 JAVA_HOME
-        if [ "$1" == '' ]
+        if [ -z "$1" ]
 	then
 		echo "ERROR: environment variable JAVA_HOME is not set. Set it to continue."
 		exit 1
@@ -86,47 +126,64 @@ checkjava(){
 
 setupconfigxml(){
 	# $1 JAVA_HOME $2 PROACTIVEHOME $3 CREDENTIAL
-	cp $CURRDIR/$CONFIGXMLBASE $CURRDIR/$CONFIGXMLOUT 
+	sudo -u $PAUSER cp $CURRDIR/$CONFIGXMLBASE $DESTDIR/$CONFIGXMLOUT 
 
 	JAVAHOMEA=$(     echo "$1" | sed 's/(/\\\(/g' | sed 's/)/\\\)/g'| sed 's/\//\\\//g')
 	PROACTIVEHOMEA=$(echo "$2" | sed 's/(/\\\(/g' | sed 's/)/\\\)/g'| sed 's/\//\\\//g')
 	CREDENTIALA=$(   echo "$3" | sed 's/(/\\\(/g' | sed 's/)/\\\)/g'| sed 's/\//\\\//g')
 
-	echo $JAVAHOMEA
-	echo $PROACTIVEHOMEA
-	echo $CREDENTIALA
+	echo "JAVA_HOME is:      $JAVAHOMEA"
+	echo "PROACTIVE_HOME is: $PROACTIVEHOMEA"
+	echo "CREDENTIAL is:     $CREDENTIALA"
 
-	sed "s/JAVAHOMEXXX/$JAVAHOMEA/g"           "$CURRDIR/$CONFIGXMLOUT" > "$CURRDIR/$CONFIGXMLTEMP"
-	cp "$CURRDIR/$CONFIGXMLTEMP" "$CURRDIR/$CONFIGXMLOUT"
-	sed "s/PROACTIVEHOMEXXX/$PROACTIVEHOMEA/g" "$CURRDIR/$CONFIGXMLOUT" > "$CURRDIR/$CONFIGXMLTEMP"
-	cp "$CURRDIR/$CONFIGXMLTEMP" "$CURRDIR/$CONFIGXMLOUT"
-	sed "s/CREDENTIALXXX/$CREDENTIALA/g"       "$CURRDIR/$CONFIGXMLOUT" > "$CURRDIR/$CONFIGXMLTEMP"
-	cp "$CURRDIR/$CONFIGXMLTEMP" "$CURRDIR/$CONFIGXMLOUT"
+	sudo -u $PAUSER sed -i \
+            -e "s/JAVAHOMEXXX/$JAVAHOMEA/g" \
+            -e "s/PROACTIVEHOMEXXX/$PROACTIVEHOMEA/g" \
+            -e "s/CREDENTIALXXX/$CREDENTIALA/g" "$DESTDIR/$CONFIGXMLOUT" 
 }
 
+checkrmcred(){
+	# $1 PROACTIVEHOME
+	export CREDENTIAL=$(find $1 -name "rm.cred")
+	assertnotempty "$CREDENTIAL" "ERROR: credential file not found (rm.cred)."
+		
+}
 set -e 
 
-export CURRDIR=$(dirname $0)
-export CURRLINUXDIST=$(cat /etc/issue)
-export CURRUNAME=$(uname -a)
+checkifroot
 
-echo "This script will configure the standalone version of the ProActive Agent for Linux."
+export CURRDIR="$(dirname $0)"
+export CURRLINUXDIST="$(cat /etc/issue)"
+export CURRUNAME="$(uname -a)"
 
-echo Current directory is $CURRDIR
-echo Current Linux distribution is $CURRLINUXDIST
-echo Current uname is $CURRUNAME
+echo "This script will install and configure the standalone version of the ProActive Agent for Linux."
 
-echo "Checking if user $USER is created, or create if needed..."
-checkuser "$USER" "$PASS"
+echo "Current directory is:          $CURRDIR"
+echo "Current Linux distribution is: $CURRLINUXDIST"
+echo "Current uname is:              $CURRUNAME"
+
+checkcurrdir $CURRDIR
+
+echo "Checking if user $PAUSER is created, or create if needed..."
+checkuser "$PAUSER" "$PAPASS"
 
 echo "Checking if JAVA_HOME is set..."
 checkjava "$JAVA_HOME" 
+
+
+echo "Copying agent to $DESTDIR"
+createdestdir "$DESTDIR"
+copyagent "$DESTDIR" 
 
 echo "Downloading ProActive Scheduling Resourcing..."
 echo "   Skipping this... ZIP file already in: $PROACTIVEZIP"
 
 echo "Inflating ProActive Scheduling Resourcing..."
-checkproactive $PROACTIVEZIP
+createdestdir "$DESTDIRSCHEDULING"
+checkproactive "$CURRDIR/$PROACTIVEZIP" "$DESTDIRSCHEDULING"
+
+echo "Looking for Resource Manager credential..."
+checkrmcred "$PROACTIVE_HOME"
 
 echo "Setting up JAVA_HOME, PROACTIVE_HOME and CREDENTIAL tags in ProActive Agent file config.xml."
 echo "   Using:"
@@ -141,4 +198,5 @@ assertnotempty "$CREDENTIAL"     "ERROR: environment variable CREDENTIAL not set
 setupconfigxml "$JAVA_HOME" "$PROACTIVE_HOME" "$CREDENTIAL"
 
 echo "Starting the agent..."
+sudo -u $PAUSER $DESTDIR/proactive-agent -v $DESTDIR/config.xml -L $DESTDIR/log.conf
 
