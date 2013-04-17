@@ -1,0 +1,19 @@
+#!/bin/sh
+
+PACKAGE="proactive-agent"
+INSTALLDIR="/opt/$PACKAGE"
+PAUSER="proactive"
+PAGROUP="proactivegroup"
+PROACTIVEHOME="$INSTALLDIR/schedworker"
+CONFIGXMLBASE="config-base.xml"
+CONFIGXMLOUT="config.xml"
+CREDPATH="$PROACTIVEHOME/config/authentication/rm.cred"
+
+# User and group removal
+\groupdel $PAGROUP
+\userdel $PAUSER
+
+# Service removal
+/etc/init.d/$PACKAGE stop
+\update-rc.d -f $PACKAGE remove
+

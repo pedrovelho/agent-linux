@@ -1,0 +1,20 @@
+#!/bin/sh
+
+# This script is a work around for the execution of the env script for the Linux ProActive Agent.
+# Why? The agent forces the use of /bin/sh to execute the bin/unix/env script (which is written for bash).
+# In recent versions of Ubuntu /bin/sh is redirected as /bin/dash which cannot parse bin/unix/env script, 
+# so we provide a wrapper script envwrapper ( renamed as -> bin/unix/env) to call the original bin/unix/env 
+# ( renamed as -> bin/unix/original_env).
+
+export CURRDIR=$workingDir
+
+echo "Script env wrapper executed with workingDir: $CURRDIR" > /tmp/env_classpathfromenv
+
+echo "Executing env_original..." >> /tmp/env_classpathfromenv
+
+export CLASSPATH=$(/bin/bash -c "cd $CURRDIR && export JAVA_HOME=$JAVA_HOME && export workingDir=$CURRDIR && . $CURRDIR/env_original && env | grep CLASSPATH | cut -c11-")
+
+echo "Classpath obtained is: $CLASSPATH" >> /tmp/env_classpathfromenv
+
+echo "Done." >> /tmp/env_classpathfromenv
+

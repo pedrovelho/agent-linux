@@ -1,0 +1,8 @@
+Package: proactive-agent
+Version: 3.3.2
+Architecture: amd64
+Maintainer: Brian Amedro <brian.amedro@activeeon.com>
+Priority: optional
+Installed-Size: 117524
+Description: ProActive Agent
+Recommends: oracle-java6-installer
