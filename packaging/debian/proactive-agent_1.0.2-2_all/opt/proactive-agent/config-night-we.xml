@@ -30,8 +30,6 @@
         <memoryLimit>0</memoryLimit>
         <nbRuntimes>0</nbRuntimes>
         <portRange first="0" last="0" />
-        <processPriority>Normal</processPriority>
-        <maxCpuUsage>100</maxCpuUsage>
       </config>
     </event>
     <event>
@@ -41,8 +39,6 @@
         <memoryLimit>0</memoryLimit>
         <nbRuntimes>0</nbRuntimes>
         <portRange first="0" last="0" />
-        <processPriority>Normal</processPriority>
-        <maxCpuUsage>100</maxCpuUsage>
       </config>
     </event>
     <event>
@@ -52,8 +48,6 @@
         <memoryLimit>0</memoryLimit>
         <nbRuntimes>0</nbRuntimes>
         <portRange first="0" last="0" />
-        <processPriority>Normal</processPriority>
-        <maxCpuUsage>100</maxCpuUsage>
       </config>
     </event>
     <event>
@@ -63,8 +57,6 @@
         <memoryLimit>0</memoryLimit>
         <nbRuntimes>0</nbRuntimes>
         <portRange first="0" last="0" />
-        <processPriority>Normal</processPriority>
-        <maxCpuUsage>100</maxCpuUsage>
       </config>
     </event>
     <event>
@@ -74,8 +66,6 @@
         <memoryLimit>0</memoryLimit>
         <nbRuntimes>0</nbRuntimes>
         <portRange first="0" last="0" />
-        <processPriority>Normal</processPriority>
-        <maxCpuUsage>100</maxCpuUsage>
       </config>
     </event>
   </events>
