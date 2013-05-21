@@ -17,3 +17,5 @@ CREDPATH="$PROACTIVEHOME/config/authentication/rm.cred"
 /etc/init.d/$PACKAGE stop
 \update-rc.d -f $PACKAGE remove
 
+# Remove logs and installation dir
+\rm -rf $INSTALLDIR
