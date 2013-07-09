@@ -1,5 +1,40 @@
 ProActive Agent is a system daemon to automatically starts ProActive runtimes according to a weekly schedule
 
+!! Build procedure !!
+
+Requires python2.7:
+> sudo apt-get install python2.7 python2.7-dev
+
+Requires lxml:
+> sudo easy_install-2.7 lxml==3.2.1
+
+To run tests:
+
+1) Install coverage:
+> sudo easy_install-2.7 install coverage 
+
+2) Run tests:
+> python2.7 palinagent/daemon/tests/testsuite.py -c xml -o xml
+
+!! Check the xml output file !!
+
+################################################
+## HOW TO GENERATE BINARIES in x86 and x86_64 ##
+################################################
+
+To generate the binaries that you see in directories x86 and x86_64 (used as main
+ingredient to generate the distributables) please proceed as follows. 
+
+1) Install cx_freeze:
+> sudo easy_install-2.7 cx_freeze
+
+2) Build the standalone version using cxfreeze:
+> python setup-cf_Freeze.py build
+
+################################################
+## HOW TO GENERATE .deb auto installer x86_64 ##
+################################################
+
 
 ---
 Copyright (C) 2007-2011 ActiveEon
