@@ -57,6 +57,8 @@ Remve previous installation with pip:
 ## HOW TO GENERATE .deb auto installer x86_64 ##
 ################################################
 
+1) Run packaging tool
+> dpkg -b packaging proactive-agent-fut_1.0.3_amd64.deb
 
 ---
 Copyright (C) 2007-2013 ActiveEon
