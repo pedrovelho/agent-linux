@@ -19,8 +19,10 @@ ProActive Agent is a system daemon to automatically starts ProActive runtimes ac
 5) Export current dir:
 > export PYTHONPATH=.
 
-5) Run tests:
->python2.7 palinagent/daemon/tests/testsuite.py -c xml -o xml
+6) Run tests:
+> python2.7 palinagent/daemon/tests/testsuite.py -c xml -o xml
+
+!! Check the xml output file !!
 
 If there is an "ImportError No module named" used dos2unix:
 > sudo apt-get install dos2unix
@@ -28,8 +30,6 @@ If there is an "ImportError No module named" used dos2unix:
 
 Delete all .pyc files
 > find . -name "*.pyc" -exec rm -rf {} \;
-
-!! Check the xml output file !!
 
 ################################################
 ## HOW TO GENERATE BINARIES in x86 and x86_64 ##
@@ -44,13 +44,22 @@ ingredient to generate the distributables) please proceed as follows.
 2) Build the standalone version using cxfreeze:
 > python2.7 setup-cf_Freeze.py build
 
+If your get an error ending with:
+... cx_Freeze.freezer.ConfigError: no initscript named Console
+
+Download cx_freeze from sources: http://prdownloads.sourceforge.net/cx-freeze/cx_Freeze-4.3.1.tar.gz?download
+Remve previous installation with pip:
+> sudo apt-get install python-pip
+> sudo pip-2.7 uninstall cx_Freeze
+> sudo setup.py install
+
 ################################################
 ## HOW TO GENERATE .deb auto installer x86_64 ##
 ################################################
 
 
 ---
-Copyright (C) 2007-2011 ActiveEon
+Copyright (C) 2007-2013 ActiveEon
 Visit http://proactive.inria.fr/ and http://www.activeeon.com/
 Contact: +33 (0)9 88 777 660, contact@activeeon.com 
 

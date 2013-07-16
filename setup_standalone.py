@@ -42,7 +42,7 @@ from cx_Freeze import setup, Executable
 includes = ["lxml", "lxml._elementpath", "lxml.etree", "gzip"]
 setup(
       name = "ProActive-LinuxAgent",
-      version = "1.0.2",
+      version = "1.0.3",
       description="A daemon to automatically start ProActive runtime according to a schedule",
       options = {
        "build_exe" : {
@@ -53,9 +53,10 @@ setup(
                 ("palinagent/daemon/xsd/1.0/agent-common.xsd", "xsd/1.0/agent-common.xsd"),
                 ("palinagent/daemon/xsd/1.0/agent-linux.xsd", "xsd/1.0/agent-linux.xsd"),
                 ("palinagent/daemon/data/agent.java.policy", "data/agent.java.policy"),
-                ("setup", "setup"),
-                ("config-base.xml", "config-base.xml"),
-                ("log.conf", "log.conf"),
+		        ("config.xml", "config.xml"),
+		        ("config-fulltime.xml", "config-fulltime.xml"),
+		        ("config-day.xml", "config-day.xml"),
+		        ("config-night-we.xml", "config-night-we.xml"),
                 #("palinagent/daemon/data/loggers.ini", "data/loggers.ini"),
                 ],
             "replace_paths": [
