@@ -27,9 +27,6 @@
       <start day="Monday" hour="8" minute="0" second="0" />
       <duration days="0" hours="11" minutes="0" seconds="0" />
       <config>
-        <memoryLimit>0</memoryLimit>
-        <nbRuntimes>0</nbRuntimes>
-        <portRange first="0" last="0" />
         <nice>19</nice>
       </config>
     </event>
@@ -37,9 +34,6 @@
       <start day="Tuesday" hour="8" minute="0" second="0" />
       <duration days="0" hours="11" minutes="0" seconds="0" />
       <config>
-        <memoryLimit>0</memoryLimit>
-        <nbRuntimes>0</nbRuntimes>
-        <portRange first="0" last="0" />
         <nice>19</nice>
       </config>
     </event>
@@ -47,19 +41,13 @@
       <start day="Wednesday" hour="8" minute="0" second="0" />
       <duration days="0" hours="11" minutes="0" seconds="0" />
       <config>
-        <memoryLimit>0</memoryLimit>
-        <nbRuntimes>0</nbRuntimes>
-        <portRange first="0" last="0" />
         <nice>19</nice>
       </config>
     </event>
     <event>
       <start day="Thursday" hour="8" minute="0" second="0" />
       <duration days="0" hours="11" minutes="0" seconds="0" />
-      <config>
-        <memoryLimit>0</memoryLimit>
-        <nbRuntimes>0</nbRuntimes>
-        <portRange first="0" last="0" />
+      <config>        
         <nice>19</nice>
       </config>
     </event>
@@ -67,9 +55,6 @@
       <start day="Friday" hour="8" minute="0" second="0" />
       <duration days="0" hours="11" minutes="0" seconds="0" />
       <config>
-        <memoryLimit>0</memoryLimit>
-        <nbRuntimes>0</nbRuntimes>
-        <portRange first="0" last="0" />
         <nice>19</nice>
       </config>
     </event>
@@ -85,4 +70,3 @@
     </rmConnection>
   </connections>
 </agent>
-
