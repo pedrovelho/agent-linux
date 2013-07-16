@@ -7,8 +7,8 @@ ProActive Agent is a system daemon to automatically starts ProActive runtimes ac
 1) Install python2.7:
 > sudo apt-get install python2.7 python2.7-dev python-setuptools
 
-2) Install libxml2:
-> sudo apt-get install libxml2-dev libxslt-dev
+2) Install libxml2 and xmllint:
+> sudo apt-get install libxml2-dev libxslt-dev libxml2-utils
 
 3) Requires lxml:
 > sudo easy_install-2.7 lxml==3.2.1
@@ -16,12 +16,18 @@ ProActive Agent is a system daemon to automatically starts ProActive runtimes ac
 4) Install coverage:
 > sudo easy_install-2.7 coverage
 
-OPTIONAL: if there is an "ImportError No module named" used dos2unix:
-> sudo apt-get install dos2unix
-> find . -type f -exec dos2unix {} \;
+5) Export current dir:
+> export PYTHONPATH=.
 
 5) Run tests:
 >python2.7 palinagent/daemon/tests/testsuite.py -c xml -o xml
+
+If there is an "ImportError No module named" used dos2unix:
+> sudo apt-get install dos2unix
+> find . -type f -exec dos2unix {} \;
+
+Delete all .pyc files
+> find . -name "*.pyc" -exec rm -rf {} \;
 
 !! Check the xml output file !!
 
