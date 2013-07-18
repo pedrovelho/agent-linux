@@ -1,8 +1,8 @@
 Package: proactive-agent
 Version: 1.0.3
-Architecture: amd64
-Maintainer: Vladimir Bodnartchouk <vladimir.bodnartchouk@activeeon.com>
+Architecture: x86-64
+Maintainer: activeeon-dev@activeeon.com
 Priority: optional
-Installed-Size: 196236
+Installed-Size: 107974255
 Description: The ProActive Agent enables desktop computers as an important source of computational power
 Recommends: oracle-java6-installer

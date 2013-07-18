@@ -41,24 +41,28 @@ ingredient to generate the distributables) please proceed as follows.
 1) Install cx_freeze:
 > sudo easy_install-2.7 cx_freeze
 
-2) Build the standalone version using cxfreeze:
-> python2.7 setup-cf_Freeze.py build
+2) Donwload Scheduling release and export SCHEDULER_HOME (tested with 3.3.2 and 3.4):
+> export SCHEUDLER_HOME=
+
+3) Run the build script:
+> python2.7 setup_standalone.py build
+
+There should be a .deb generated in the current dir
+Example of output:
+> ...
+> Building debian package proactive-agent-1.0.3-x86-64.deb estimated installed size: 102.97 MB ...
+> dpkg-deb: building package `proactive-agent' in `proactive-agent-1.0.3-x86-64.deb'.
+> None
 
 If your get an error ending with:
-... cx_Freeze.freezer.ConfigError: no initscript named Console
+> cx_Freeze.freezer.ConfigError: no initscript named Console
 
+You need to reinstall cx_freeze:
 Download cx_freeze from sources: http://prdownloads.sourceforge.net/cx-freeze/cx_Freeze-4.3.1.tar.gz?download
-Remve previous installation with pip:
+Remove previous installation with pip:
 > sudo apt-get install python-pip
 > sudo pip-2.7 uninstall cx_Freeze
 > sudo setup.py install
-
-################################################
-## HOW TO GENERATE .deb auto installer x86_64 ##
-################################################
-
-1) Run packaging tool
-> dpkg -b packaging proactive-agent-fut_1.0.3_amd64.deb
 
 ---
 Copyright (C) 2007-2013 ActiveEon
