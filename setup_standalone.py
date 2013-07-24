@@ -113,9 +113,12 @@ def mkdir_p(path):
         else: raise
 
 # Copy the required files and dirs into the schedworker
-shutil.copy(schedDir+"/LICENSE.txt", workerDir+"/LICENSE.txt")
-shutil.copy(schedDir+"/LICENSE_EXCEPTION.txt", workerDir+"/LICENSE_EXCEPTION.txt")
-shutil.copy(schedDir+"/README.txt", workerDir+"/README.txt")
+if os.path.exists(schedDir+"/LICENSE.txt"):
+    shutil.copy(schedDir+"/LICENSE.txt", workerDir+"/LICENSE.txt")
+if os.path.exists(schedDir+"/LICENSE_EXCEPTION.txt"):
+    shutil.copy(schedDir+"/LICENSE_EXCEPTION.txt", workerDir+"/LICENSE_EXCEPTION.txt")
+if os.path.exists(schedDir+"/README.txt"):
+    shutil.copy(schedDir+"/README.txt", workerDir+"/README.txt")
 if os.path.exists(schedDir+"/build_id"):
     shutil.copy(schedDir+"/build_id", workerDir+"/build_id")
 	
