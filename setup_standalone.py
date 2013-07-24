@@ -116,8 +116,9 @@ def mkdir_p(path):
 shutil.copy(schedDir+"/LICENSE.txt", workerDir+"/LICENSE.txt")
 shutil.copy(schedDir+"/LICENSE_EXCEPTION.txt", workerDir+"/LICENSE_EXCEPTION.txt")
 shutil.copy(schedDir+"/README.txt", workerDir+"/README.txt")
-shutil.copy(schedDir+"/build_id", workerDir+"/build_id")
-
+if os.path.exists(schedDir+"/build_id"):
+    shutil.copy(schedDir+"/build_id", workerDir+"/build_id")
+	
 unixDir = "/bin/unix"
 configDir = "/config"
 authDir = configDir+"/authentication"
