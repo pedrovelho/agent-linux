@@ -146,7 +146,8 @@ shutil.copy(schedDir+log4jDir+"/log4j-defaultNode", workerDir+log4jDir+"/log4j-d
 shutil.copy(schedDir+proactiveDir+"/ProActiveConfiguration.xml", workerDir+proactiveDir+"/ProActiveConfiguration.xml")
 
 distutils.dir_util.copy_tree(schedDir+libDir, workerDir+libDir)
-distutils.dir_util.copy_tree(schedDir+linuxDir, workerDir+linuxDir)
+if os.path.exists(schedDir+linuxDir):
+    distutils.dir_util.copy_tree(schedDir+linuxDir, workerDir+linuxDir)
 
 #print("Contents of " + workerDir + ":")
 #for path,dirs,files in os.walk(workerDir):
