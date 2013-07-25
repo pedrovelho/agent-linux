@@ -70,7 +70,7 @@ class TestValideAllXMLInProject(unittest.TestCase):
                     except (Exception):
                         invalid_files.append(os.path.join(root, file))
          
-            for dir in ['.git', '.svn', 'doc', 'build', 'dist']:
+            for dir in ['.git', '.svn', 'doc', 'build', 'dist', 'utils']:
                 if dir in dirs:
                     dirs.remove(dir)
 
