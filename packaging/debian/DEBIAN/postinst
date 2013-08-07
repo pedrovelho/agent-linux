@@ -14,6 +14,9 @@ PAGROUP="proactivegroup"
 PROACTIVEHOME="$INSTALLDIR/schedworker"
 CONFIGXMLBASE="$INSTALLDIR/config-*.xml"
 CREDPATH="$PROACTIVEHOME/config/authentication/rm.cred"
+BUNDLEJREDIR="$INSTALLDIR/jre"
+RT_UNPACKED="$BUNDLEJREDIR/lib/rt.jar"
+RT_PACKED="$RT_UNPACKED.pack.gz"
 
 # User and group management
 \groupadd $PAGROUP
@@ -23,16 +26,31 @@ CREDPATH="$PROACTIVEHOME/config/authentication/rm.cred"
 \chown -R $PAUSER:$PAGROUP $INSTALLDIR
 # TODO : Check user creation
 
-
-# Java configuration
-JAVAPATH=$(readlink -f `which java`| sed "s:/jre/bin/java::")
-# TODO : Run a java Test
-if [ "$?" = "1" ]
+# Check for bundled jre
+if [ -d $BUNDLEJREDIR ]
 then
-    # TODO : We can wget http://download.oracle.com/otn-pub/java/jdk/7u25-b15/jdk-7u25-linux-i586.tar.gz
-    echo "ERROR: Please setup a Java >= 1.6 before installing this package"
-    exit 1
+   # Unpack rt.jar
+   if [ -f $RT_PACKED ]
+   then
+      echo "Unpacking $RT_PACKED ..."
+      cd "$INSTALLDIR/jre/bin" 
+      \unpack200 -r -J-Xmx1024m $RT_PACKED $RT_UNPACKED
+      cd $(dirname $0)
+   fi
+   JAVAPATH="$INSTALLDIR/jre/bin/java"
+else
+   # Java configuration
+   JAVAPATH=$(readlink -f `which java`| sed "s:/jre/bin/java::")
+   # TODO : Run a java Test
+   if [ "$?" = "1" ]
+   then
+       # TODO : We can wget http://download.oracle.com/otn-pub/java/jdk/7u25-b15/jdk-7u25-linux-i586.tar.gz
+       echo "ERROR: Please setup a Java >= 1.6 before installing this package"
+       exit 1
+   fi
 fi
+
+echo "Using $JAVAPATH in $CONFIGXMLBASE configuration files ..."
 
 # Set paths in configuration files
 for f in $CONFIGXMLBASE; do
@@ -44,5 +62,6 @@ done
 
 # Service setup
 #cp $INSTALLDIR/$PACKAGE /etc/init.d/
+\chmod 755 /etc/init.d/$PACKAGE 
 \update-rc.d $PACKAGE defaults
 /etc/init.d/$PACKAGE start

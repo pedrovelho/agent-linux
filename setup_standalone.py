@@ -44,12 +44,26 @@ from cx_Freeze import setup, Executable
 ver = "1.0.3"
 print("Building ProActive Agent standalone v" + ver)
 
-# Try to read the env variable needed for the embedded schedworker
+# Check for JAVA_HOME needed to embed jre
 try:  
+   javaHome = os.environ['JAVA_HOME']
+   print("Using JAVA_HOME=" + javaHome)
+except KeyError: 
+   print "Please set the environment variable JAVA_HOME"
+   sys.exit(1)
+
+# Check for jre
+systemJreDir = javaHome+"/jre"
+if not os.path.exists(systemJreDir):
+   print "Unable to locate the system jre, JAVA_HOME must be pointing to a jdk"
+   sys.exit(1)
+
+# Check for SCHEDULER_HOME needed to embed schedworker
+try:
    schedDir = os.environ['SCHEDULER_HOME']
    print("Using SCHEDULER_HOME=" + schedDir)
 except KeyError: 
-   print "Please set the environment variable SCHEUDLER_HOME"
+   print "Please set the environment variable SCHEDULER_HOME"
    sys.exit(1)
 
 print("Freezing (building binaries from sources) ...")
@@ -112,15 +126,17 @@ def mkdir_p(path):
             pass
         else: raise
 
+def copyfile(filename, fromDir, toDir):
+    if os.path.exists(fromDir+"/"+filename):
+        if not os.path.exists(toDir):
+            mkdir_p(toDir)
+        shutil.copy(fromDir+"/"+filename, toDir+"/"+filename)
+
 # Copy the required files and dirs into the schedworker
-if os.path.exists(schedDir+"/LICENSE.txt"):
-    shutil.copy(schedDir+"/LICENSE.txt", workerDir+"/LICENSE.txt")
-if os.path.exists(schedDir+"/LICENSE_EXCEPTION.txt"):
-    shutil.copy(schedDir+"/LICENSE_EXCEPTION.txt", workerDir+"/LICENSE_EXCEPTION.txt")
-if os.path.exists(schedDir+"/README.txt"):
-    shutil.copy(schedDir+"/README.txt", workerDir+"/README.txt")
-if os.path.exists(schedDir+"/build_id"):
-    shutil.copy(schedDir+"/build_id", workerDir+"/build_id")
+copyfile("LICENSE.txt", schedDir, workerDir)
+copyfile("LICENSE_EXCEPTION.txt", schedDir, workerDir)
+copyfile("README.txt", schedDir, workerDir)
+copyfile("build_id", schedDir, workerDir)
 	
 unixDir = "/bin/unix"
 configDir = "/config"
@@ -130,31 +146,61 @@ proactiveDir = configDir+"/proactive"
 libDir = "/dist/lib"
 linuxDir = "/dist/scripts/processbuilder/linux"
 
-mkdir_p(workerDir+unixDir)
-mkdir_p(workerDir+configDir)
-mkdir_p(workerDir+authDir)
-mkdir_p(workerDir+log4jDir)
-mkdir_p(workerDir+proactiveDir)
-mkdir_p(workerDir+libDir)
-mkdir_p(workerDir+linuxDir)
-
-shutil.copy(schedDir+unixDir+"/env", workerDir+unixDir+"/env")
-shutil.copy(schedDir+unixDir+"/rm-start-node", workerDir+unixDir+"/rm-start-node")
-shutil.copy(schedDir+configDir+"/security.java.policy-client", workerDir+configDir+"/security.java.policy-client")
-shutil.copy(schedDir+authDir+"/rm.cred", workerDir+authDir+"/rm.cred")
-shutil.copy(schedDir+log4jDir+"/log4j-defaultNode", workerDir+log4jDir+"/log4j-defaultNode")
-shutil.copy(schedDir+proactiveDir+"/ProActiveConfiguration.xml", workerDir+proactiveDir+"/ProActiveConfiguration.xml")
+copyfile("env", schedDir+unixDir, workerDir+unixDir)
+copyfile("rm-start-node", schedDir+unixDir, workerDir+unixDir)
+copyfile("security.java.policy-client", schedDir+configDir, workerDir+configDir)
+copyfile("log4j-defaultNode", schedDir+log4jDir, workerDir+log4jDir)
+copyfile("ProActiveConfiguration.xml", schedDir+proactiveDir, workerDir+proactiveDir)
 
 distutils.dir_util.copy_tree(schedDir+libDir, workerDir+libDir)
 if os.path.exists(schedDir+linuxDir):
     distutils.dir_util.copy_tree(schedDir+linuxDir, workerDir+linuxDir)
+
+# Embed jre
+jreDir = packagingDir+"/jre"
+mkdir_p(jreDir)
+distutils.dir_util.copy_tree(systemJreDir, jreDir)
+
+# Remove the following optional jars (see jre1.7 README)
+os.remove(jreDir+"/lib/ext/dnsns.jar")
+os.remove(jreDir+"/lib/ext/localedata.jar")
+os.remove(jreDir+"/lib/ext/sunec.jar")
+os.remove(jreDir+"/lib/ext/sunjce_provider.jar")
+os.remove(jreDir+"/lib/ext/sunpkcs11.jar")
+
+os.remove(jreDir+"/lib/javaws.jar")
+os.remove(jreDir+"/lib/deploy.jar")
+os.remove(jreDir+"/lib/plugin.jar")
+
+shutil.rmtree(jreDir+"/lib/deploy")
+
+os.remove(jreDir+"/bin/rmid")
+os.remove(jreDir+"/bin/rmiregistry")
+os.remove(jreDir+"/bin/servertool")
+os.remove(jreDir+"/bin/tnameserv")
+os.remove(jreDir+"/bin/orbd")
+os.remove(jreDir+"/bin/keytool")
+os.remove(jreDir+"/bin/javaws")
+
+# Use pack200 to compress rt.jar
+print("Packing "+jreDir+"/lib/rt.jar please wait ...")
+cmd = [jreDir+"/bin/pack200","-J-Xmx1024m", jreDir+"/lib/rt.jar.pack.gz", jreDir+"/lib/rt.jar"]
+p = subprocess.Popen(cmd, stdin=subprocess.PIPE, stderr=subprocess.PIPE)
+(stdout, stderr) = p.communicate()
+print stdout
+print >> sys.stderr, stderr
+if p.returncode != 0:
+   raise Exception("A problem occured during rt.jar packing")
+
+# Delete rt.jar
+os.remove(jreDir+"/lib/rt.jar")
 
 #print("Contents of " + workerDir + ":")
 #for path,dirs,files in os.walk(workerDir):
 #    for fn in files:
 #        print(os.path.join(path,fn))
 
-arch = "x86" + ("-64" if (sys.maxsize > 2**32) else "") 
+arch = ("amd64" if (sys.maxsize > 2**32) else "i386") 
 packageName = "proactive-agent-"+ver+"-"+arch+".deb"
 
 def get_size(start_path = '.'):
@@ -187,7 +233,7 @@ controlFile.write("Maintainer: activeeon-dev@activeeon.com"+os.linesep)
 controlFile.write("Priority: optional"+os.linesep)
 controlFile.write("Installed-Size: "+str(installedSize)+os.linesep)
 controlFile.write("Description: The ProActive Agent enables desktop computers as an important source of computational power"+os.linesep)
-controlFile.write("Recommends: oracle-java6-installer"+os.linesep)
+# controlFile.write("Recommends: oracle-java6-installer"+os.linesep)
 controlFile.close()
 
 # Create the .deb package
