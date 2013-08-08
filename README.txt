@@ -41,16 +41,19 @@ ingredient to generate the distributables) please proceed as follows.
 1) Install cx_freeze:
 > sudo easy_install-2.7 cx_freeze
 
-2) Donwload Scheduling release and export SCHEDULER_HOME (tested with 3.3.2 and 3.4):
-> export SCHEUDLER_HOME=
+2) Export a JAVA_HOME pointing to a jdk >=1.6
+> export JAVA_HOME=/user/proactive/jdk/jdk1.7.0_25
 
-3) Run the build script:
+3) Download Scheduling release and export SCHEDULER_HOME (tested with 3.3.2 and 3.4):
+> export SCHEDULER_HOME=/user/proactive/releases/ProActiveScheduling-3.4.0_bin_full
+
+4) Run the build script:
 > python2.7 setup_standalone.py build
 
 There should be a .deb generated in the current dir
 Example of output:
 > ...
-> Building debian package proactive-agent-1.0.3-x86-64.deb estimated installed size: 102.97 MB ...
+> Building debian package proactive-agent-1.0.3-i386-standalone.deb estimated installed size: 166.25 MB ...
 > dpkg-deb: building package `proactive-agent' in `proactive-agent-1.0.3-x86-64.deb'.
 > None
 
