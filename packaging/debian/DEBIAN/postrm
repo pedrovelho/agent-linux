@@ -12,6 +12,11 @@ then
    \rm -f "$INSTALLDIR/proactive-agent.log.*"
 fi
 
+if [ -d "$INSTALLDIR/jre" ] 
+then
+   \rm -rf "$INSTALLDIR/jre"
+fi
+
 # User and group removal
 \groupdel $PAGROUP
 \userdel -r $PAUSER

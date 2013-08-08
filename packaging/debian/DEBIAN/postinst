@@ -13,6 +13,8 @@ PAPASS="KyVd.Qs65uwR6"
 PAGROUP="proactivegroup"
 PROACTIVEHOME="$INSTALLDIR/schedworker"
 CONFIGXMLBASE="$INSTALLDIR/config-*.xml"
+CONFIGXMLFULL="$INSTALLDIR/config-fulltime.xml"
+CONFIGXML="$INSTALLDIR/config.xml"
 CREDPATH="$PROACTIVEHOME/config/authentication/rm.cred"
 BUNDLEJREDIR="$INSTALLDIR/jre"
 RT_UNPACKED="$BUNDLEJREDIR/lib/rt.jar"
@@ -37,7 +39,7 @@ then
       \unpack200 -r -J-Xmx1024m $RT_PACKED $RT_UNPACKED
       cd $(dirname $0)
    fi
-   JAVAPATH="$INSTALLDIR/jre/bin/java"
+   JAVAPATH="$INSTALLDIR/jre"
 else
    # Java configuration
    JAVAPATH=$(readlink -f `which java`| sed "s:/jre/bin/java::")
@@ -59,6 +61,9 @@ for f in $CONFIGXMLBASE; do
       -e "s!SET_JAVAHOME!$JAVAPATH!g" \
       -e "s!SET_CREDENTIAL!$CREDPATH!g" $f
 done
+
+echo "Note: Using $CONFIGXMLFULL as default configuration, if changed, please restart the daemon ex: /etc/init.d/$PACKAGE restart"
+\ln -f -s $CONFIGXMLFULL $CONFIGXML
 
 # Service setup
 #cp $INSTALLDIR/$PACKAGE /etc/init.d/
