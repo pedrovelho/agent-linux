@@ -201,7 +201,7 @@ os.remove(jreDir+"/lib/rt.jar")
 #        print(os.path.join(path,fn))
 
 arch = ("amd64" if (sys.maxsize > 2**32) else "i386") 
-packageName = "proactive-agent-"+ver+"-"+arch+".deb"
+packageName = "proactive-agent-"+ver+"-"+arch+"-standalone.deb"
 
 def get_size(start_path = '.'):
     total_size = 0
