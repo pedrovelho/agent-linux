@@ -36,7 +36,7 @@ then
    then
       echo "Unpacking $RT_PACKED ..."
       cd "$INSTALLDIR/jre/bin" 
-      \unpack200 -r -J-Xmx1024m $RT_PACKED $RT_UNPACKED
+      ./unpack200 -r -J-Xmx1024m $RT_PACKED $RT_UNPACKED
       cd $(dirname $0)
    fi
    JAVAPATH="$INSTALLDIR/jre"
