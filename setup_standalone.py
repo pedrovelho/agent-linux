@@ -83,6 +83,7 @@ res = setup(
                 ("palinagent/daemon/xsd/1.0/agent-common.xsd", "xsd/1.0/agent-common.xsd"),
                 ("palinagent/daemon/xsd/1.0/agent-linux.xsd", "xsd/1.0/agent-linux.xsd"),
                 ("palinagent/daemon/data/agent.java.policy", "data/agent.java.policy"),
+				("README.txt", "README.txt"),
 		        ("config.xml", "config.xml"),
 		        ("config-fulltime.xml", "config-fulltime.xml"),
 		        ("config-day.xml", "config-day.xml"),
