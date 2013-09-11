@@ -133,12 +133,14 @@ def copyfile(filename, fromDir, toDir):
             mkdir_p(toDir)
         shutil.copy(fromDir+"/"+filename, toDir+"/"+filename)
 
+arch = ("amd64" if (sys.maxsize > 2**32) else "i386")
+
 # Copy the required files and dirs into the schedworker
 copyfile("LICENSE.txt", schedDir, workerDir)
 copyfile("LICENSE_EXCEPTION.txt", schedDir, workerDir)
 copyfile("README.txt", schedDir, workerDir)
 copyfile("build_id", schedDir, workerDir)
-	
+
 unixDir = "/bin/unix"
 configDir = "/config"
 authDir = configDir+"/authentication"
@@ -150,12 +152,21 @@ linuxDir = "/dist/scripts/processbuilder/linux"
 copyfile("env", schedDir+unixDir, workerDir+unixDir)
 copyfile("rm-start-node", schedDir+unixDir, workerDir+unixDir)
 copyfile("security.java.policy-client", schedDir+configDir, workerDir+configDir)
+copyfile("rm.cred", schedDir+authDir, workerDir+authDir)
 copyfile("log4j-defaultNode", schedDir+log4jDir, workerDir+log4jDir)
 copyfile("ProActiveConfiguration.xml", schedDir+proactiveDir, workerDir+proactiveDir)
 
 distutils.dir_util.copy_tree(schedDir+libDir, workerDir+libDir)
+# fix agent bug: the classpath is not read recursively it means contents of dist/lib/sigar dir are not added to classpath
+shutil.rmtree(workerDir+libDir+"sigar")
+copyfile("sigar.jar", schedDir+libDir+"/sigar", workerDir+libDir)
+if arch == "amd64":
+	copyfile("libsigar-amd64-linux.so", schedDir+libDir+"/sigar", workerDir+libDir)
+else:
+	copyfile("libsigar-x86-linux.so", schedDir+libDir+"/sigar", workerDir+libDir)
+
 if os.path.exists(schedDir+linuxDir):
-    distutils.dir_util.copy_tree(schedDir+linuxDir, workerDir+linuxDir)
+    distutils.dir_util.copy_tree(schedDir+linuxDir, workerDir+linuxDir)	
 
 # Embed jre
 jreDir = packagingDir+"/jre"
@@ -201,7 +212,6 @@ os.remove(jreDir+"/lib/rt.jar")
 #    for fn in files:
 #        print(os.path.join(path,fn))
 
-arch = ("amd64" if (sys.maxsize > 2**32) else "i386") 
 packageName = "proactive-agent-"+ver+"-"+arch+"-standalone.deb"
 
 def get_size(start_path = '.'):
