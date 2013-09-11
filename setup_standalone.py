@@ -158,7 +158,7 @@ copyfile("ProActiveConfiguration.xml", schedDir+proactiveDir, workerDir+proactiv
 
 distutils.dir_util.copy_tree(schedDir+libDir, workerDir+libDir)
 # fix agent bug: the classpath is not read recursively it means contents of dist/lib/sigar dir are not added to classpath
-shutil.rmtree(workerDir+libDir+"sigar")
+shutil.rmtree(workerDir+libDir+"/sigar")
 copyfile("sigar.jar", schedDir+libDir+"/sigar", workerDir+libDir)
 if arch == "amd64":
 	copyfile("libsigar-amd64-linux.so", schedDir+libDir+"/sigar", workerDir+libDir)
