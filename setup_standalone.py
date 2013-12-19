@@ -157,13 +157,6 @@ copyfile("log4j-defaultNode", schedDir+log4jDir, workerDir+log4jDir)
 copyfile("ProActiveConfiguration.xml", schedDir+proactiveDir, workerDir+proactiveDir)
 
 distutils.dir_util.copy_tree(schedDir+libDir, workerDir+libDir)
-# fix agent bug: the classpath is not read recursively it means contents of dist/lib/sigar dir are not added to classpath
-shutil.rmtree(workerDir+libDir+"/sigar")
-copyfile("sigar.jar", schedDir+libDir+"/sigar", workerDir+libDir)
-if arch == "amd64":
-	copyfile("libsigar-amd64-linux.so", schedDir+libDir+"/sigar", workerDir+libDir)
-else:
-	copyfile("libsigar-x86-linux.so", schedDir+libDir+"/sigar", workerDir+libDir)
 
 if os.path.exists(schedDir+linuxDir):
     distutils.dir_util.copy_tree(schedDir+linuxDir, workerDir+linuxDir)	
