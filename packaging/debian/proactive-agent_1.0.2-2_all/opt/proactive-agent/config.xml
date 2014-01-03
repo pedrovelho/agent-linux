@@ -33,6 +33,7 @@
     <rmConnection enabled="true">
       <respawnIncrement>10</respawnIncrement>
       <javaStarterClass>org.ow2.proactive.resourcemanager.utils.RMNodeStarter</javaStarterClass>
+	  <nodename>PA-AGENT_NODE</nodename>
       <url>rmi://127.0.0.1:1099</url>
       <credential>SET_CREDENTIAL</credential>
     </rmConnection>
