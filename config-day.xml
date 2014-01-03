@@ -65,6 +65,7 @@
     <rmConnection enabled="false">
       <respawnIncrement>10</respawnIncrement>
       <javaStarterClass>org.ow2.proactive.resourcemanager.utils.RMNodeStarter</javaStarterClass>
+	  <nodename>PA-AGENT_NODE</nodename>
       <url>pnp://localhost:2001</url>
       <credential>SET_CREDENTIAL</credential>
     </rmConnection>
