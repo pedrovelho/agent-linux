@@ -75,6 +75,7 @@
     <rmConnection enabled="true">
       <respawnIncrement>10</respawnIncrement>
       <javaStarterClass>org.ow2.proactive.resourcemanager.utils.RMNodeStarter</javaStarterClass>
+	  <nodename>PA-AGENT_NODE</nodename>
       <url>pnp://g-load5.rd.francetelecom.fr:2001</url>
       <credential>SET_CREDENTIAL</credential>
     </rmConnection>
