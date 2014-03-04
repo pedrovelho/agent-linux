@@ -169,15 +169,21 @@ distutils.dir_util.copy_tree(systemJreDir, jreDir)
 # Remove the following optional jars (see jre1.7 README)
 os.remove(jreDir+"/lib/ext/dnsns.jar")
 os.remove(jreDir+"/lib/ext/localedata.jar")
-os.remove(jreDir+"/lib/ext/sunec.jar")
+
 os.remove(jreDir+"/lib/ext/sunjce_provider.jar")
 os.remove(jreDir+"/lib/ext/sunpkcs11.jar")
 
-os.remove(jreDir+"/lib/javaws.jar")
-os.remove(jreDir+"/lib/deploy.jar")
-os.remove(jreDir+"/lib/plugin.jar")
+try:
+    # optional files from Sun JDK
+    os.remove(jreDir+"/lib/ext/sunec.jar")
 
-shutil.rmtree(jreDir+"/lib/deploy")
+    os.remove(jreDir+"/lib/javaws.jar")
+    os.remove(jreDir+"/lib/deploy.jar")
+    os.remove(jreDir+"/lib/plugin.jar")
+
+    shutil.rmtree(jreDir+"/lib/deploy")
+except OSError:
+    pass
 
 os.remove(jreDir+"/bin/rmid")
 os.remove(jreDir+"/bin/rmiregistry")
