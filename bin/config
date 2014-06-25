@@ -1,0 +1,29 @@
+AGENT_HOME=$(pwd)
+
+function add_cron_tab() {
+    # if this line already exists do not add it the second time
+    exists=$(crontab -l | grep -F "$1")
+    if [ -z "$exists" ]; then
+        echo "Adding to crontab:"
+        echo "$1"
+        (crontab -l; echo "$1") | crontab -
+    fi
+}
+
+# Running 4 static nodes
+for i in {1..4}; do
+    echo "Starting local node:"
+    echo "/bin/bash $AGENT_HOME/node -n proactive-agent-node-$i 1>$AGENT_HOME/logs/node$i 2>&1"
+    /bin/bash $AGENT_HOME/node -n proactive-agent-node-$i 1>$AGENT_HOME/logs/node$i 2>&1 &
+done
+
+# Installing cron
+# Evening nodes (start 20.00, stop 8.00)
+add_cron_tab "00 20 * * * $AGENT_HOME/node evening 1>$AGENT_HOME/logs/node_evening1 2>&1"
+add_cron_tab "00 20 * * * $AGENT_HOME/node evening 1>$AGENT_HOME/logs/node_evening2 2>&1"
+add_cron_tab "00 8 * * * $AGENT_HOME/node_kill evening"
+
+# Weekend nodes (start on Friday 20.00 stop on Monday 8.00)
+#add_cron_tab "00 20 * * 5 $AGENT_HOME/node weekend 1>$AGENT_HOME/logs/node_weekend1 2>&1"
+#add_cron_tab "00 20 * * 5 $AGENT_HOME/node weekend 1>$AGENT_HOME/logs/node_weekend2 2>&1"
+#add_cron_tab "00 8 * * 1 $AGENT_HOME/node_kill weekend"

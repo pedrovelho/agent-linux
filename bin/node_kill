@@ -1,0 +1,19 @@
+#!/bin/bash
+
+node_kill() {
+    local _pid=$1
+    local _sig=${2-TERM}
+    for _child in $(ps -o pid --no-headers --ppid ${_pid}); do
+        node_kill ${_child} ${_sig}
+    done
+    echo "Killing: $(ps -ef | grep ${_pid})"
+    kill -${_sig} ${_pid}
+}
+
+filter=$1
+
+if [[ -n "$filter" ]]; then
+    for pid in $(ps aux | grep "$filter" | grep -v -e "kill" -e "grep" | awk '{print $2}'); do
+        node_kill $pid 9
+    done
+fi

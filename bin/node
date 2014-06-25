@@ -1,0 +1,27 @@
+#!/bin/bash
+
+. ./node_kill
+
+# 1. create a cgroup first
+# example: $ cgcreate -g cpu,memory:/proactive
+# 2. Limit resources for this cgroup
+# example 100 Mb: $ echo "$((100*1042*1024))" > /sys/fs/cgroup/memory/proactive/memory.usage_in_bytes
+
+RM_URL="rmi://localhost:1099/"
+PROACTIVE_HOME=$(pwd)/scheduling
+RM_CRED="$PROACTIVE_HOME/config/authentication/rm.cred"
+JVM_OPTS="-Dproactive.configuration=$PROACTIVE_HOME/config/proactive/ProActiveConfiguration2.xml"
+
+while true; do
+    echo "Starting node"
+    echo "java $JVM_OPTS -cp "${PROACTIVE_HOME}/dist/lib/*" org.ow2.proactive.resourcemanager.utils.RMNodeStarter -r $RM_URL -f $RM_CRED $@"
+    java $JVM_OPTS -cp "${PROACTIVE_HOME}/dist/lib/*" org.ow2.proactive.resourcemanager.utils.RMNodeStarter -r $RM_URL -f $RM_CRED $@ &
+    pid=$!
+
+    #cgclassify -g cpu,memory:/proactive $pid
+
+    wait $pid
+    node_kill $pid 9
+
+    sleep 10
+done

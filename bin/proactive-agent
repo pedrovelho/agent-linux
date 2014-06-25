@@ -1,0 +1,26 @@
+#!/bin/bash
+
+AGENT_HOME=$(pwd)
+
+function start {
+    /bin/bash $AGENT_HOME/config
+    echo "done"
+}
+
+function clean_cron_tab {
+    echo "Cleaning crontab"
+    crontab -l | grep -v proactive > /tmp/crontab
+    cat /tmp/crontab | crontab -
+}
+
+function stop {
+    clean_cron_tab
+    /bin/bash $AGENT_HOME/nodes_kill
+    echo "done"
+}
+
+if [ $# -eq 0 ]; then
+    start
+else
+    "$@"
+fi

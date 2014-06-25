@@ -1,0 +1,9 @@
+#!/bin/bash
+
+AGENT_HOME=$(pwd)
+
+. $AGENT_HOME/node_kill
+
+for pid in $(ps aux | grep "node" | grep -v -e "kill" -e "grep" | awk '{print $2}'); do
+    node_kill $pid 9
+done
