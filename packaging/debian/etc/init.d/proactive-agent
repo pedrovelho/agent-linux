@@ -16,14 +16,13 @@
 
 # PATH should only include /usr/* if it runs after the mountnfs.sh script
 PATH=/sbin:/usr/sbin:/bin:/usr/bin
-DESC="ProActive Agent to offer computing resource to a ProActive Infrastructure"
+DESC="The ProActive Agent enables desktop computers as an important source of computational power"
 NAME=proactive-agent
-AGENT_PATH=/opt/$NAME
-DAEMON=$AGENT_PATH/$NAME
-PIDFILE=$AGENT_PATH/$NAME.pid
-CONFIGFILE=$AGENT_PATH/config.xml
-DAEMON_ARGS="-D -v $CONFIGFILE -p $PIDFILE -L $AGENT_PATH/$NAME.log"
-SCRIPTNAME=/etc/init.d/$NAME
+DAEMON=/opt/proactive-agent/$NAME
+PIDFILE=/opt/proactive-agent/$NAME.pid
+CONFIGFILE=/opt/proactive-agent/config.xml
+DAEMON_ARGS="-D -v $CONFIGFILE -p $PIDFILE -L /opt/proactive-agent/$NAME.log"
+SCRIPTNAME=/etc/init.d/proactive-agent
 PAUSER=proactive
 
 # Exit if the package is not installed
@@ -59,9 +58,9 @@ do_start()
 	#   0 if daemon has been started
 	#   1 if daemon was already running
 	#   2 if daemon could not be started
-	start-stop-daemon --start --quiet --user $PAUSER --pidfile $PIDFILE --exec $DAEMON --test > /dev/null \
+	start-stop-daemon --start --quiet --user $PAUSER --chuid $PAUSER --pidfile $PIDFILE --exec $DAEMON --test > /dev/null \
 		|| return 1
-	start-stop-daemon --start --quiet --user $PAUSER --pidfile $PIDFILE --exec $DAEMON -- \
+	start-stop-daemon --start --quiet --user $PAUSER --chuid $PAUSER --pidfile $PIDFILE --exec $DAEMON -- \
 		$DAEMON_ARGS \
 		|| return 2
 	# Add code here, if necessary, that waits for the process to be ready
