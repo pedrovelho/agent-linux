@@ -1,0 +1,7 @@
+#!/bin/sh
+
+PACKAGE="proactive-agent"
+
+# Service removal
+/etc/init.d/$PACKAGE stop
+\update-rc.d -f $PACKAGE remove
