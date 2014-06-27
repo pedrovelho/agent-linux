@@ -2,21 +2,14 @@
 
 PACKAGE="proactive-agent"
 INSTALLDIR="/opt/$PACKAGE"
-PAGROUP="proactivegroup"
 PAUSER="proactive"
+PAGROUP="proactivegroup"
 
-# Clean logs and remove INSTALLDIR
 if [ -f "$INSTALLDIR/proactive-agent.log" ] 
 then
-   \rm -f "$INSTALLDIR/proactive-agent.log"
-   \rm -f "$INSTALLDIR/proactive-agent.log.*"
+   rm -f "$INSTALLDIR/proactive-agent.log"
+   rm -f "$INSTALLDIR/proactive-agent.log.*"
 fi
 
-if [ -d "$INSTALLDIR/jre" ] 
-then
-   \rm -rf "$INSTALLDIR/jre"
-fi
-
-# User and group removal
-\groupdel $PAGROUP
-\userdel -r $PAUSER
+deluser --quiet $PAUSER
+groupdel $PAGROUP

@@ -1,72 +1,42 @@
 #!/bin/sh
 
-# Questions
-# - Why user has an homedir + bash + password ?
-# - Is the password fixed i.e. well known ?
-# - Does a user will login as proactive user ?
-# - What about configuration files in case of an update ?
-
 PACKAGE="proactive-agent"
+
 INSTALLDIR="/opt/$PACKAGE"
+
 PAUSER="proactive"
-PAPASS="KyVd.Qs65uwR6"
 PAGROUP="proactivegroup"
 PROACTIVEHOME="$INSTALLDIR/schedworker"
+
 CONFIGXMLBASE="$INSTALLDIR/config-*.xml"
 CONFIGXMLFULL="$INSTALLDIR/config-fulltime.xml"
 CONFIGXML="$INSTALLDIR/config.xml"
 CREDPATH="$PROACTIVEHOME/config/authentication/rm.cred"
-BUNDLEJREDIR="$INSTALLDIR/jre"
-RT_UNPACKED="$BUNDLEJREDIR/lib/rt.jar"
-RT_PACKED="$RT_UNPACKED.pack.gz"
 
-# User and group management
-\groupadd $PAGROUP
-\useradd -m -s /bin/bash $PAUSER --password $PAPASS
-#\useradd $PAUSER --password $PAPASS
-\usermod -aG $PAGROUP $PAUSER
-\chown -R $PAUSER:$PAGROUP $INSTALLDIR
-# TODO : Check user creation
+JAVAPATH=/usr
 
-# Check for bundled jre
-if [ -d $BUNDLEJREDIR ]
-then
-   # Unpack rt.jar
-   if [ -f $RT_PACKED ]
-   then
-      echo "Unpacking $RT_PACKED ..."
-      cd "$INSTALLDIR/jre/bin" 
-      ./unpack200 -r -J-Xmx1024m $RT_PACKED $RT_UNPACKED
-      cd $(dirname $0)
-   fi
-   JAVAPATH="$INSTALLDIR/jre"
-else
-   # Java configuration
-   JAVAPATH=$(readlink -f `which java`| sed "s:/jre/bin/java::")
-   # TODO : Run a java Test
-   if [ "$?" = "1" ]
-   then
-       # TODO : We can wget http://download.oracle.com/otn-pub/java/jdk/7u25-b15/jdk-7u25-linux-i586.tar.gz
-       echo "ERROR: Please setup a Java >= 1.6 before installing this package"
-       exit 1
-   fi
+if ! getent passwd $PAUSER >/dev/null; then
+    adduser --quiet --system --no-create-home --home $INSTALLDIR --shell /bin/bash $PAUSER
 fi
 
-echo "Using $JAVAPATH in $CONFIGXMLBASE configuration files ..."
+addgroup --system $PAGROUP
+usermod -aG $PAGROUP $PAUSER
 
-# Set paths in configuration files
 for f in $CONFIGXMLBASE; do
-  \sed -i \
+    sed -i \
       -e "s!SET_PROACTIVEHOME!$PROACTIVEHOME!g" \
       -e "s!SET_JAVAHOME!$JAVAPATH!g" \
       -e "s!SET_CREDENTIAL!$CREDPATH!g" $f
 done
 
-echo "Note: Using $CONFIGXMLFULL as default configuration, if changed, please restart the daemon ex: /etc/init.d/$PACKAGE restart"
-\ln -f -s $CONFIGXMLFULL $CONFIGXML
+echo "Using $JAVAPATH in $CONFIGXMLBASE configuration files ..."
 
-# Service setup
-#cp $INSTALLDIR/$PACKAGE /etc/init.d/
-\chmod 755 /etc/init.d/$PACKAGE 
-\update-rc.d $PACKAGE defaults
-/etc/init.d/$PACKAGE start
+echo "Using $CONFIGXMLFULL as default configuration, if changed, please restart the daemon ex: /etc/init.d/$PACKAGE restart"
+ln -f -s $CONFIGXMLFULL $CONFIGXML
+
+chown -R $PAUSER:$PAGROUP $INSTALLDIR
+
+chmod 755 /etc/init.d/$PACKAGE 
+
+update-rc.d $PACKAGE defaults
+invoke-rc.d $PACKAGE start
