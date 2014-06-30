@@ -20,7 +20,7 @@ if ! getent passwd $PAUSER >/dev/null; then
 fi
 
 addgroup --system $PAGROUP
-usermod -aG $PAGROUP $PAUSER
+usermod -g $PAGROUP $PAUSER
 
 for f in $CONFIGXMLBASE; do
     sed -i \
