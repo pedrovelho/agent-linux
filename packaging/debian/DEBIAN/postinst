@@ -13,7 +13,7 @@ CONFIGXMLFULL="$INSTALLDIR/config-fulltime.xml"
 CONFIGXML="$INSTALLDIR/config.xml"
 CREDPATH="$PROACTIVEHOME/config/authentication/rm.cred"
 
-JAVAPATH=/usr
+JAVAPATH=/opt/jdk
 
 if ! getent passwd $PAUSER >/dev/null; then
     adduser --quiet --system --no-create-home --home $INSTALLDIR --shell /bin/bash $PAUSER
