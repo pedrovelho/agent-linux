@@ -6,7 +6,7 @@ INSTALLDIR="/opt/$PACKAGE"
 
 PAUSER="proactive"
 PAGROUP="proactivegroup"
-PROACTIVEHOME="$INSTALLDIR/schedworker"
+PROACTIVEHOME="/opt/proactive-schedworker"
 
 CONFIGXMLBASE="$INSTALLDIR/config-*.xml"
 CONFIGXMLFULL="$INSTALLDIR/config-fulltime.xml"
