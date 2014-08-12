@@ -1,84 +1,83 @@
 <?xml version="1.0"?>
 <agent
-  xmlns="urn:proactive:agent:1.0:linux"
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="urn:proactive:agent:1.0:linux http://www.activeeon.com/public_content/schemas/proactive/agent/1.0/agent-linux.xsd">
-  
-  <config>
-    <proactiveHome>/opt/proactive-node</proactiveHome>
-    <javaHome>/opt/jre</javaHome>
-    <jvmParameters>
-	<param>-Dproactive.communication.protocol=pnp</param>
-	<param>-Dproactive.useIPaddress=true</param>
-	<param>-Dclif.home=/opt/proactive-node/../paclif-2.1.1</param>
-    </jvmParameters>
-    <protocol>pnp</protocol>
-    <!-- cgroup must be available and configured to set memoryLimit
-    	<memoryLimit>1000</memoryLimit>
-    -->
-    <nice>19</nice>
-    <!-- idle class required linux kernel >= 2.6.25 
-        <ionice class="idle"/>
-    -->
-  </config>
+    xmlns="urn:proactive:agent:1.0:linux"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="urn:proactive:agent:1.0:linux http://www.activeeon.com/public_content/schemas/proactive/agent/1.0/agent-linux.xsd">
 
-   <events>
-    <event>
-      <start day="Monday" hour="19" minute="0" second="0" />
-      <duration days="0" hours="13" minutes="0" seconds="0" />
-      <config>
-        <memoryLimit>0</memoryLimit>
-        <nbRuntimes>0</nbRuntimes>
-        <portRange first="0" last="0" />
-      </config>
-    </event>
-    <event>
-      <start day="Tuesday" hour="19" minute="0" second="0" />
-      <duration days="0" hours="13" minutes="0" seconds="0" />
-      <config>
-        <memoryLimit>0</memoryLimit>
-        <nbRuntimes>0</nbRuntimes>
-        <portRange first="0" last="0" />
-      </config>
-    </event>
-    <event>
-      <start day="Wednesday" hour="19" minute="0" second="0" />
-      <duration days="0" hours="13" minutes="0" seconds="0" />
-      <config>
-        <memoryLimit>0</memoryLimit>
-        <nbRuntimes>0</nbRuntimes>
-        <portRange first="0" last="0" />
-      </config>
-    </event>
-    <event>
-      <start day="Thursday" hour="19" minute="0" second="0" />
-      <duration days="0" hours="13" minutes="0" seconds="0" />
-      <config>
-        <memoryLimit>0</memoryLimit>
-        <nbRuntimes>0</nbRuntimes>
-        <portRange first="0" last="0" />
-      </config>
-    </event>
-    <event>
-      <start day="Friday" hour="19" minute="0" second="0" />
-      <duration days="2" hours="13" minutes="0" seconds="0" />
-      <config>
-        <memoryLimit>0</memoryLimit>
-        <nbRuntimes>0</nbRuntimes>
-        <portRange first="0" last="0" />
-      </config>
-    </event>
-  </events>
- 
-  <connections>
-    <localBind enabled="false"/>
-    <rmConnection enabled="true">
-      <respawnIncrement>10</respawnIncrement>
-      <javaStarterClass>org.ow2.proactive.resourcemanager.utils.RMNodeStarter</javaStarterClass>
-	  <nodename>PA-AGENT_NODE</nodename>
-      <url>rmi://127.0.0.1:1099</url>
-      <credential>/opt/proactive-node/config/authentication/rm.cred</credential>
-    </rmConnection>
-  </connections>
+    <config>
+        <proactiveHome>/opt/proactive-node</proactiveHome>
+        <javaHome>/opt/jre</javaHome>
+        <jvmParameters>
+            <param>-Dproactive.communication.protocol=pnp</param>
+            <param>-Dproactive.useIPaddress=true</param>
+            <param>-Dclif.home=/opt/proactive-node/../paclif-2.1.1</param>
+        </jvmParameters>
+        <protocol>pnp</protocol>
+        <!-- cgroup must be available and configured to set memoryLimit
+             <memoryLimit>1000</memoryLimit>
+        -->
+        <nice>19</nice>
+        <!-- idle class required linux kernel >= 2.6.25
+             <ionice class="idle"/>
+        -->
+    </config>
+
+    <events>
+        <event>
+            <start day="Monday" hour="19" minute="0" second="0" />
+            <duration days="0" hours="13" minutes="0" seconds="0" />
+            <config>
+                <memoryLimit>0</memoryLimit>
+                <nbRuntimes>0</nbRuntimes>
+                <portRange first="0" last="0" />
+            </config>
+        </event>
+        <event>
+            <start day="Tuesday" hour="19" minute="0" second="0" />
+            <duration days="0" hours="13" minutes="0" seconds="0" />
+            <config>
+                <memoryLimit>0</memoryLimit>
+                <nbRuntimes>0</nbRuntimes>
+                <portRange first="0" last="0" />
+            </config>
+        </event>
+        <event>
+            <start day="Wednesday" hour="19" minute="0" second="0" />
+            <duration days="0" hours="13" minutes="0" seconds="0" />
+            <config>
+                <memoryLimit>0</memoryLimit>
+                <nbRuntimes>0</nbRuntimes>
+                <portRange first="0" last="0" />
+            </config>
+        </event>
+        <event>
+            <start day="Thursday" hour="19" minute="0" second="0" />
+            <duration days="0" hours="13" minutes="0" seconds="0" />
+            <config>
+                <memoryLimit>0</memoryLimit>
+                <nbRuntimes>0</nbRuntimes>
+                <portRange first="0" last="0" />
+            </config>
+        </event>
+        <event>
+            <start day="Friday" hour="19" minute="0" second="0" />
+            <duration days="2" hours="13" minutes="0" seconds="0" />
+            <config>
+                <memoryLimit>0</memoryLimit>
+                <nbRuntimes>0</nbRuntimes>
+                <portRange first="0" last="0" />
+            </config>
+        </event>
+    </events>
+
+    <connections>
+        <localBind enabled="false"/>
+        <rmConnection enabled="true">
+            <respawnIncrement>10</respawnIncrement>
+            <javaStarterClass>org.ow2.proactive.resourcemanager.utils.RMNodeStarter</javaStarterClass>
+            <nodename>PA-AGENT_NODE</nodename>
+            <url>rmi://127.0.0.1:1099</url>
+            <credential>/opt/proactive-node/config/authentication/rm.cred</credential>
+        </rmConnection>
+    </connections>
 </agent>
-
