@@ -5,8 +5,8 @@
   xsi:schemaLocation="urn:proactive:agent:1.0:linux http://www.activeeon.com/public_content/schemas/proactive/agent/1.0/agent-linux.xsd">
   
   <config>
-    <proactiveHome>SET_PROACTIVEHOME</proactiveHome>
-    <javaHome>SET_JAVAHOME</javaHome>
+    <proactiveHome>/opt/proactive-node</proactiveHome>
+    <javaHome>/opt/jre</javaHome>
     <jvmParameters>
 	<param>-Dproactive.communication.protocol=rmi</param>
 	<param>-Dproactive.useIPaddress=true</param>
@@ -35,7 +35,7 @@
       <javaStarterClass>org.ow2.proactive.resourcemanager.utils.RMNodeStarter</javaStarterClass>
 	  <nodename>PA-AGENT_NODE</nodename>
       <url>rmi://127.0.0.1:1099</url>
-      <credential>SET_CREDENTIAL</credential>
+      <credential>/opt/proactive-node/config/authentication/rm.cred</credential>
     </rmConnection>
   </connections>
 </agent>
