@@ -5,15 +5,7 @@ PACKAGE="proactive-agent"
 INSTALLDIR="/opt/$PACKAGE"
 
 PAUSER="proactive"
-PAGROUP="proactivegroup"
-PROACTIVEHOME="/opt/proactive-schedworker"
-
-CONFIGXMLBASE="$INSTALLDIR/config-*.xml"
-CONFIGXMLFULL="$INSTALLDIR/config-fulltime.xml"
-CONFIGXML="$INSTALLDIR/config.xml"
-CREDPATH="$PROACTIVEHOME/config/authentication/rm.cred"
-
-JAVAPATH=/opt/jdk
+PAGROUP="proactive"
 
 if ! getent passwd $PAUSER >/dev/null; then
     adduser --quiet --system --no-create-home --home $INSTALLDIR --shell /bin/bash $PAUSER
@@ -21,18 +13,6 @@ fi
 
 addgroup --system $PAGROUP
 usermod -g $PAGROUP $PAUSER
-
-for f in $CONFIGXMLBASE; do
-    sed -i \
-      -e "s!SET_PROACTIVEHOME!$PROACTIVEHOME!g" \
-      -e "s!SET_JAVAHOME!$JAVAPATH!g" \
-      -e "s!SET_CREDENTIAL!$CREDPATH!g" $f
-done
-
-echo "Using $JAVAPATH in $CONFIGXMLBASE configuration files ..."
-
-echo "Using $CONFIGXMLFULL as default configuration, if changed, please restart the daemon ex: /etc/init.d/$PACKAGE restart"
-ln -f -s $CONFIGXMLFULL $CONFIGXML
 
 chown -R $PAUSER:$PAGROUP $INSTALLDIR
 
