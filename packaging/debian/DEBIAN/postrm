@@ -3,12 +3,11 @@
 PACKAGE="proactive-agent"
 INSTALLDIR="/opt/$PACKAGE"
 PAUSER="proactive"
-PAGROUP="proactivegroup"
+PAGROUP="proactive"
 
 if [ -f "$INSTALLDIR/proactive-agent.log" ] 
 then
-   rm -f "$INSTALLDIR/proactive-agent.log"
-   rm -f "$INSTALLDIR/proactive-agent.log.*"
+   rm -f "$INSTALLDIR/proactive-agent.log*"
 fi
 
 deluser --quiet $PAUSER
