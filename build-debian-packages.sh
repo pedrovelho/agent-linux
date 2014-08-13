@@ -23,6 +23,7 @@ package () {
 
     mkdir -p $PREFIX
     rsync -avP --delete $THIS/packaging/debian/ $PREFIX/
+    sed -i -e "s/VERSION/$VERSION/" -e "s/ARCH/$ARCH/" $PREFIX/DEBIAN/control
 
     mkdir -p $PREFIX/opt/proactive-agent
     rsync -avP --delete $THIS/proactive-agent $THIS/proactive-agent.1 $THIS/palinagent $THIS/config* $THIS/data $THIS/LICENSE.txt \
