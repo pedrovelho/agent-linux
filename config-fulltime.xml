@@ -8,10 +8,9 @@
         <proactiveHome>/opt/proactive-node</proactiveHome>
         <javaHome>/opt/jre</javaHome>
         <jvmParameters>
-            <param>-Dproactive.communication.protocol=rmi</param>
             <param>-Dproactive.useIPaddress=true</param>
         </jvmParameters>
-        <protocol>rmi</protocol>
+        <protocol>pnp</protocol>
         <!-- cgroup must be available and configured to set memoryLimit
              <memoryLimit>1000</memoryLimit>
         -->
@@ -34,7 +33,7 @@
             <respawnIncrement>10</respawnIncrement>
             <javaStarterClass>org.ow2.proactive.resourcemanager.utils.RMNodeStarter</javaStarterClass>
             <nodename>PA-AGENT_NODE</nodename>
-            <url>rmi://127.0.0.1:1099</url>
+            <url>pnp://127.0.0.1:1099</url>
             <credential>/opt/proactive-node/config/authentication/rm.cred</credential>
         </rmConnection>
     </connections>

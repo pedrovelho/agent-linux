@@ -8,9 +8,7 @@
         <proactiveHome>/opt/proactive-node</proactiveHome>
         <javaHome>/opt/jre</javaHome>
         <jvmParameters>
-            <param>-Dproactive.communication.protocol=pnp</param>
             <param>-Dproactive.useIPaddress=true</param>
-            <param>-Dclif.home=/opt/proactive-node/../paclif-2.1.1</param>
         </jvmParameters>
         <protocol>pnp</protocol>
         <!-- cgroup must be available and configured to set memoryLimit
@@ -76,7 +74,7 @@
             <respawnIncrement>10</respawnIncrement>
             <javaStarterClass>org.ow2.proactive.resourcemanager.utils.RMNodeStarter</javaStarterClass>
             <nodename>PA-AGENT_NODE</nodename>
-            <url>rmi://127.0.0.1:1099</url>
+            <url>pnp://127.0.0.1:1099</url>
             <credential>/opt/proactive-node/config/authentication/rm.cred</credential>
         </rmConnection>
     </connections>
