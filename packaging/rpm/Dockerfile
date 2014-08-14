@@ -1,6 +1,9 @@
+# create an image suitable for building rpm packages:
+# docker build -t agent-linux-packaging-centos .
+
 FROM centos
 
-RUN yum -y install wget ruby ruby-devel gcc make
+RUN yum -y install wget ruby ruby-devel gcc make rsync tar gzip rpm-build
 
 RUN /usr/sbin/useradd --create-home --shell /bin/bash --uid 1000 packager
 
