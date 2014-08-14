@@ -1,0 +1,12 @@
+#!/bin/sh
+
+PACKAGE="proactive-agent"
+INSTALLDIR="/opt/$PACKAGE"
+USER="proactive"
+GROUP="proactive"
+
+if [ -f "$INSTALLDIR/proactive-agent.log" ] then
+   rm -f "$INSTALLDIR/proactive-agent.log*"
+fi
+
+userdel $USER || true

@@ -1,0 +1,15 @@
+#!/bin/sh
+
+PACKAGE="proactive-agent"
+INSTALLDIR="/opt/$PACKAGE"
+USER="proactive"
+GROUP="proactive"
+
+if ! getent passwd $USER >/dev/null; then
+    useradd --system --no-create-home --home $INSTALLDIR --shell /bin/bash $USER
+fi
+
+chown -R $USER:$GROUP $INSTALLDIR
+
+update-rc.d $PACKAGE defaults
+invoke-rc.d $PACKAGE start

@@ -1,8 +1,0 @@
-Package: proactive-agent
-Version: VERSION
-Architecture: ARCH
-Maintainer: activeeon-dev@activeeon.com
-Priority: optional
-Installed-Size: 0
-Description: The ProActive Agent enables desktop computers as an important source of computational power
-Depends: python, python-lxml

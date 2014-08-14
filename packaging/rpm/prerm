@@ -1,0 +1,6 @@
+#!/bin/sh
+
+PACKAGE="proactive-agent"
+
+/sbin/service $PACKAGE stop
+/sbin/chkconfig --del $PACKAGE
