@@ -6,7 +6,7 @@
 
     <config>
         <proactiveHome>/opt/proactive-node</proactiveHome>
-        <javaHome>/opt/jre</javaHome>
+        <javaHome>/opt/proactive-node/jre</javaHome>
         <jvmParameters>
             <param>-Dproactive.useIPaddress=true</param>
         </jvmParameters>
