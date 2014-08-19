@@ -2,6 +2,7 @@
 
 PACKAGE="proactive-agent"
 INSTALLDIR="/opt/$PACKAGE"
+NODEDIR="/opt/proactive-node"
 USER="proactive"
 GROUP="proactive"
 
@@ -10,6 +11,7 @@ if ! getent passwd $USER >/dev/null; then
 fi
 
 chown -R $USER:$GROUP $INSTALLDIR
+chown -R $USER:$GROUP $NODEDIR
 
 chkconfig --add $PACKAGE
 /sbin/service proactive-agent start
