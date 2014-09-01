@@ -8,8 +8,8 @@
 # chkconfig: 2345 95 05
 # description: Starts a ProActive agent
 # processname: proactive-agent
-# config: /etc/proactive/agent/agent.xml
 # pidfile: /var/run/proactive-agent.pid
+# config: /opt/proactive-agent/config.xml
 
 ### BEGIN INIT INFO
 # Provides: 
@@ -52,6 +52,7 @@ type -P cgcreate &>/dev/null && USE_CGROUP=1
 
 
 function cgroup_mount() {
+	mkdir -p $AGENTHOME/cgroups
 	if [ ! -e $AGENTHOME/cgroups/tasks ] ; then
 		mount -t cgroup -o memory proactive-agent $AGENTHOME/cgroups
 		cgcreate -t $AGENTUSER:$AGENTGROUP -a $AGENTUSER:$AGENTGROUP -g memory:/proactive-agent
@@ -59,7 +60,7 @@ function cgroup_mount() {
 }
 
 function cgroup_umount() {
-	  rmdir  -- $AGENTHOME/cgroups/proactive-agent
+	  rmdir -- $AGENTHOME/cgroups/proactive-agent
 	  umount $AGENTHOME/cgroups
 }
 
@@ -75,14 +76,15 @@ case "$1" in
 		fi
 
 		daemon \
-		  --user $AGENTUSER \
-		  --check ${SERVICENAME} \
-		  "$PROG --logFile $LOGFILE $AGENTOPTS $CONFFILE"
-		  RETVAL=$?
+			--user $AGENTUSER \
+			--check ${SERVICENAME} \
+			--pidfile /var/run/${SERVICENAME}.pid \
+			"$PROG --logFile $LOGFILE $AGENTOPTS $CONFFILE"
+		RETVAL=$?
 		echo
 		if [ $RETVAL -eq 0 ] ; then
 			touch /var/lock/subsys/${SERVICENAME}
-			/sbin/pidof -o %PPID -x proactive-agent > /var/run/${SERVICENAME}.pid
+			ps -ef | grep $PROG 2>/dev/null | awk '{print $2}' > /var/run/${SERVICENAME}.pid
 		fi	
 	;;
 	stop)
@@ -92,7 +94,7 @@ case "$1" in
 			cgroup_umount
 		fi
 
-		killproc ${SERVICENAME}
+		killproc -p /var/run/${SERVICENAME}.pid ${SERVICENAME}
 		RETVAL=$?
 		echo
 		if [ $RETVAL -eq 0 ] ; then

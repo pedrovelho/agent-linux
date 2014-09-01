@@ -2,5 +2,5 @@
 
 PACKAGE="proactive-agent"
 
-/sbin/service $PACKAGE stop
+/sbin/service $PACKAGE stop || true
 /sbin/chkconfig --del $PACKAGE
