@@ -24,6 +24,10 @@ DAEMON_ARGS="-D -v $CONFIGFILE -p $PIDFILE -L /opt/proactive-agent/$NAME.log"
 SCRIPTNAME=/etc/init.d/proactive-agent
 PAUSER=proactive
 
+AGENTUSER="proactive"
+AGENTGROUP="proactive"
+AGENTHOME="/opt/proactive-agent"
+
 # Exit if the package is not installed
 [ -x "$DAEMON" ] || exit 0
 
@@ -48,20 +52,32 @@ killtree() {
 	kill -${_sig} ${_pid}
 }
 
+# Set USE_CGROUP if cgreate is avaible
+type cgcreate >/dev/null 2>&1 && USE_CGROUP=1
+
+cgroup_mount() {
+	mkdir -p $AGENTHOME/cgroups
+	if [ ! -e $AGENTHOME/cgroups/tasks ] ; then
+		mount -t cgroup -o memory proactive-agent $AGENTHOME/cgroups
+		cgcreate -t $AGENTUSER:$AGENTGROUP -a $AGENTUSER:$AGENTGROUP -g memory:/proactive-agent
+	fi
+}
+
+cgroup_umount() {
+	  rmdir -- $AGENTHOME/cgroups/proactive-agent
+	  umount $AGENTHOME/cgroups
+}
+
 #
 # Function that starts the daemon/service
 #
 do_start()
 {
-	# Return
-	#	0 if daemon has been started
-	#	1 if daemon was already running
-	#	2 if daemon could not be started
-	start-stop-daemon --start --quiet --user $PAUSER --chuid $PAUSER --pidfile $PIDFILE --exec $DAEMON --test > /dev/null \
-		|| return 1
-	start-stop-daemon --start --quiet --user $PAUSER --chuid $PAUSER --pidfile $PIDFILE --exec $DAEMON -- \
-		$DAEMON_ARGS \
-		|| return 2
+	if [ "$USE_CGROUP" = "1" ]; then
+		cgroup_mount
+	fi
+
+	start-stop-daemon --start --quiet --user $PAUSER --chuid $PAUSER --pidfile $PIDFILE --startas $DAEMON -- $DAEMON_ARGS
 }
 
 #
@@ -69,6 +85,10 @@ do_start()
 #
 do_stop()
 {
+	if [ "$USE_CGROUP" = "1" ] ; then
+		cgroup_umount
+	fi
+
 	# kill the tree first
 	if [ -f $PIDFILE ]; then
 		PID=$(cat $PIDFILE)
