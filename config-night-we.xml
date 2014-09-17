@@ -10,10 +10,10 @@
         <jvmParameters>
             <param>-Dproactive.useIPaddress=true</param>
         </jvmParameters>
-        <protocol>pnp</protocol>
         <!-- cgroup must be available and configured to set memoryLimit
              <memoryLimit>1000</memoryLimit>
         -->
+        <protocol>pnp</protocol>
         <nice>19</nice>
         <!-- idle class required linux kernel >= 2.6.25
              <ionice class="idle"/>
