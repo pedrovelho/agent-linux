@@ -58,6 +58,12 @@ class TestNumberOfCPU(unittest.TestCase):
                     
         except (OSError), e:
             print "Test disabled.lscpu not available: %s" % e
-            
+
+class TestGetClassPath(unittest.TestCase):
+
+    def test_get_class_path(self):
+        class_path = palinagent.daemon.utils.get_class_path("/foo")
+        self.assertEquals("/foo/dist/lib/*:/foo/addons/:/foo/addons/*", class_path)
+
 if __name__ == "__main__":
     unittest.main()
