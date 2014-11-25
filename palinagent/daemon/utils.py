@@ -35,6 +35,9 @@
 #################################################################
 # $$ACTIVEEON_INITIAL_DEV$$
 #################################################################
+from itertools import repeat, imap
+import os
+
 
 def  get_number_of_cpus():
     """ 
@@ -115,3 +118,7 @@ def  get_number_of_cpus():
         pass
 
     raise Exception('Can not determine number of CPUs on this system')
+
+
+def get_class_path(proactive_home):
+    return ":".join(imap(os.path.join, repeat(proactive_home), ["dist/lib/*", "addons/", "addons/*"]))

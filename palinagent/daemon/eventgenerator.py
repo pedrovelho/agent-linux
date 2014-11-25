@@ -48,7 +48,6 @@ import sys
 import errors
 import signal
 import errno
-import re
 
 logger = logging.getLogger("agent.evg")
 
@@ -475,86 +474,9 @@ class StartEvent(SpecificEvent):
         # Java
         java_path = os.path.join(self.config.javaHome, "bin", "java") 
         cmd.append(java_path)
-        
-        # Get the classpath
-        # 
-        # The way to get the classpath is hacky and is tightly tied to programming and
-        # scheduling releases. But env scripts behavior must be clarified and homogenized 
-        # 
-        # 1- Ask to scheduling through bin/unix/env
-        # 2- Ask to programming through bin/env.sh
-        # 3- List everything in dist/lib
-        def get_class_path():
-            pa_path = os.path.join(self.config.proactiveHome, "dist", "lib")
-            classpath=None        
 
-            # Scheduling
-            try:
-                path = os.path.join(self.config.proactiveHome, "bin/unix");
-                cmd = ["/bin/sh", "-c", "workingDir=%s ; . %s/env ; env | grep CLASSPATH" % (path, path)]
-                p = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-                retcode = p.wait() 
-                if retcode == 0:
-                    (out, err) = p.communicate()
-                    mo = re.match("CLASSPATH=(.*)", out)
-                    if mo is not None:
-                        classpath = mo.group(1) # Success
-                        logger.debug("Extracting CLASSPATH from scheduling succeeded")
-                    else:
-                        logger.info("Extracting CLASSPATH from scheduling failed with invalid output: %s" % out)
-                else:
-                    # In scheduling but env failed
-                    (out, err)  = p.communicate()
-                    logger.debug("Extracting CLASSPATH from scheduling failed with exit code: %s out: %s err: %s" % (retcode, out, err))
-            except (OSError), e:
-                logger.warn("Extracting CLASSPATH from scheduling failed on: %s" % e)
-                
-            # Programming
-            if classpath is None:
-                try:
-                    path = os.path.join(self.config.proactiveHome, "bin/");
-                    cmd = ["/bin/sh", "-c", "workingDir=%s ; . %s/env.sh ; env | grep CLASSPATH" % (path, path)]
-                    p = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-                    retcode = p.wait() 
-                    if retcode == 0:
-                        (out, err) = p.communicate()
-                        mo = re.match("CLASSPATH=(.*)", out)
-                        if mo is not None:
-                            classpath = mo.group(1) # Success
-                            logger.debug("Extracting CLASSPATH from programming succeeded")
-                        else:
-                            logger.info("Extracting CLASSPATH from programming failed with invalid output: %s" % out)
-                    else:
-                        # In scheduling but env failed
-                        (out, err)  = p.communicate()
-                        logger.debug("Extracting CLASSPATH from programming failed with exit code: %s out: %s err: %s" % (retcode, out, err))
-                except (OSError), e:
-                    # Most likely not scheduling
-                    logger.warn("Extracting CLASSPATH from programming failed on: %s" % e)
-                
-            # dist/lib    
-            if classpath is None:
-                logger.debug("Failed to extract CLASSPATH from scheduling or programming, using listdir ")            
-                try: # Not Java 6, build the full classpath by listing the pa_path directory     
-                    paths= os.listdir(pa_path)
-                    if len(paths) == 0:
-                        logger.warning("Unable to build the classpath. Directory is empty. proactiveHome: %s" % self.config.proactiveHome )
-                        classpath="emptyclasspath"
-                    elif len(paths) == 1:
-                        classpath = os.path.join(pa_path, paths[0])
-                    else:
-                        classpath = ""
-                        for index in xrange(len(paths) - 1):
-                            classpath += os.path.join(pa_path, paths[index]) + ":"
-                        classpath += os.path.join(pa_path, paths[-1])
-                except (OSError), e:
-                    logger.warning("Unable to build the classpath. cause: %s" % e)
-                    classpath="emptyclasspath"
-                
-            return classpath
-        
         cmd.append("-classpath")
-        cmd.append(get_class_path())
+        cmd.append(utils.get_class_path(self.config.proactiveHome))
 
         cmd.append("-Dproactive.communication.protocol=%s" % self.config.protocol)
         cmd.append("-Xms96M")
