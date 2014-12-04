@@ -110,7 +110,7 @@
   <xsd:element name="rmConnection" substitutionGroup="Connection">
     <xsd:complexType>
       <xsd:annotation><xsd:documentation xml:lang="en">
-      Starts a ProActive node and register to a ProActive Ressource Manager by
+      Starts a ProActive node and register to a ProActive Resource Manager by
       using a callback	
       </xsd:documentation></xsd:annotation>
       <xsd:complexContent mixed="false">
@@ -118,20 +118,20 @@
           <xsd:sequence>
             <xsd:element minOccurs="0" maxOccurs="1" name="url" type="xsd:string">
               <xsd:annotation><xsd:documentation xml:lang="en">
-              The URL of the ProActive Ressource Manager
+              The URL of the ProActive Resource Manager, can be empty if discovery is used
               </xsd:documentation></xsd:annotation>
             </xsd:element>
 
             <xsd:element minOccurs="0" maxOccurs="1" name="nodeSourceName" type="nonEmptyString">
               <xsd:annotation><xsd:documentation xml:lang="en">
-              The name of the ProActive Ressource Manager node source
+              The name of the ProActive Resource Manager node source
               </xsd:documentation></xsd:annotation>
             </xsd:element>
 
             <xsd:element minOccurs="0" maxOccurs="1" name="credential" type="nonEmptyString">
               <xsd:annotation><xsd:documentation xml:lang="en">
               The path of the file containing the credentials to use to connect
-              to the ProActive Ressource Manager. If not specified then the default credential is used
+              to the ProActive Resource Manager. If not specified then the default credential is used
               </xsd:documentation></xsd:annotation>
             </xsd:element>
           </xsd:sequence>
