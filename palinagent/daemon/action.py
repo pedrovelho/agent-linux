@@ -123,8 +123,8 @@ class RessourceManagerConnection(_AbstractConnection):
         logger.debug("%s parse called" % self.__class__.__name__)
               
         lx = node.xpath("./a:url", namespaces = {'a' : main.xmlns})
-        assert(len(lx) == 1)
-        self.url = lx[0].text
+        if len(lx) == 1:
+            self.url = lx[0].text
 
         lx = node.xpath("./a:nodeSourceName", namespaces = {'a' : main.xmlns})
         assert(len(lx) == 0 or len(lx) == 1)
@@ -136,8 +136,6 @@ class RessourceManagerConnection(_AbstractConnection):
         if len(lx) == 1:
             self.credential = lx[0].text
 
-        assert(self.url is not None)
-
     def getClass(self):
         if self.java_starter_class is None:
             return "org.ow2.proactive.resourcemanager.utils.RMNodeStarter"
@@ -147,8 +145,9 @@ class RessourceManagerConnection(_AbstractConnection):
     def getArguments(self):
         args = []
 
-        args.append("-r")
-        args.append(self.url)
+        if self.url is not None:
+            args.append("-r")
+            args.append(self.url)
         
         if self.nodename is not None:
             args.append("-n")
