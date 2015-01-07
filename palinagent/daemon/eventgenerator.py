@@ -96,6 +96,7 @@ class EventConfig(object):
         self.onRuntimeExitScript = None
         self.nice = 0
         self.ionice = None
+        self.nbWorkers = None
         
     def check(self):
         '''
@@ -234,7 +235,17 @@ class EventConfig(object):
             clazz = classes[lx[0].get("class")]
             data = lx[0].get("classdata")
             self.ionice = {"class" : clazz, "classdata" : data}
-            
+
+
+        lx = confNode.xpath("./a:nbWorkers", namespaces = {'a' : main.xmlns})
+        assert len(lx) == 1 or len(lx) == 0
+        if len(lx) == 1:
+            lx_string = lx[0].text
+            if lx_string:
+                self.nbWorkers = int(lx_string)
+            else:
+                self.nbWorkers = -1
+
 
 class AgentTime(object):
     
@@ -501,6 +512,15 @@ class StartEvent(SpecificEvent):
 
         cmd.append(self.action.getClass())
         map(cmd.append, self.action.getArguments())
+
+
+        if self.config.nbWorkers is not None:
+            if self.config.nbWorkers >= 1:
+                cmd.append("-w")
+                cmd.append(str(self.config.nbWorkers))
+            else:
+                cmd.append("-w")
+
         return cmd
 
     

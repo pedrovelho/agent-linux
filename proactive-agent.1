@@ -70,6 +70,11 @@ OPTIONAL. The number of ProActive runtimes to start during each event. If absent
 If \fI0\fR, the value is automatically set to the number of available CPUs.
 
 .TP
+.BI "<nbWorkers>" "1" "</nbWorkers>"
+OPTIONAL. The number of ProActive workers to start per runtime (1 by default).
+If present but empty then the node is started with "-w", which means that it will use as many workers as there are cores.
+
+.TP
 .B <protocol>proto</protocol>
 OPTIONAL. The name of the ProActive communication protocol to use (\fIrmi\fR\fIhttp\fR\fIpamr\fR\fIpnp\fR). If absent \fIrmi\fR is used. 
 
@@ -172,7 +177,7 @@ the available resource pool.
 
 .TP
 .BI "<url>" "url" "</url>"
-REQUIRED. The URL of the ProActive resource manager.
+OPTIONAL. The URL of the ProActive resource manager. Absent or empty URL means discovery is used.
 
 .TP
 .BI "<nodeSourceName>" "name" "</nodeSourceName>"

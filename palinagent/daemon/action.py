@@ -152,7 +152,7 @@ class RessourceManagerConnection(_AbstractConnection):
         if self.nodename is not None:
             args.append("-n")
             args.append(self.nodename)
-            
+
         if self.node_source_name is not None:
             args.append("-s")
             args.append(self.node_source_name)
