@@ -514,12 +514,11 @@ class StartEvent(SpecificEvent):
         map(cmd.append, self.action.getArguments())
 
 
-        if self.config.nbWorkers is not None:
-            if self.config.nbWorkers >= 1:
-                cmd.append("-w")
-                cmd.append(str(self.config.nbWorkers))
-            else:
-                cmd.append("-w")
+        if self.config.nbWorkers is not None and self.config.nbWorkers >= 1:
+            cmd.append("-w")
+            cmd.append(str(self.config.nbWorkers))
+        else:
+            cmd.append("-w")
 
         return cmd
 

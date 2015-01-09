@@ -24,47 +24,22 @@
         <event>
             <start day="Monday" hour="19" minute="0" second="0" />
             <duration days="0" hours="13" minutes="0" seconds="0" />
-            <config>
-                <memoryLimit>0</memoryLimit>
-                <nbRuntimes>0</nbRuntimes>
-                <portRange first="0" last="0" />
-            </config>
         </event>
         <event>
             <start day="Tuesday" hour="19" minute="0" second="0" />
             <duration days="0" hours="13" minutes="0" seconds="0" />
-            <config>
-                <memoryLimit>0</memoryLimit>
-                <nbRuntimes>0</nbRuntimes>
-                <portRange first="0" last="0" />
-            </config>
         </event>
         <event>
             <start day="Wednesday" hour="19" minute="0" second="0" />
             <duration days="0" hours="13" minutes="0" seconds="0" />
-            <config>
-                <memoryLimit>0</memoryLimit>
-                <nbRuntimes>0</nbRuntimes>
-                <portRange first="0" last="0" />
-            </config>
         </event>
         <event>
             <start day="Thursday" hour="19" minute="0" second="0" />
             <duration days="0" hours="13" minutes="0" seconds="0" />
-            <config>
-                <memoryLimit>0</memoryLimit>
-                <nbRuntimes>0</nbRuntimes>
-                <portRange first="0" last="0" />
-            </config>
         </event>
         <event>
             <start day="Friday" hour="19" minute="0" second="0" />
             <duration days="2" hours="13" minutes="0" seconds="0" />
-            <config>
-                <memoryLimit>0</memoryLimit>
-                <nbRuntimes>0</nbRuntimes>
-                <portRange first="0" last="0" />
-            </config>
         </event>
     </events>
 

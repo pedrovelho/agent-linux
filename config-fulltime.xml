@@ -15,11 +15,11 @@
         -->
 
         <!-- Number of runtimes (nodes) to start. Default is 1. Can also be configured on a per-event basis. -->
-        <nbRuntimes>2</nbRuntimes>
+        <nbRuntimes>1</nbRuntimes>
 
         <!-- Number of workers per node. Empty means use as many workers per node as there are cores.
          Can also be configured on a per-event basis.-->
-        <nbWorkers>2</nbWorkers>
+        <nbWorkers></nbWorkers>
 
         <protocol>pnp</protocol>
         <nice>19</nice>
