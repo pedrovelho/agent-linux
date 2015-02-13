@@ -5,8 +5,8 @@
     xsi:schemaLocation="urn:proactive:agent:1.0:linux http://www.activeeon.com/public_content/schemas/proactive/agent/1.0/agent-linux.xsd">
 
     <config>
-        <proactiveHome>/home/sdolgov/proactive/repos/scheduling</proactiveHome>
-        <javaHome>/home/sdolgov/opt/jdk/</javaHome>
+        <proactiveHome>/opt/proactive-node</proactiveHome>
+        <javaHome>/opt/proactive-node/jre</javaHome>
         <jvmParameters>
             <param>-Dproactive.useIPaddress=true</param>
         </jvmParameters>
@@ -43,7 +43,7 @@
             <nodename>PA-AGENT_NODE</nodename>
             <!-- Empty URL means discovery is used -->
             <url></url>
-            <credential>/home/sdolgov/proactive/repos/scheduling/config/authentication/rm.cred</credential>
+            <credential>/opt/proactive-node/config/authentication/rm.cred</credential>
         </rmConnection>
     </connections>
 </agent>
