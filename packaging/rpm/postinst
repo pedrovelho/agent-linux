@@ -7,7 +7,8 @@ USER="proactive"
 GROUP="proactive"
 
 if ! getent passwd $USER >/dev/null; then
-    useradd --system --no-create-home --home $INSTALLDIR --shell /bin/bash $USER
+    groupadd $GROUP
+    useradd --system -G $GROUP --home $INSTALLDIR --shell /bin/bash $USER
 fi
 
 chown -R $USER:$GROUP $INSTALLDIR

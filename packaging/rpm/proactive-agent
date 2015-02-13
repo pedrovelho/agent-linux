@@ -24,7 +24,8 @@
 ### END INIT INFO
 
 # source function library
-. /etc/rc.d/init.d/functions
+. /etc/rc.status
+#. /etc/rc.d/init.d/functions
 
 # Check that networking is up.
 [ "${NETWORKING}" = "no" ] && exit 0
@@ -75,16 +76,15 @@ case "$1" in
 			cgroup_mount
 		fi
 
-		daemon \
-			--user $AGENTUSER \
-			--check ${SERVICENAME} \
-			--pidfile /var/run/${SERVICENAME}.pid \
-			"$PROG --logFile $LOGFILE $AGENTOPTS $CONFFILE"
+		startproc \
+		    -u $AGENTUSER
+			-p /var/run/${SERVICENAME}.pid \
+			$PROG --logFile $LOGFILE $AGENTOPTS $CONFFILE
 		RETVAL=$?
 		echo
-		if [ $RETVAL -eq 0 ] ; then
-			touch /var/lock/subsys/${SERVICENAME}
-			ps -ef | grep $PROG 2>/dev/null | awk '{print $2}' > /var/run/${SERVICENAME}.pid
+		if [ $RETVAL -eq 7 ] ; then
+			ps -ef | grep $PROG 2>/dev/null | grep python | awk '{print $2}' > /var/run/${SERVICENAME}.pid
+			rc_status -v
 		fi	
 	;;
 	stop)
@@ -94,11 +94,11 @@ case "$1" in
 			cgroup_umount
 		fi
 
-		killproc -p /var/run/${SERVICENAME}.pid ${SERVICENAME}
+		killproc -p /var/run/${SERVICENAME}.pid python
 		RETVAL=$?
 		echo
+		rc_status -v
 		if [ $RETVAL -eq 0 ] ; then
-			rm -f /var/lock/subsys/${SERVICENAME}
 			rm -f /var/run/${SERVICENAME}.pid
 		fi
 	;;
@@ -115,7 +115,9 @@ case "$1" in
 		fi
 	;;
 	status)
-		status -p /var/run/${SERVICENAME}.pid ${SERVICENAME}
+		#status -p /var/run/${SERVICENAME}.pid ${SERVICENAME}
+		/sbin/checkproc -p /var/run/${SERVICENAME}.pid python
+		rc_status -v
 		RETVAL=$?
 	;;
 	*)
