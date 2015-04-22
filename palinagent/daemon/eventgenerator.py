@@ -345,8 +345,15 @@ class JVMStarter(object):
 
             self.canceled.wait(1)
             
-        if self.p is not None: 
-            os.kill(self.p.pid, signal.SIGKILL) # 2.6: self.p.terminate()
+        if self.p is not None:
+            os.kill(self.p.pid, signal.SIGTERM) # 2.6: self.p.terminate()
+            tries = 0
+            while self.p.returncode is None and tries < 100:
+                time.sleep(0.1)
+                tries+=1
+            if self.p.returncode is None:
+                os.kill(self.p.pid, signal.SIGKILL)
+
             pgid = os.getpgid(self.p.pid)
             os.killpg(pgid, signal.SIGKILL)
             logger.info("Terminated pid: %s" % self.p.pid)
