@@ -15,9 +15,12 @@
         -->
 
         <!-- Additional argument below will deactivate monitoring on the NodeManager so that
-            no subsequent calls to sigar library are made. This might make the agent unaware
-            of hardware changes.
+            no subsequent calls to sigar library are made. This disable the node status on
+            resource manager but can avoid log error messages.
         -->
+        <additionalCmdArgs>
+            <param>-dm</param>
+        </additionalCmdArgs>
 
         <!-- Number of runtimes (nodes) to start. Default is 1. Can also be configured on a per-event basis. -->
         <nbRuntimes>1</nbRuntimes>
