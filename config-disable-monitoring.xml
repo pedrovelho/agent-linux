@@ -14,6 +14,11 @@
              <memoryLimit>1000</memoryLimit>
         -->
 
+        <!-- Additional argument below will deactivate monitoring on the NodeManager so that
+            no subsequent calls to sigar library are made. This might make the agent unaware
+            of hardware changes.
+        -->
+
         <!-- Number of runtimes (nodes) to start. Default is 1. Can also be configured on a per-event basis. -->
         <nbRuntimes>1</nbRuntimes>
 
