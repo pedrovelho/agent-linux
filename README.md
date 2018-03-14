@@ -1,4 +1,6 @@
-ProActive Agent is a system daemon to automatically starts ProActive runtimes according to a weekly schedule
+Change the format of the readme file.
+
+ProActive Agent is a system daemon to automatically starts ProActive runtimes according to a weekly scheduler.
 
 
 ---
